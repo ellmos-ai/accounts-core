@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# lokale Daten und Geheimnisse
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+.env
+*.local.json
+config.local.*
+
+# Locks, Notizen, Archiv
+LOCK*.txt
+LOCK.permissions.json
+_archive/
+_intern/
+_codex/
+PRIVATE.txt
+
+# IDE
+.vscode/
+.idea/
