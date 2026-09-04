@@ -123,13 +123,16 @@ def test_persist_camt_balances_skips_entries_without_iban(store):
         {"iban": "UNKNOWN", "balance": 2.0, "date": "2026-09-01"},
     ])
     assert store.list_accounts() == []
-    assert all("uebersprungen" in line for line in lines)
+    assert lines == [
+        "[WARN] Saldo ohne IBAN übersprungen.",
+        "[WARN] Saldo ohne IBAN übersprungen.",
+    ]
 
 
 def test_persist_camt_balances_empty_list_warns_and_changes_nothing(store):
     lines = store.persist_camt_balances([])
     assert store.list_accounts() == []
-    assert "unveraendert" in lines[0]
+    assert lines == ["[WARN] Keine Salden in der Datei - bank_accounts unverändert."]
 
 
 # -- Allowlist projection: the field team-lead's brake is about -------------
@@ -181,6 +184,48 @@ def test_transit_projection_over_real_store(store):
     assert set(projection[0].keys()) == set(TRANSIT_FIELDS)
     assert projection[0]["name"] == "Girokonto"
     assert projection[0]["iban_masked"] == "*" * 18 + "3000"
+
+
+def test_transit_projection_reads_only_allowlisted_source_columns(store, monkeypatch):
+    """The SQL boundary must not load sensitive or future columns into Python."""
+    store.create_account("Girokonto", bank_name="Sparkasse", iban="DE89370400440532013000",
+                         bic="COBADEFFXXX", account_type="girokonto", notes="Hauptkonto")
+    store.create_account("Depot", bank_name="Broker", iban="DE001234", account_type="depot")
+    with sqlite3.connect(store.db_path) as conn:
+        conn.execute("ALTER TABLE bank_accounts ADD COLUMN future_sensitive_column TEXT")
+        conn.execute("UPDATE bank_accounts SET future_sensitive_column = 'SECRET'")
+
+    allowed_reads = {"name", "account_type", "balance", "balance_date", "iban"}
+    actual_reads = []
+    traced_statements = []
+    original_connect = store.connect
+
+    def monitored_connect():
+        conn = original_connect()
+        conn.set_trace_callback(traced_statements.append)
+
+        def authorize(action, table, column, database, trigger):
+            del database, trigger
+            if action == sqlite3.SQLITE_READ and table == "bank_accounts":
+                actual_reads.append(column)
+                return sqlite3.SQLITE_OK if column in allowed_reads else sqlite3.SQLITE_DENY
+            return sqlite3.SQLITE_OK
+
+        conn.set_authorizer(authorize)
+        return conn
+
+    monkeypatch.setattr(store, "connect", monitored_connect)
+    projection = store.transit_projection()
+
+    selects = [" ".join(statement.split()) for statement in traced_statements
+               if statement.lstrip().upper().startswith("SELECT")]
+    assert selects == [
+        "SELECT name, account_type, balance, balance_date, iban FROM bank_accounts ORDER BY name"
+    ]
+    assert set(actual_reads) == allowed_reads
+    assert [row["name"] for row in projection] == ["Depot", "Girokonto"]
+    assert all(tuple(row) == TRANSIT_FIELDS for row in projection)
+    assert "SECRET" not in str(projection)
 
 
 def _tables(db_path):

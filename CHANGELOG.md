@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- `AccountStore.transit_projection()` now selects only the five source columns needed for the
+  public allowlisted result instead of loading every `bank_accounts` column through
+  `list_accounts()`.
+- CAMT warning messages now use genuine German umlauts (`unverändert`, `übersprungen`), with exact
+  UTF-8 result strings covered by tests and documented in both README variants.
+
 ## 0.1.0 - 2026-09-03
 
 Wave 1 of the account domain cut (decision D-20260903-003 = A, analysis

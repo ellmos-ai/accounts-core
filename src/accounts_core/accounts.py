@@ -136,13 +136,13 @@ class AccountStore:
         Returns human-readable log lines, same wording as BACH.
         """
         if not balances:
-            return ["[WARN] Keine Salden in der Datei - bank_accounts unveraendert."]
+            return ["[WARN] Keine Salden in der Datei - bank_accounts unverändert."]
         lines = []
         with self.connect() as conn:
             for bal in balances:
                 iban_norm = (bal.get("iban") or "").replace(" ", "").upper()
                 if not iban_norm or iban_norm == "UNKNOWN":
-                    lines.append("[WARN] Saldo ohne IBAN uebersprungen.")
+                    lines.append("[WARN] Saldo ohne IBAN übersprungen.")
                     continue
                 row = conn.execute(
                     "SELECT id FROM bank_accounts WHERE REPLACE(UPPER(COALESCE(iban,'')),' ','')=?",
@@ -176,4 +176,9 @@ class AccountStore:
 
     def transit_projection(self) -> list[dict]:
         """Allowlist projection of all accounts for read-only consumers (OCEAN)."""
-        return [to_transit_row(account) for account in self.list_accounts()]
+        with self.connect() as conn:
+            rows = conn.execute(
+                "SELECT name, account_type, balance, balance_date, iban "
+                "FROM bank_accounts ORDER BY name"
+            ).fetchall()
+            return [to_transit_row(dict(row)) for row in rows]

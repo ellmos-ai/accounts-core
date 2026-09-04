@@ -62,6 +62,9 @@ store.transit_projection()
 #      "balance_date": "2026-09-01", "iban_masked": "*"*18 + "3000"}]
 ```
 
+`persist_camt_balances()` returns UTF-8 German result messages with genuine umlauts, such as
+`unverändert` and `übersprungen`.
+
 ## Privacy (module boundary)
 
 Works only on the database path it is given. No network, no telemetry, no files of its own.
