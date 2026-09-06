@@ -112,7 +112,10 @@ def test_persist_camt_balances_inserts_unknown_iban_as_new_account(store):
         {"iban": "DE12345678901234567890", "balance": 42.0, "currency": "EUR", "date": "2026-09-01"}
     ])
     row = store.list_accounts()[0]
-    assert row["name"] == "CAMT-Import DE12345678901234567890"
+    # Der Name landet ueber die Transit-Projektion bei OCEAN -- er darf die
+    # IBAN nicht tragen (Review PR #18, P1).
+    assert row["name"] == "CAMT-Import " + "*" * 18 + "7890"
+    assert "DE12345678901234567890" not in row["name"]
     assert row["iban"] == "DE12345678901234567890" and row["balance"] == 42.0
     assert "neu angelegt" in lines[0]
 
@@ -184,6 +187,20 @@ def test_transit_projection_over_real_store(store):
     assert set(projection[0].keys()) == set(TRANSIT_FIELDS)
     assert projection[0]["name"] == "Girokonto"
     assert projection[0]["iban_masked"] == "*" * 18 + "3000"
+
+
+def test_transit_projection_masks_an_iban_hidden_in_the_name(store):
+    """`name` ist GUI-editierbar und trug bei Altzeilen die volle IBAN.
+
+    Die Projektion maskierte `iban`, liess dieselbe Nummer aber ueber `name`
+    passieren (Review PR #18, P1). Bestandszeilen erreicht nur ein Guard an
+    der Grenze -- ein reiner Import-Fix haette sie weiter lecken lassen.
+    """
+    store.create_account("CAMT-Import DE89370400440532013000",
+                         iban="DE89370400440532013000")
+    row = store.transit_projection()[0]
+    assert "DE89370400440532013000" not in str(row.values())
+    assert row["name"] == "CAMT-Import " + "*" * 18 + "3000"
 
 
 def test_transit_projection_reads_only_allowlisted_source_columns(store, monkeypatch):

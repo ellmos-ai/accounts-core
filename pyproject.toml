@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "accounts-core"
-version = "0.1.0"
+version = "0.1.1"
 description = "Neutral domain core for the account/bank-balance domain: bank account CRUD, CAMT balance import, and a privacy-safe read-only transit projection"
 readme = "README.md"
 requires-python = ">=3.10"

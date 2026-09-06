@@ -27,6 +27,7 @@ own thing. Add it in a later wave if a consumer needs it.
 from __future__ import annotations
 
 import os
+import re
 import sqlite3
 
 DB_ENV = "BACH_DB"
@@ -63,6 +64,23 @@ def mask_iban(iban: str | None) -> str | None:
     return "*" * (len(cleaned) - 4) + cleaned[-4:]
 
 
+_IBAN_IN_TEXT = re.compile(r"[A-Z]{2}\d{2}(?:\s?[A-Z0-9]){11,30}")
+
+
+def mask_ibans_in_text(text: str | None) -> str | None:
+    """Maskiere jede IBAN, die in einem Freitextfeld steht.
+
+    ``name`` ist per GUI frei editierbar und wurde vom CAMT-Import mit der
+    vollen IBAN belegt -- die Projektion maskierte ``iban``, liess dieselbe
+    Nummer aber ueber ``name`` passieren. Die Maskierung gehoert deshalb an
+    die Grenze, nicht nur an eine der Quellen (Bestandszeilen lecken sonst
+    weiter).
+    """
+    if not text:
+        return text
+    return _IBAN_IN_TEXT.sub(lambda m: mask_iban(m.group()), text)
+
+
 def to_transit_row(account: dict) -> dict:
     """Project one ``bank_accounts`` row to the allowed transit fields.
 
@@ -72,7 +90,7 @@ def to_transit_row(account: dict) -> dict:
     cannot leak through -- it was never named here.
     """
     return {
-        "name": account.get("name"),
+        "name": mask_ibans_in_text(account.get("name")),
         "account_type": account.get("account_type"),
         "balance": account.get("balance"),
         "balance_date": account.get("balance_date"),
@@ -163,7 +181,8 @@ class AccountStore:
                     conn.execute(
                         "INSERT INTO bank_accounts (name, iban, balance, balance_date) "
                         "VALUES (?,?,?,?)",
-                        (f"CAMT-Import {iban_norm}", iban_norm, bal["balance"], bal.get("date")),
+                        (f"CAMT-Import {mask_iban(iban_norm)}", iban_norm,
+                         bal["balance"], bal.get("date")),
                     )
                     lines.append(
                         f"[OK] Konto {iban_norm} neu angelegt, Saldo "
