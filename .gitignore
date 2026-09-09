@@ -1,14 +1,35 @@
-# Python
+# Python bytecode & packaging
 __pycache__/
 *.pyc
 *.egg-info/
 build/
 dist/
 .venv/
+wheelhouse/
+.wheel-smoke/
+
+# Test, linter & coverage caches
 .pytest_cache/
 .ruff_cache/
+.coverage
+coverage/
+htmlcov/
 
-# lokale Daten und Geheimnisse
+# Multi-Host-Synchronisationskonflikte
+*-conflict-*
+*.sync-conflict-*
+*.conflict
+*-CONFLIT-*
+*.sync-temp-*
+
+# Multi-Agent Locks
+LOCK
+LOCK.*
+*.lock
+LOCK*.txt
+LOCK.permissions.json
+
+# Lokale Daten, Datenbanken & Geheimnisse
 *.db
 *.db-wal
 *.db-shm
@@ -16,14 +37,17 @@ dist/
 .env
 *.local.json
 config.local.*
-
-# Locks, Notizen, Archiv
-LOCK*.txt
-LOCK.permissions.json
+PRIVATE.txt
 _archive/
 _intern/
 _codex/
-PRIVATE.txt
+
+# Editor-, Backup- & Log-Dateien
+*.tmp
+*.bak
+*.swp
+*~
+*.log
 
 # IDE
 .vscode/

@@ -1,12 +1,38 @@
 # Changelog
 
-## Unreleased
+## [0.1.1] - 2026-09-09
+
+### Technical Hygiene & Domain Refinements (Pfad A)
 
 - `AccountStore.transit_projection()` now selects only the five source columns needed for the
   public allowlisted result instead of loading every `bank_accounts` column through
   `list_accounts()`.
 - CAMT warning messages now use genuine German umlauts (`unverändert`, `übersprungen`), with exact
   UTF-8 result strings covered by tests and documented in both README variants.
+- Version synchronized to `0.1.1` across `pyproject.toml`, `ellmos-module.v2.json`,
+  `src/accounts_core/__init__.py`, `llms.txt`, `CHANGELOG.md`, and README documentation.
+- Standardized `pyproject.toml` with PEP 621 ecosystem URLs (`Homepage`, `Repository`,
+  `Documentation`, `Issues`, `Changelog`, `Security`, `Parent Organization`, `Umbrella Ecosystem`),
+  OS classifiers (`Windows`, `Linux`, `macOS`), and pytest configuration (`pythonpath = ["src", "."]`,
+  `addopts = "-ra -v"`).
+- Hardened `.gitignore` against multi-host synchronization conflicts (`*-conflict-*`,
+  `*.sync-conflict-*`, `*.conflict`, `*-CONFLIT-*`, `*.sync-temp-*`), multi-agent locks (`LOCK`,
+  `LOCK.*`, `*.lock`, `LOCK*.txt`, `LOCK.permissions.json`), test/coverage caches (`.pytest_cache/`,
+  `.ruff_cache/`, `.coverage`, `coverage/`, `htmlcov/`, `wheelhouse/`, `.wheel-smoke/`), and
+  temporary editor artifacts (`*.tmp`, `*.bak`, `*.swp`, `*~`, `*.log`).
+- Created multi-OS GitHub Actions CI workflow (`.github/workflows/ci.yml`) covering `ubuntu-latest`,
+  `windows-latest`, and `macos-latest` across Python 3.10–3.13 with concurrency control
+  (`cancel-in-progress: true`), bytecode compilation gate (`compileall -q src tests`), ruff linting,
+  and verbose pytest execution.
+- Added bilingual security policy (`SECURITY.md`) with supported version matrix (`0.1.x`),
+  binding 48-hour response SLA, 5-business-days triage commitment, official contacts
+  (`security@open-bricks.org`, `security@ellmos.ai`, `support@lukasgeiger.com`, `lukas@open-bricks.org`),
+  GitHub Security Advisories link, and Local-First / Zero-Egress scope definition.
+- Added machine-readable AI context in `llms.txt` and synchronized Shields.io status badges across
+  both `README.md` and `README_de.md`.
+- Implemented automated contract test suite in `tests/test_metadata.py` covering metadata structure,
+  PEP 621 URLs, pytest configuration, gitignore hygiene patterns, CI workflow integrity, security SLAs,
+  badge parity, and version consistency.
 
 ## 0.1.0 - 2026-09-03
 

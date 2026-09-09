@@ -1,0 +1,43 @@
+# accounts-core
+
+> Neutral domain core for the account and bank-balance domain: bank account CRUD, CAMT balance import, and privacy-safe read-only transit projection.
+
+## Last-checked: 2026-09-09
+- Version: 0.1.1
+- Tests: 26 automated tests (100% green)
+- Architecture: 100% Local-First | Zero-Egress | Single Data Canon | User-Mode Non-Elevation
+- Parent Organization: ellmos-ai
+- Umbrella Ecosystem: open-bricks
+
+## Start here
+
+- `README.md`: English contract, API usage, and privacy allowlist.
+- `README_de.md`: German contract, API usage, and privacy allowlist.
+- `src/accounts_core/accounts.py`: AccountStore, transit projection, and CAMT balance persistence.
+- `src/accounts_core/__init__.py`: Public API exports and module version.
+- `tests/test_accounts.py`: Behavioural tests against the exact BACH bank_accounts DDL.
+- `tests/test_metadata.py`: Automated metadata, security policy, CI integrity, and documentation parity contract tests.
+
+## Canonical Links
+
+- `SECURITY.md`: Bilingual security policy with 48h response SLA and 5-day triage commitment.
+- `pyproject.toml`: PEP 621 package metadata and ecosystem URLs.
+- `CHANGELOG.md`: Release notes and change history.
+- `ellmos-module.v2.json`: Ellmos module registration manifest.
+
+## Contracts
+
+- Operates directly on the consumer's SQLite database (`bank_accounts` table); creates no tables and maintains no separate state.
+- Transit projection uses an explicit allowlist (`name`, `account_type`, `balance`, `balance_date`, `iban_masked`), never a denylist.
+- Bank identifiers (account number, BIC, bank name, holder name) never leave the module through the transit projection.
+- CAMT balance persistence expects pre-parsed dictionaries; XML parsing is externalized to the consumer.
+- 100% offline, zero network egress, unprivileged user mode (RunAsInvoker).
+- Repository visibility is private until an authoritative owner decision changes it.
+
+## Commands
+
+```bash
+pytest -ra -v
+python -m ruff check src tests
+python -m compileall -q src tests
+```
