@@ -13,6 +13,7 @@ from .accounts import (
     mask_iban,
     to_transit_row,
 )
+from .transit_publisher import publish_transit_projection
 
 __version__ = "0.1.0"
 __all__ = [
@@ -22,5 +23,6 @@ __all__ = [
     "default_db_path",
     "mask_iban",
     "to_transit_row",
+    "publish_transit_projection",
     "__version__",
 ]
