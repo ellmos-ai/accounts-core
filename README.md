@@ -77,6 +77,25 @@ store.transit_projection()
 #      "balance_date": "2026-09-01", "iban_masked": "*"*18 + "3000"}]
 ```
 
+Wave 3 publishes that same allowlist as a separate, closed SQLite file for
+`sqlite-transit-sync` and OCEAN. The source database is opened read-only; the
+source, projection, and publisher checkpoint must be three distinct paths.
+
+```python
+from accounts_core import publish_transit_projection
+
+publish_transit_projection(
+    "/path/to/bach.db",
+    "/path/to/transit/accounts.sqlite",
+    "/path/to/state/accounts-publisher.json",
+    publisher_instance="bach-primary",
+)
+```
+
+The output implements `org.ellmos.accounts.balance-projection` v1.0.0. It is a
+complete replacement snapshot: consumers verify it, then replace their prior
+read-only view. No source id or unmasked bank identifier is written.
+
 `persist_camt_balances()` returns UTF-8 German result messages with genuine umlauts, such as
 `unverändert` and `übersprungen`.
 

@@ -4,6 +4,11 @@
 
 ### Technical Hygiene & Domain Refinements (Pfad A)
 
+- Added the application-owned `accounts-core` publisher for the versioned
+  `org.ellmos.accounts.balance-projection` read-only SQLite contract. It opens
+  the BACH source database read-only, writes a separate complete snapshot
+  atomically, emits only the five existing transit allowlist fields, and uses
+  the source id only as salted hash input.
 - `AccountStore.transit_projection()` now selects only the five source columns needed for the
   public allowlisted result instead of loading every `bank_accounts` column through
   `list_accounts()`.
