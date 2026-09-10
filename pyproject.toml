@@ -21,7 +21,20 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Operating System :: OS Independent",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: MacOS",
 ]
+
+[project.urls]
+Homepage = "https://github.com/ellmos-ai/accounts-core"
+Repository = "https://github.com/ellmos-ai/accounts-core"
+Documentation = "https://github.com/ellmos-ai/accounts-core#readme"
+Issues = "https://github.com/ellmos-ai/accounts-core/issues"
+Changelog = "https://github.com/ellmos-ai/accounts-core/blob/main/CHANGELOG.md"
+Security = "https://github.com/ellmos-ai/accounts-core/blob/main/SECURITY.md"
+"Parent Organization" = "https://github.com/ellmos-ai"
+"Umbrella Ecosystem" = "https://github.com/open-bricks"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.5"]
@@ -31,7 +44,8 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
+addopts = "-ra -v"
 
 [tool.ruff]
 line-length = 120

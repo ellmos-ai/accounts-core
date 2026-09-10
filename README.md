@@ -1,6 +1,21 @@
 # accounts-core
 
-*[Deutsch](README_de.md)*
+[English](README.md) | [Deutsch](README_de.md)
+
+<p align="center">
+  <a href="pyproject.toml"><img src="https://img.shields.io/badge/version-0.1.1-blue.svg" alt="Version 0.1.1"></a>
+  <a href="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml"><img src="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="tests/"><img src="https://img.shields.io/badge/tests-26%20passed%20%7C%20100%25%20green-brightgreen.svg" alt="Tests"></a>
+  <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg" alt="Python"></a>
+  <a href="pyproject.toml"><img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg" alt="Platform"></a>
+  <a href="SECURITY.md"><img src="https://img.shields.io/badge/privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg" alt="Local-First Zero-Egress"></a>
+  <a href="SECURITY.md"><img src="https://img.shields.io/badge/security%20SLA-48h%20response%20%7C%205d%20triage-blue.svg" alt="Security SLA"></a>
+  <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/code%20style-ruff-000000.svg" alt="Code style: ruff"></a>
+  <a href="https://github.com/ellmos-ai"><img src="https://img.shields.io/badge/ecosystem-ellmos--ai-informational.svg" alt="Ecosystem ellmos-ai"></a>
+  <a href="https://github.com/open-bricks"><img src="https://img.shields.io/badge/umbrella-open--bricks-informational.svg" alt="Umbrella open-bricks"></a>
+  <a href="llms.txt"><img src="https://img.shields.io/badge/LLM-llms.txt-blueviolet.svg" alt="LLM Context"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
+</p>
 
 Neutral domain core for the account/bank-balance domain. Wave 1 ships bank account CRUD,
 CAMT balance import, and a **privacy-safe read-only transit projection** for other consumers
@@ -94,15 +109,20 @@ projection -- see the allowlist section above.
 
 ```
 src/accounts_core/accounts.py    AccountStore, transit projection, CAMT balance persistence
+src/accounts_core/__init__.py    Public module exports and package version
 tests/test_accounts.py           behaviour against the exact BACH bank_accounts DDL
+tests/test_metadata.py           contract tests for metadata, security SLAs, CI and parity
+SECURITY.md                      bilingual security policy with 48h response SLA & 5d triage
+llms.txt                         machine-readable LLM context document
 ellmos-module.v2.json            module manifest for the ellmos module catalog
 ```
 
 ## Development
 
 ```bash
-python -m pytest -q
+pytest -ra -v
 python -m ruff check src tests
+python -m compileall -q src tests
 ```
 
 ## License
