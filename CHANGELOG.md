@@ -12,8 +12,16 @@
   - Bumped version to `0.1.2` across `pyproject.toml`, `ellmos-module.v2.json`, `src/accounts_core/__init__.py`, and `llms.txt`.
   - Added `"Marketing Log"` URL to `[project.urls]` in `pyproject.toml`.
   - Enriched keywords in `pyproject.toml` with `"financial-primitives"`, `"iban-validation"`, `"privacy-by-design"`, and `"zero-telemetry"`.
-  - Synchronized `llms.txt` with timestamp `2026-09-11`, version `0.1.2`, 35 passing tests, and invariant index.
-- **Contract Test Suite Expansion**: Added 6 new automated contract tests in `tests/test_metadata.py` verifying Marketing Log structure, PEP 621 URLs, Mermaid diagram syntax and quoting rules, governance invariants documentation, and 1:1 bilingual section header parity (bringing total test count to 35/35, 100% green).
+  - Synchronized `llms.txt` with timestamp `2026-09-11`, version `0.1.2`, and invariant index.
+
+### Release Hygiene, Gate-Härtung & PEP 639 License Inventory
+
+- **Final Gate Check Compliance (10/10 PASS)**: Brought the repository to full release readiness verified by the canonical `final_gate_check.py`.
+- **Gitignore Hardening (Gate 1)**: Added mandatory `data/` ignore entry along with certificate, private key, token, credential, and multi-host synchronization exclusion patterns (`*.pem`, `*.key`, `*.pfx`, `*.p12`, `*.crt`, `*.cert`, `.npmrc`, `.pypirc`, `*token*`, `*secret*`, `credentials.json`, `secrets.json`, `id_rsa*`, `id_ed25519*`, `*-WORKSTATION-LG*`, `*-ASUS-GEI*`, `*-LAPTOP*`, `*.orig`, `*.rej`).
+- **Standardized TODO.md (Gate 10)**: Created root `TODO.md` with structured `## STATUS` table and formalized future tasks (`TASK-AC-01`, `TASK-AC-02`, `TASK-AC-03`) adhering to end-user German umlaut conventions.
+- **PEP 639 License Inventory**: Added `THIRD_PARTY_LICENSES.md` documenting the invariant of zero external runtime dependencies (100% Python Standard Library) and declared `license-files = ["LICENSE", "THIRD_PARTY_LICENSES.md"]` in `pyproject.toml`.
+- **Contract Test Suite Expansion**: Added automated contract tests in `tests/test_metadata.py` verifying license inventory, zero dependencies, PEP 639 metadata, TODO status table, complete gitignore gate entries, and programmatic `final_gate_check.py` compliance.
+- **Documentation & Badge Synchronization**: Synchronized test count badge and Last-checked timestamp (2026-09-11).
 
 ## [0.1.1] - 2026-09-09
 

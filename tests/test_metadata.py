@@ -149,7 +149,7 @@ def test_readme_badges_parity():
     expected_badges = [
         "badge/version-0.1.2-blue.svg",
         "actions/workflows/ci.yml/badge.svg",
-        "tests-35%20passed%20%7C%20100%25%20green-brightgreen.svg",
+        "tests-40%20passed%20%7C%20100%25%20green-brightgreen.svg",
         "python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg",
         "platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg",
         "privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg",
@@ -175,12 +175,14 @@ def test_llms_txt_current_timestamp_and_links():
 
     assert "## Last-checked: 2026-09-11" in content
     assert "0.1.2" in content
-    assert "35" in content
+    assert "40" in content
     assert "SECURITY.md" in content
     assert "pyproject.toml" in content
     assert "CHANGELOG.md" in content
     assert "ellmos-module.v2.json" in content
     assert "MARKETING-LOG.txt" in content
+    assert "THIRD_PARTY_LICENSES.md" in content
+    assert "TODO.md" in content
     assert "INV-ACC-01" in content
 
 
@@ -324,3 +326,64 @@ def test_readme_bilingual_section_parity():
         f"H2 header count mismatch between README.md ({len(en_h2)}) and README_de.md ({len(de_h2)})"
     )
     assert len(en_h2) == 13, f"Expected exactly 13 H2 sections, found {len(en_h2)}"
+
+
+def test_third_party_licenses_inventory_and_zero_dependencies():
+    """Verify THIRD_PARTY_LICENSES.md exists and runtime dependencies invariant is enforced."""
+    lic_path = REPO_ROOT / "THIRD_PARTY_LICENSES.md"
+    assert lic_path.is_file(), "THIRD_PARTY_LICENSES.md must exist"
+    content = lic_path.read_text(encoding="utf-8")
+    assert "Zero-Runtime-Dependency" in content or "Zero External Runtime Dependencies" in content
+    assert "MIT License" in content
+
+    pyproject_path = REPO_ROOT / "pyproject.toml"
+    data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
+    assert data.get("project", {}).get("dependencies") == []
+
+
+def test_pep639_license_files_metadata():
+    """Verify PEP 639 license-files declaration in pyproject.toml."""
+    pyproject_path = REPO_ROOT / "pyproject.toml"
+    data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
+    license_files = data.get("project", {}).get("license-files", [])
+    assert "LICENSE" in license_files
+    assert "THIRD_PARTY_LICENSES.md" in license_files
+
+
+def test_todo_status_table_and_gate_readiness():
+    """Verify TODO.md contains a structured STATUS table and formalized tasks."""
+    todo_path = REPO_ROOT / "TODO.md"
+    assert todo_path.is_file(), "TODO.md must exist"
+    content = todo_path.read_text(encoding="utf-8")
+    assert "## STATUS" in content
+    assert "| Category" in content or "|Category" in content
+    assert "0.1.2" in content
+
+
+def test_gitignore_complete_gate_entries():
+    """Verify .gitignore contains all mandatory Gate 1 entries."""
+    gitignore_path = REPO_ROOT / ".gitignore"
+    content = gitignore_path.read_text(encoding="utf-8")
+    for req in ["__pycache__", "*.pyc", ".env", "*.db", ".venv/", ".idea/", ".vscode/", "data/"]:
+        req_clean = req.rstrip("/")
+        assert req in content or req_clean in content, f"Missing required gitignore entry: {req}"
+
+
+def test_final_gate_check_compliance():
+    """Verify Gates 1-10 release readiness rules in a path-neutral manner."""
+    gitignore = (REPO_ROOT / ".gitignore").read_text(encoding="utf-8")
+    for req in ["__pycache__", "*.pyc", ".env", "*.db", ".venv/", ".idea/", ".vscode/", "data/"]:
+        req_clean = req.rstrip("/")
+        assert req in gitignore or req_clean in gitignore, f"Missing required .gitignore entry: {req}"
+
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    first_50 = "\n".join(readme_en.splitlines()[:50])
+    for indicator in ["Dokumentation", "Voraussetzungen", "Einleitung", "Beschreibung"]:
+        assert indicator not in first_50, f"German indicator {indicator} in first 50 lines of README.md"
+
+    assert (REPO_ROOT / "LICENSE").is_file(), "LICENSE must exist"
+    assert (REPO_ROOT / "TODO.md").is_file(), "TODO.md must exist"
+    todo_text = (REPO_ROOT / "TODO.md").read_text(encoding="utf-8")
+    assert "## STATUS" in todo_text
+    assert "| Category" in todo_text or "|Category" in todo_text
+

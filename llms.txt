@@ -4,7 +4,7 @@
 
 ## Last-checked: 2026-09-11
 - Version: 0.1.2
-- Tests: 35 automated tests (100% green)
+- Tests: 40 automated tests (100% green)
 - Architecture: 100% Local-First | Zero-Egress | Single Data Canon | User-Mode Non-Elevation
 - Parent Organization: ellmos-ai
 - Umbrella Ecosystem: open-bricks
@@ -26,6 +26,8 @@
 - `CHANGELOG.md`: Release notes and change history.
 - `ellmos-module.v2.json`: Ellmos module registration manifest.
 - `MARKETING-LOG.txt`: Marketing and discoverability log with integration blueprints.
+- `THIRD_PARTY_LICENSES.md`: Software inventory certifying zero external runtime dependencies and PEP 639 metadata.
+- `TODO.md`: Standardized task tracker with STATUS table and release gate readiness.
 
 ## Contracts & Governance Invariants
 

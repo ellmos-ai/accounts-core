@@ -5,7 +5,7 @@
 <p align="center">
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/version-0.1.2-blue.svg" alt="Version 0.1.2"></a>
   <a href="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml"><img src="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="tests/"><img src="https://img.shields.io/badge/tests-35%20passed%20%7C%20100%25%20green-brightgreen.svg" alt="Tests"></a>
+  <a href="tests/"><img src="https://img.shields.io/badge/tests-40%20passed%20%7C%20100%25%20green-brightgreen.svg" alt="Tests"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg" alt="Python"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg" alt="Platform"></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg" alt="Local-First Zero-Egress"></a>
@@ -235,6 +235,8 @@ src/accounts_core/__init__.py    Öffentliche API-Exporte und Modulversion
 tests/test_accounts.py           Verhalten gegen die exakte BACH-bank_accounts-DDL
 tests/test_metadata.py           Vertragstests für Metadaten, Security SLAs, CI und Parität
 MARKETING-LOG.txt                Personas, Discoverability-Keywords und Integrations-Blueprints
+THIRD_PARTY_LICENSES.md         Pure stdlib Zero-Runtime-Dependency-Inventar (PEP 639)
+TODO.md                          Standardisierter Aufgaben-Tracker mit STATUS-Tabelle & Release-Gates
 SECURITY.md                      Zweisprachige Sicherheitsrichtlinie mit 48h-SLA & 5-Tage-Triage
 llms.txt                         Maschinenlesbares LLM-Kontextdokument
 ellmos-module.v2.json            Modul-Manifest für den ellmos-Modulkatalog
@@ -250,4 +252,4 @@ python -m compileall -q src tests
 
 ## Lizenz
 
-MIT. Kanonisches Repository: `ellmos-ai/accounts-core` (privat).
+MIT-Lizenz. Siehe [LICENSE](LICENSE) und [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). Kanonisches Repository: `ellmos-ai/accounts-core` (privat).
