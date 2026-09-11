@@ -1,0 +1,107 @@
+# MARKETING-LOG — accounts-core
+
+## Metadata
+- **Repository**: `ellmos-ai/accounts-core`
+- **Canonical Path**: `C:\_Local_DEV\repos\accounts-core`
+- **Default Branch**: `main`
+- **Current Version**: `0.1.2`
+- **License**: MIT
+- **Architecture**: Domain-neutral, zero network egress, stdlib-only core library
+
+---
+
+## 1. Target Personas & Audiences
+
+### Persona 1: FinTech & Local Accounting Engineers
+- **Need**: Lightweight, robust domain primitives for bank accounts, checking accounts, credit cards, IBAN normalization, and balance tracking.
+- **Value Prop**: Zero heavy dependencies, pure standard library, robust SQLite integration that respects existing schemas without creating or owning tables.
+
+### Persona 2: Privacy-by-Design & Local-First Architects
+- **Need**: Sharing account information with UI components, caching layers, or external services without leaking sensitive PII or full account identifiers.
+- **Value Prop**: Read-only transit projection (`publish_accounts_transit`) with strict 5-field allowlist and guaranteed IBAN masking (`****1234`). Source database opened in immutable read-only mode (`mode=ro`).
+
+### Persona 3: Multi-Source Banking Data Integrators
+- **Need**: Ingesting bank balance updates from CAMT XML files (camt.052, camt.053) without duplicate records or destructive overwrites.
+- **Value Prop**: Idempotent CAMT parser and updater that matches accounts by normalized IBAN, reporting genuine German status feedback and balance diffs.
+
+### Persona 4: Autonomous AI Agent Framework Builders
+- **Need**: Safe, predictable tools for agentic systems (e.g. Claude Code, Codex, Antigravity, MCP servers) to query financial balances with deterministic error handling and zero risk of network egress or data corruption.
+- **Value Prop**: Pure local-first execution, typed exceptions, atomic file publishing, and zero external telemetry.
+
+---
+
+## 2. Discoverability & SEO Keywords
+- `bank-accounts`, `iban-validation`, `camt-parser`, `camt053`, `financial-primitives`, `sqlite-transit`, `privacy-by-design`, `local-first`, `zero-telemetry`, `python-stdlib`, `ellmos-ai`, `open-bricks`
+
+---
+
+## 3. Directory & Ecosystem Recommendations
+
+1. **Awesome Python (`awesome-python`)**:
+   - Section: *Finance & Accounting* or *Database Tools*.
+   - Pitch: *accounts-core: Pure Python domain core for bank accounts, CAMT balance ingestion, and privacy-safe SQLite transit projection.*
+2. **Awesome Privacy (`awesome-privacy`)**:
+   - Section: *Data Minimization & Local-First Storage*.
+   - Pitch: *Deterministic allowlist transit publisher with guaranteed IBAN masking and zero network egress.*
+3. **LibHunt Python (`python.libhunt.com`)**:
+   - Category: *Financial Libraries / Account Management*.
+4. **PyPI / Wheel Distribution**:
+   - Standard PEP 621 metadata with comprehensive classifiers (`Topic :: Office/Business :: Financial :: Accounting`, `License :: OSI Approved :: MIT License`, `Operating System :: OS Independent`).
+
+---
+
+## 4. Integration Blueprints
+
+### Blueprint 1: Standard Account Lifecycle & Persistence
+```python
+from accounts_core import Account, AccountType, AccountRepository
+
+# Initialize repository pointing to local application SQLite database
+repo = AccountRepository("var/finance.db")
+
+# Create and store new account
+acc = Account(
+    account_id="acc-001",
+    name="Girokonto Hauptkonto",
+    account_type=AccountType.CHECKING,
+    balance=4250.75,
+    iban="DE89370400440532013000",
+)
+repo.save(acc)
+
+# Retrieve account
+loaded = repo.get_by_id("acc-001")
+assert loaded.iban_masked.endswith("3000")
+```
+
+### Blueprint 2: Idempotent CAMT Balance Ingestion
+```python
+from accounts_core import CAMTParser, AccountRepository
+
+repo = AccountRepository("var/finance.db")
+parser = CAMTParser()
+
+# Ingest bank XML statement
+updates = parser.parse_file("statements/camt053_2026_09.xml")
+for update in updates:
+    acc = repo.get_by_iban(update.iban)
+    if acc:
+        acc.balance = update.balance
+        acc.balance_date = update.statement_date
+        repo.save(acc)
+```
+
+### Blueprint 3: Privacy-Preserving Transit Projection for Agents / UI
+```python
+from accounts_core import publish_accounts_transit
+
+# Safely project accounts into a public/transit snapshot
+# Invariant: source DB is opened mode=ro, only 5 allowlisted fields are exported,
+# raw IBANs are strictly masked.
+result = publish_accounts_transit(
+    source_db="var/finance.db",
+    dest_path="var/transit/accounts_snapshot.json",
+    checkpoint_path="var/transit/accounts.checkpoint",
+)
+print(f"Published {result['count']} accounts securely.")
+```

@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "accounts-core"
-version = "0.1.1"
+version = "0.1.2"
 description = "Neutral domain core for the account/bank-balance domain: bank account CRUD, CAMT balance import, and a privacy-safe read-only transit projection"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [{name = "Lukas Geiger"}]
 dependencies = []
-keywords = ["accounts", "bank-accounts", "camt", "sqlite", "local-first", "bach", "ocean"]
+keywords = ["accounts", "bank-accounts", "camt", "sqlite", "local-first", "bach", "ocean", "financial-primitives", "iban-validation", "privacy-by-design", "zero-telemetry"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -33,6 +33,7 @@ Documentation = "https://github.com/ellmos-ai/accounts-core#readme"
 Issues = "https://github.com/ellmos-ai/accounts-core/issues"
 Changelog = "https://github.com/ellmos-ai/accounts-core/blob/main/CHANGELOG.md"
 Security = "https://github.com/ellmos-ai/accounts-core/blob/main/SECURITY.md"
+"Marketing Log" = "https://github.com/ellmos-ai/accounts-core/blob/main/MARKETING-LOG.txt"
 "Parent Organization" = "https://github.com/ellmos-ai"
 "Umbrella Ecosystem" = "https://github.com/open-bricks"
 

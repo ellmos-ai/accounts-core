@@ -15,7 +15,7 @@ from .accounts import (
 )
 from .transit_publisher import publish_transit_projection
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __all__ = [
     "DB_ENV",
     "TRANSIT_FIELDS",

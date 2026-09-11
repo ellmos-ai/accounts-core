@@ -19,7 +19,7 @@ def test_pyproject_structure_and_pep621_urls():
 
     project = data.get("project", {})
     assert project.get("name") == "accounts-core"
-    assert project.get("version") == "0.1.1"
+    assert project.get("version") == "0.1.2"
     assert project.get("requires-python") == ">=3.10"
     assert project.get("license") == "MIT"
 
@@ -38,6 +38,7 @@ def test_pyproject_structure_and_pep621_urls():
     assert urls.get("Issues") == "https://github.com/ellmos-ai/accounts-core/issues"
     assert urls.get("Changelog") == "https://github.com/ellmos-ai/accounts-core/blob/main/CHANGELOG.md"
     assert urls.get("Security") == "https://github.com/ellmos-ai/accounts-core/blob/main/SECURITY.md"
+    assert urls.get("Marketing Log") == "https://github.com/ellmos-ai/accounts-core/blob/main/MARKETING-LOG.txt"
     assert urls.get("Parent Organization") == "https://github.com/ellmos-ai"
     assert urls.get("Umbrella Ecosystem") == "https://github.com/open-bricks"
 
@@ -146,9 +147,9 @@ def test_readme_badges_parity():
     de_text = readme_de.read_text(encoding="utf-8")
 
     expected_badges = [
-        "badge/version-0.1.1-blue.svg",
+        "badge/version-0.1.2-blue.svg",
         "actions/workflows/ci.yml/badge.svg",
-        "tests-26%20passed%20%7C%20100%25%20green-brightgreen.svg",
+        "tests-35%20passed%20%7C%20100%25%20green-brightgreen.svg",
         "python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg",
         "platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg",
         "privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg",
@@ -156,6 +157,7 @@ def test_readme_badges_parity():
         "code%20style-ruff-000000.svg",
         "ecosystem-ellmos--ai-informational.svg",
         "umbrella-open--bricks-informational.svg",
+        "marketing%20log-blueprints-informational.svg",
         "LLM-llms.txt-blueviolet.svg",
         "license-MIT-green.svg",
     ]
@@ -171,40 +173,154 @@ def test_llms_txt_current_timestamp_and_links():
     assert llms_path.is_file(), "llms.txt must exist"
     content = llms_path.read_text(encoding="utf-8")
 
-    assert "## Last-checked: 2026-09-09" in content
-    assert "0.1.1" in content
-    assert "26" in content
+    assert "## Last-checked: 2026-09-11" in content
+    assert "0.1.2" in content
+    assert "35" in content
     assert "SECURITY.md" in content
     assert "pyproject.toml" in content
     assert "CHANGELOG.md" in content
     assert "ellmos-module.v2.json" in content
+    assert "MARKETING-LOG.txt" in content
+    assert "INV-ACC-01" in content
 
 
 def test_changelog_release_entry():
-    """Verify CHANGELOG.md contains the 0.1.1 release entry."""
+    """Verify CHANGELOG.md contains the 0.1.2 and 0.1.1 release entries."""
     changelog_path = REPO_ROOT / "CHANGELOG.md"
     assert changelog_path.is_file(), "CHANGELOG.md must exist"
     content = changelog_path.read_text(encoding="utf-8")
 
+    assert "## [0.1.2] - 2026-09-11" in content
     assert "## [0.1.1] - 2026-09-09" in content
 
 
 def test_version_parity_across_artifacts():
-    """Verify version 0.1.1 is consistent across pyproject.toml, ellmos-module,
+    """Verify version 0.1.2 is consistent across pyproject.toml, ellmos-module,
     __init__.py, and llms.txt."""
     pyproject_path = REPO_ROOT / "pyproject.toml"
     pyproject_data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
-    assert pyproject_data["project"]["version"] == "0.1.1"
+    assert pyproject_data["project"]["version"] == "0.1.2"
 
     import json
     module_path = REPO_ROOT / "ellmos-module.v2.json"
     module_data = json.loads(module_path.read_text(encoding="utf-8"))
-    assert module_data["version"] == "0.1.1"
+    assert module_data["version"] == "0.1.2"
 
     init_path = REPO_ROOT / "src" / "accounts_core" / "__init__.py"
     init_content = init_path.read_text(encoding="utf-8")
-    assert '__version__ = "0.1.1"' in init_content
+    assert '__version__ = "0.1.2"' in init_content
 
     llms_path = REPO_ROOT / "llms.txt"
     llms_content = llms_path.read_text(encoding="utf-8")
-    assert "- Version: 0.1.1" in llms_content
+    assert "- Version: 0.1.2" in llms_content
+
+
+def test_marketing_log_structure_and_blueprints():
+    """Verify MARKETING-LOG.txt exists, contains target personas, keywords,
+    directory recommendations, and 3 integration blueprints."""
+    mkt_path = REPO_ROOT / "MARKETING-LOG.txt"
+    assert mkt_path.is_file(), "MARKETING-LOG.txt must exist"
+    content = mkt_path.read_text(encoding="utf-8")
+
+    assert "## 1. Target Personas & Audiences" in content
+    assert "FinTech & Local Accounting Engineers" in content
+    assert "Privacy-by-Design & Local-First Architects" in content
+    assert "Multi-Source Banking Data Integrators" in content
+    assert "Autonomous AI Agent Framework Builders" in content
+
+    assert "## 2. Discoverability & SEO Keywords" in content
+    assert "bank-accounts" in content
+    assert "iban-validation" in content
+    assert "camt-parser" in content
+
+    assert "## 3. Directory & Ecosystem Recommendations" in content
+    assert "Awesome Python" in content
+    assert "Awesome Privacy" in content
+
+    assert "## 4. Integration Blueprints" in content
+    assert "### Blueprint 1: Standard Account Lifecycle & Persistence" in content
+    assert "### Blueprint 2: Idempotent CAMT Balance Ingestion" in content
+    assert "### Blueprint 3: Privacy-Preserving Transit Projection for Agents / UI" in content
+
+
+def test_readme_flowchart_mermaid_syntax():
+    """Verify both READMEs include flowchart TD with valid quoting per HOOK-BANNER-ASSET-01."""
+    import re
+    edge_re = re.compile(r"((?:--+>|<-+>|-\.-+>|==+>)\|)([^|\r\n]+)(\|)")
+
+    for fname in ("README.md", "README_de.md"):
+        path = REPO_ROOT / fname
+        assert path.is_file(), f"{fname} must exist"
+        text = path.read_text(encoding="utf-8")
+        assert "```mermaid\nflowchart TD" in text, f"{fname} must contain flowchart TD"
+
+        # Check all edge labels with parentheses or special chars are double-quoted
+        for match in edge_re.finditer(text):
+            label = match.group(2).strip()
+            if any(c in label for c in "()[]{}"):
+                assert label.startswith('"') and label.endswith('"'), (
+                    f"Edge label in {fname} has unquoted special chars: {label}"
+                )
+
+
+def test_readme_sequencediagram_mermaid_syntax():
+    """Verify both READMEs include sequenceDiagram with autonumber and valid syntax."""
+    for fname in ("README.md", "README_de.md"):
+        path = REPO_ROOT / fname
+        assert path.is_file(), f"{fname} must exist"
+        text = path.read_text(encoding="utf-8")
+        assert "```mermaid\nsequenceDiagram" in text, f"{fname} must contain sequenceDiagram"
+        assert "autonumber" in text, f"{fname} sequenceDiagram must contain autonumber"
+        assert "publish_transit_projection" in text, f"{fname} sequenceDiagram must detail transit projection"
+
+
+def test_governance_invariants_documented():
+    """Verify all 8 governance invariants (INV-ACC-01 to INV-ACC-08) are documented in both READMEs."""
+    expected_invariants = [
+        "INV-ACC-01",
+        "INV-ACC-02",
+        "INV-ACC-03",
+        "INV-ACC-04",
+        "INV-ACC-05",
+        "INV-ACC-06",
+        "INV-ACC-07",
+        "INV-ACC-08",
+    ]
+
+    for fname in ("README.md", "README_de.md"):
+        path = REPO_ROOT / fname
+        content = path.read_text(encoding="utf-8")
+        for inv in expected_invariants:
+            assert inv in content, f"Missing invariant {inv} in {fname}"
+
+
+def test_ecosystem_sister_repositories_table():
+    """Verify both READMEs include the ecosystem cross-linking table."""
+    expected_repos = [
+        "bach",
+        "sqlite-transit-sync",
+        "assistant-core",
+        "open-ocean",
+        "report-forge",
+        "open-bricks",
+    ]
+
+    for fname in ("README.md", "README_de.md"):
+        path = REPO_ROOT / fname
+        content = path.read_text(encoding="utf-8")
+        for repo in expected_repos:
+            assert repo in content, f"Missing ecosystem repo {repo} in {fname}"
+
+
+def test_readme_bilingual_section_parity():
+    """Verify 1:1 section header parity between README.md and README_de.md."""
+    en_path = REPO_ROOT / "README.md"
+    de_path = REPO_ROOT / "README_de.md"
+
+    en_h2 = [line.strip() for line in en_path.read_text(encoding="utf-8").splitlines() if line.startswith("## ")]
+    de_h2 = [line.strip() for line in de_path.read_text(encoding="utf-8").splitlines() if line.startswith("## ")]
+
+    assert len(en_h2) == len(de_h2), (
+        f"H2 header count mismatch between README.md ({len(en_h2)}) and README_de.md ({len(de_h2)})"
+    )
+    assert len(en_h2) == 13, f"Expected exactly 13 H2 sections, found {len(en_h2)}"

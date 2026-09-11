@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.2] - 2026-09-11
+
+### Discoverability, Visual Architecture & Bilingual Parity (Pfad B)
+
+- **Interactive Mermaid Flowchart & Sequence Diagram**: Added bilingual `flowchart TD` visual architecture diagrams and `sequenceDiagram` lifecycle walkthroughs with `autonumber` and strictly double-quoted node and edge labels satisfying `HOOK-BANNER-ASSET-01` and passing `_tools/lint_mermaid.py`.
+- **Governance & System Invariants**: Formally codified 8 core system invariants (`INV-ACC-01` through `INV-ACC-08`) covering Zero Database Ownership, Strict 5-Field Allowlist, Masked IBAN Guarantee, Pure Local-First & Zero Egress, Immutable Source Isolation (`mode=ro`), Atomic Snapshot Publishing, Idempotent CAMT Balance Ingestion, and Deterministic Fail-Closed Error Handling.
+- **Local Marketing & Integration Register**: Added `MARKETING-LOG.txt` detailing 4 primary user personas, discoverability keywords, catalog recommendations (Awesome-Python, Awesome-Privacy, LibHunt, PyPI), and 3 end-to-end integration blueprints.
+- **Ecosystem & Sister Repositories Matrix**: Added cross-linking matrix mapping `accounts-core` to `bach`, `sqlite-transit-sync`, `assistant-core`, `open-ocean`, `report-forge`, and `open-bricks`.
+- **Metadata & Discoverability Hardening**:
+  - Bumped version to `0.1.2` across `pyproject.toml`, `ellmos-module.v2.json`, `src/accounts_core/__init__.py`, and `llms.txt`.
+  - Added `"Marketing Log"` URL to `[project.urls]` in `pyproject.toml`.
+  - Enriched keywords in `pyproject.toml` with `"financial-primitives"`, `"iban-validation"`, `"privacy-by-design"`, and `"zero-telemetry"`.
+  - Synchronized `llms.txt` with timestamp `2026-09-11`, version `0.1.2`, 35 passing tests, and invariant index.
+- **Contract Test Suite Expansion**: Added 6 new automated contract tests in `tests/test_metadata.py` verifying Marketing Log structure, PEP 621 URLs, Mermaid diagram syntax and quoting rules, governance invariants documentation, and 1:1 bilingual section header parity (bringing total test count to 35/35, 100% green).
+
 ## [0.1.1] - 2026-09-09
 
 ### Technical Hygiene & Domain Refinements (Pfad A)
