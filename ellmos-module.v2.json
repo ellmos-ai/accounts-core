@@ -1,7 +1,7 @@
 {
   "schema": "ellmos.module.v2",
   "id": "accounts-core",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "display_name": "accounts-core",
   "category": "runtime",
   "kind": "library",

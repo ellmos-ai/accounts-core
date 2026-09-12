@@ -21,6 +21,11 @@ htmlcov/
 *.conflict
 *-CONFLIT-*
 *.sync-temp-*
+* (kopie)*
+* (Kopie)*
+* (copy)*
+* (Copy)*
+*conflicted copy*
 
 # Multi-Agent Locks
 LOCK
@@ -28,6 +33,8 @@ LOCK.*
 *.lock
 LOCK*.txt
 LOCK.permissions.json
+uv.lock
+!package-lock.json
 
 # Lokale Daten, Datenbanken & Geheimnisse
 data/
@@ -60,6 +67,7 @@ id_rsa*
 id_ed25519*
 
 # Multi-Host Host-Tokens & Merge-Reste
+*-WORKSTATION*
 *-WORKSTATION-LG*
 *-ASUS-GEI*
 *-LAPTOP*

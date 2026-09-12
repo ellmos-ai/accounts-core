@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.3] - 2026-09-12
+
+### Technical Hygiene, CI Hardening & Stale Lifecycle (Pfad A)
+
+- **CI Workflow Execution Guardrails**: Added `timeout-minutes: 15` to the test job in `.github/workflows/ci.yml` across Ubuntu, Windows, and macOS test matrices.
+- **Automated Lifecycle Management**: Deployed canonical `.github/workflows/stale.yml` workflow for automated triage and closing of stale issues and pull requests.
+- **Gitignore Multi-Host Defense**: Hardened `.gitignore` with multi-host conflict copy wildcards (`* (kopie)*`, `* (Kopie)*`, `* (copy)*`, `* (Copy)*`, `*conflicted copy*`, `*-WORKSTATION*`, `uv.lock`, `!package-lock.json`).
+- **PEP 621 LLM-Ready Context Endpoint**: Added `"LLM Ready"` URL to `[project.urls]` in `pyproject.toml` pointing directly to raw `llms.txt`.
+- **Ruff Linter Configuration**: Configured explicit `[tool.ruff.lint]` rule selection (`["E4", "E7", "E9", "F", "W", "B", "SIM", "C4", "RUF"]`) and harmonized `__all__` sorting in `src/accounts_core/__init__.py`.
+- **Version Harmonization & Artifact Parity**: Bumped version to `0.1.3` across `pyproject.toml`, `ellmos-module.v2.json`, `src/accounts_core/__init__.py`, `llms.txt`, `TODO.md`, `README.md`, `README_de.md`, and `MARKETING-LOG.txt`.
+- **Contract Test Suite Expansion**: Added automated contract tests in `tests/test_metadata.py` verifying CI timeout guardrail, stale lifecycle workflow existence, PEP 621 LLM-Ready URL, and gitignore conflict patterns.
+
 ## [0.1.2] - 2026-09-11
 
 ### Discoverability, Visual Architecture & Bilingual Parity (Pfad B)

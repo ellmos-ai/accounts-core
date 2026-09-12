@@ -19,7 +19,7 @@ def test_pyproject_structure_and_pep621_urls():
 
     project = data.get("project", {})
     assert project.get("name") == "accounts-core"
-    assert project.get("version") == "0.1.2"
+    assert project.get("version") == "0.1.3"
     assert project.get("requires-python") == ">=3.10"
     assert project.get("license") == "MIT"
 
@@ -39,6 +39,7 @@ def test_pyproject_structure_and_pep621_urls():
     assert urls.get("Changelog") == "https://github.com/ellmos-ai/accounts-core/blob/main/CHANGELOG.md"
     assert urls.get("Security") == "https://github.com/ellmos-ai/accounts-core/blob/main/SECURITY.md"
     assert urls.get("Marketing Log") == "https://github.com/ellmos-ai/accounts-core/blob/main/MARKETING-LOG.txt"
+    assert urls.get("LLM Ready") == "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/llms.txt"
     assert urls.get("Parent Organization") == "https://github.com/ellmos-ai"
     assert urls.get("Umbrella Ecosystem") == "https://github.com/open-bricks"
 
@@ -147,9 +148,9 @@ def test_readme_badges_parity():
     de_text = readme_de.read_text(encoding="utf-8")
 
     expected_badges = [
-        "badge/version-0.1.2-blue.svg",
+        "badge/version-0.1.3-blue.svg",
         "actions/workflows/ci.yml/badge.svg",
-        "tests-40%20passed%20%7C%20100%25%20green-brightgreen.svg",
+        "tests-44%20passed%20%7C%20100%25%20green-brightgreen.svg",
         "python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg",
         "platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg",
         "privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg",
@@ -173,9 +174,9 @@ def test_llms_txt_current_timestamp_and_links():
     assert llms_path.is_file(), "llms.txt must exist"
     content = llms_path.read_text(encoding="utf-8")
 
-    assert "## Last-checked: 2026-09-11" in content
-    assert "0.1.2" in content
-    assert "40" in content
+    assert "## Last-checked: 2026-09-12" in content
+    assert "0.1.3" in content
+    assert "44" in content
     assert "SECURITY.md" in content
     assert "pyproject.toml" in content
     assert "CHANGELOG.md" in content
@@ -187,34 +188,35 @@ def test_llms_txt_current_timestamp_and_links():
 
 
 def test_changelog_release_entry():
-    """Verify CHANGELOG.md contains the 0.1.2 and 0.1.1 release entries."""
+    """Verify CHANGELOG.md contains the 0.1.3, 0.1.2 and 0.1.1 release entries."""
     changelog_path = REPO_ROOT / "CHANGELOG.md"
     assert changelog_path.is_file(), "CHANGELOG.md must exist"
     content = changelog_path.read_text(encoding="utf-8")
 
+    assert "## [0.1.3] - 2026-09-12" in content
     assert "## [0.1.2] - 2026-09-11" in content
     assert "## [0.1.1] - 2026-09-09" in content
 
 
 def test_version_parity_across_artifacts():
-    """Verify version 0.1.2 is consistent across pyproject.toml, ellmos-module,
+    """Verify version 0.1.3 is consistent across pyproject.toml, ellmos-module,
     __init__.py, and llms.txt."""
     pyproject_path = REPO_ROOT / "pyproject.toml"
     pyproject_data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
-    assert pyproject_data["project"]["version"] == "0.1.2"
+    assert pyproject_data["project"]["version"] == "0.1.3"
 
     import json
     module_path = REPO_ROOT / "ellmos-module.v2.json"
     module_data = json.loads(module_path.read_text(encoding="utf-8"))
-    assert module_data["version"] == "0.1.2"
+    assert module_data["version"] == "0.1.3"
 
     init_path = REPO_ROOT / "src" / "accounts_core" / "__init__.py"
     init_content = init_path.read_text(encoding="utf-8")
-    assert '__version__ = "0.1.2"' in init_content
+    assert '__version__ = "0.1.3"' in init_content
 
     llms_path = REPO_ROOT / "llms.txt"
     llms_content = llms_path.read_text(encoding="utf-8")
-    assert "- Version: 0.1.2" in llms_content
+    assert "- Version: 0.1.3" in llms_content
 
 
 def test_marketing_log_structure_and_blueprints():
@@ -357,7 +359,7 @@ def test_todo_status_table_and_gate_readiness():
     content = todo_path.read_text(encoding="utf-8")
     assert "## STATUS" in content
     assert "| Category" in content or "|Category" in content
-    assert "0.1.2" in content
+    assert "0.1.3" in content
 
 
 def test_gitignore_complete_gate_entries():
@@ -386,4 +388,48 @@ def test_final_gate_check_compliance():
     todo_text = (REPO_ROOT / "TODO.md").read_text(encoding="utf-8")
     assert "## STATUS" in todo_text
     assert "| Category" in todo_text or "|Category" in todo_text
+
+
+def test_ci_timeout_minutes_configured():
+    """Verify .github/workflows/ci.yml configures timeout-minutes: 15 on the test matrix."""
+    ci_path = REPO_ROOT / ".github" / "workflows" / "ci.yml"
+    assert ci_path.is_file(), "ci.yml must exist"
+    content = ci_path.read_text(encoding="utf-8")
+    assert "timeout-minutes: 15" in content
+
+
+def test_ci_stale_workflow_present():
+    """Verify .github/workflows/stale.yml exists and configures automated lifecycle."""
+    stale_path = REPO_ROOT / ".github" / "workflows" / "stale.yml"
+    assert stale_path.is_file(), "stale.yml must exist"
+    content = stale_path.read_text(encoding="utf-8")
+    assert "actions/stale@v9" in content or "actions/stale" in content
+    assert "schedule:" in content
+    assert "issues: write" in content
+    assert "pull-requests: write" in content
+
+
+def test_pep621_llm_ready_url_and_ruff_lint():
+    """Verify pyproject.toml defines LLM Ready URL and tool.ruff.lint rules."""
+    pyproject_path = REPO_ROOT / "pyproject.toml"
+    assert pyproject_path.is_file(), "pyproject.toml must exist"
+    data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
+
+    urls = data.get("project", {}).get("urls", {})
+    assert "LLM Ready" in urls
+    assert urls["LLM Ready"] == "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/llms.txt"
+
+    lint = data.get("tool", {}).get("ruff", {}).get("lint", {})
+    assert "select" in lint
+    select_rules = lint.get("select", [])
+    for rule in ["E4", "E7", "E9", "F", "W", "B", "SIM", "C4", "RUF"]:
+        assert rule in select_rules, f"Rule {rule} missing from tool.ruff.lint.select"
+
+
+def test_gitignore_multihost_conflict_patterns():
+    """Verify .gitignore contains multi-host synchronization and lock patterns."""
+    gitignore_path = REPO_ROOT / ".gitignore"
+    content = gitignore_path.read_text(encoding="utf-8")
+    for pattern in ["* (kopie)*", "* (copy)*", "*-WORKSTATION*", "uv.lock", "!package-lock.json"]:
+        assert pattern in content, f"Missing pattern {pattern} in .gitignore"
 

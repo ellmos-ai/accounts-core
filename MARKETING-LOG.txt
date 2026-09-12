@@ -4,7 +4,7 @@
 - **Repository**: `ellmos-ai/accounts-core`
 - **Canonical Path**: `C:\_Local_DEV\repos\accounts-core`
 - **Default Branch**: `main`
-- **Current Version**: `0.1.2`
+- **Current Version**: `0.1.3`
 - **License**: MIT
 - **Architecture**: Domain-neutral, zero network egress, stdlib-only core library
 
@@ -105,3 +105,14 @@ result = publish_accounts_transit(
 )
 print(f"Published {result['count']} accounts securely.")
 ```
+
+---
+
+## 5. Technical Hygiene & CI Hardening Audit (2026-09-12)
+
+- **CI Workflow Hardening**: Added `timeout-minutes: 15` execution guardrail in `.github/workflows/ci.yml` across full matrix (Ubuntu, Windows, macOS x Python 3.10-3.13).
+- **Automated Lifecycle Management**: Deployed canonical `.github/workflows/stale.yml` workflow for automated triage and closing of stale issues and pull requests.
+- **Gitignore Multi-Host Defense**: Hardened `.gitignore` with multi-host conflict copy wildcards (`* (kopie)*`, `* (copy)*`, `*conflicted copy*`, `*-WORKSTATION*`, `uv.lock`, `!package-lock.json`).
+- **PEP 621 Metadata Expansion**: Added `"LLM Ready"` context endpoint URL to `[project.urls]` in `pyproject.toml` pointing directly to raw `llms.txt`.
+- **Ruff Linter Configuration**: Configured explicit `[tool.ruff.lint]` rule selection (`["E4", "E7", "E9", "F", "W", "B", "SIM", "C4", "RUF"]`) and harmonized `__all__` sorting in `src/accounts_core/__init__.py`.
+- **Contract Test Suite Expansion**: Added dedicated contract tests in `tests/test_metadata.py` verifying CI timeout guardrail, stale lifecycle workflow existence, PEP 621 LLM-Ready URL, and gitignore conflict patterns.

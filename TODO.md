@@ -1,8 +1,8 @@
 # TODO.md — Active work
 
-**Version:** 0.1.2  
-**Updated:** 2026-09-11  
-**Reason:** Standardization, path neutrality, gate readiness, and AI discoverability  
+**Version:** 0.1.3
+**Updated:** 2026-09-12
+**Reason:** Technical hygiene, CI matrix hardening, stale workflow, gitignore defense, and PEP 621 metadata expansion
 **Purpose:** Track only work that remains open.
 
 ## STATUS

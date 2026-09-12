@@ -15,14 +15,14 @@ from .accounts import (
 )
 from .transit_publisher import publish_transit_projection
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __all__ = [
     "DB_ENV",
     "TRANSIT_FIELDS",
     "AccountStore",
+    "__version__",
     "default_db_path",
     "mask_iban",
-    "to_transit_row",
     "publish_transit_projection",
-    "__version__",
+    "to_transit_row",
 ]
