@@ -1,23 +1,52 @@
 # Third-Party Licenses & Software Inventory
 
-**Project:** `accounts-core`  
-**License:** [MIT License](LICENSE)  
-**Audit Date:** 2026-09-11  
-**Status:** Invariant Confirmed — Zero External Runtime Dependencies  
+**Project:** `accounts-core`
+**License:** [MIT License](LICENSE)
+**Audit Date:** 2026-09-20 (v0.1.4)
+**Status:** Invariant Confirmed — Zero External Runtime Dependencies (Level 1 SBOM)
+**Privilege Model:** `RunAsInvoker` (Strict User-Mode Non-Elevation)
 
 ---
 
-## Runtime Architecture & Dependencies
+## Runtime Architecture & Level 1 SBOM
 
-`accounts-core` is engineered as a zero-egress, local-first domain core for bank account operations and privacy-safe transit projections. To preserve maximum operational reliability, deterministic multi-OS execution, and eliminate supply-chain attack vectors, `accounts-core` enforces a strict **Zero-Runtime-Dependency** invariant.
+`accounts-core` is engineered as a zero-egress, local-first domain core for bank account operations, CAMT balance ingestion, and privacy-safe transit projections. To preserve maximum operational reliability, deterministic multi-OS execution, and eliminate supply-chain attack vectors, `accounts-core` enforces a strict **Zero-Runtime-Dependency** invariant.
 
-### Runtime Dependencies
+### Runtime Dependencies (Level 1 SBOM)
 
 | Package | Version Spec | License | Scope | Purpose |
 | :--- | :--- | :--- | :--- | :--- |
-| *(None)* | `N/A` | `N/A` | `runtime` | 100% pure Python standard library (`sqlite3`, `pathlib`, `typing`, `dataclasses`, `logging`, `os`, `sys`) |
+| *(None)* | `N/A` | `N/A` | `runtime` | 100% pure Python standard library (`sqlite3`, `pathlib`, `typing`, `dataclasses`, `logging`, `os`, `sys`, `re`, `datetime`) under PSF License 2.0 |
 
-All core subsystems—including `AccountStore` CRUD methods, CAMT balance ingestion (`persist_camt_balances`), and the allowlist-based transit projection (`transit_projection`)—run entirely on the Python Standard Library without third-party wheels or runtime packages.
+All core subsystems—including `AccountStore` CRUD methods, CAMT balance ingestion (`persist_camt_balances`), and the allowlist-based transit projection (`publish_transit_projection` / `transit_projection`)—run entirely on the Python Standard Library without third-party wheels or runtime packages.
+
+---
+
+## Invariant Cross-Reference Matrix
+
+Every architectural invariant in `accounts-core` is directly backed by formal testing and license guarantees:
+
+| Invariant ID | Name | Architectural Scope | Compliance & License Guarantee |
+| :--- | :--- | :--- | :--- |
+| `INV-ACC-01` | Zero Database Ownership | SQLite Schema Isolation | Standard library `sqlite3` only; operates strictly within consumer database schema without creating rogue tables. |
+| `INV-ACC-02` | Strict Allowlist Projection | Data Minimization | Explicit 5-field projection tuple (`name`, `account_type`, `balance`, `balance_date`, `iban_masked`); eliminates schema leakage. |
+| `INV-ACC-03` | Masked IBAN Guarantee | Privacy by Design | Unmasked IBAN strings and bank identifiers (BIC, account number) never leave core boundary; masked to last 4 characters. |
+| `INV-ACC-04` | Pure Local-First & Zero Egress | Network Perimeter | Zero network egress, zero sockets, 100% offline stdlib execution; verified by contract test suite. |
+| `INV-ACC-05` | Immutable Source Isolation | Concurrency & Safety | Primary SQLite database is opened with explicit `mode=ro` during transit publishing; prevents write lock contention. |
+| `INV-ACC-06` | Atomic Snapshot Publishing | Fault Tolerance | Staged via temporary file and committed via atomic filesystem rename; prevents partial reads or torn snapshots. |
+| `INV-ACC-07` | Idempotent CAMT Ingestion | Data Integrity | Balances matched strictly by normalized IBAN; returns deterministic German status feedback (`aktualisiert`, `unverändert`). |
+| `INV-ACC-08` | Deterministic Fail-Closed Error | Predictable Failure Modes | Typed standard library exceptions (`FileNotFoundError`, `ValueError`); never falls through or fails silently. |
+| `INV-ACC-09` | RunAsInvoker Non-Elevation | Execution Privilege | Operates strictly in unprivileged user space; zero administrative or elevated privileges required on Windows, Linux, or macOS. |
+| `INV-ACC-10` | 48h SLA & Security Policy | Vulnerability Management | Formal 48h response and 5-day triage commitment documented in `SECURITY.md` and verified by automated contract tests. |
+
+---
+
+## RunAsInvoker & Privilege Certification
+
+`accounts-core` is certified to operate under the `RunAsInvoker` execution model:
+- **Zero Elevation Required:** Runs completely within standard user privileges on Windows (`UAC: asInvoker`), Linux (unprivileged UID), and macOS.
+- **Zero Daemon Overhead:** Does not spawn background daemons, listen on local network ports, or require root/administrator access.
+- **Copyleft Isolation:** 100% MIT licensed code executing on Python Software Foundation (PSF-2.0) runtime. Zero GPL, AGPL, or viral copyleft contamination.
 
 ---
 

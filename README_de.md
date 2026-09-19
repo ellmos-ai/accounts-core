@@ -3,9 +3,9 @@
 [English](README.md) | [Deutsch](README_de.md)
 
 <p align="center">
-  <a href="pyproject.toml"><img src="https://img.shields.io/badge/version-0.1.3-blue.svg" alt="Version 0.1.3"></a>
+  <a href="pyproject.toml"><img src="https://img.shields.io/badge/version-0.1.4-blue.svg" alt="Version 0.1.4"></a>
   <a href="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml"><img src="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="tests/"><img src="https://img.shields.io/badge/tests-44%20passed%20%7C%20100%25%20green-brightgreen.svg" alt="Tests"></a>
+  <a href="tests/"><img src="https://img.shields.io/badge/tests-52%20passed%20%7C%20100%25%20green-brightgreen.svg" alt="Tests"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg" alt="Python"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg" alt="Platform"></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg" alt="Local-First Zero-Egress"></a>
@@ -18,8 +18,8 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
 </p>
 
-Neutraler Fachkern für die Konten-/Kontostand-Domäne. Welle 1 liefert Bankkonten-CRUD,
-CAMT-Salden-Import und eine **privacy-sichere, read-only Transit-Projektion** für andere
+Neutraler Fachkern für die Konten- und Kontostand-Domäne. Welle 1 liefert Bankkonten-CRUD,
+CAMT-Salden-Import und eine **privacy-sichere, read-only Transit-Projektion** für nachgelagerte
 Konsumenten (z. B. OCEAN).
 
 Aus [BACH](https://github.com/ellmos-ai/bach) extrahiert, damit BACH und OCEAN dieselben
@@ -30,19 +30,40 @@ Kopie hält (Entscheidung D-20260903-003 = A, Analyse
 
 ## Inhaltsverzeichnis
 
-- [Visuelle Architektur](#visuelle-architektur)
-- [Sequenz-Lebenszyklus](#sequenz-lebenszyklus)
-- [Vertrag](#vertrag)
-- [Privacy: die Transit-Projektion ist eine Allowlist, keine Denylist](#privacy-die-transit-projektion-ist-eine-allowlist-keine-denylist)
-- [Governance & System-Invarianten](#governance--system-invarianten)
-- [Installation](#installation)
-- [Nutzung](#nutzung)
-- [Ökosystem & Geschwister-Repositories](#ökosystem--geschwister-repositories)
-- [Privacy (Modulgrenze)](#privacy-modulgrenze)
-- [Projektstruktur](#projektstruktur)
-- [Entwicklung](#entwicklung)
-- [Lizenz](#lizenz)
+- [1. Hauptmerkmale](#hauptmerkmale)
+- [2. Visuelle Architektur](#visuelle-architektur)
+- [3. Sequenz-Lebenszyklus](#sequenz-lebenszyklus)
+- [4. Zielgruppen & Auffindbarkeit](#zielgruppen--auffindbarkeit)
+- [5. Vergleichsmatrix vs. Alternativen](#vergleichsmatrix--alternativen)
+- [6. Vertrag & Domänengrenzen](#vertrag--domaenengrenzen)
+- [7. Datenschutz: Strikte Allowlist-Projektion](#datenschutz-allowlist-projektion)
+- [8. Governance & Laufzeit-Invarianten](#governance--laufzeit-invarianten)
+- [9. Installation](#installation)
+- [10. Schnellstart & Anwendungsbeispiele](#schnellstart--anwendungsbeispiele)
+- [11. CAMT-Saldenverarbeitung](#camt-salden-verarbeitung)
+- [12. Sichere Transit-Publisher-Spezifikation](#transit-publisher-spezifikation)
+- [13. Geschwisterwerkzeuge & Ökosystem](#geschwisterwerkzeuge--oekosystem)
+- [14. Drittanbieter-Lizenzen & Transparenz](#drittanbieter-lizenzen--transparenz)
+- [15. Repository-Struktur](#repository-struktur)
+- [16. Entwicklung & Testmatrix](#entwicklung--testmatrix)
+- [17. Sicherheitsrichtlinie & Kontakt](#sicherheitsrichtlinie--kontakt)
+- [18. Gesetzlicher Hinweis & Haftungsbeschränkung](#gesetzlicher-hinweis--haftungsbeschraenkung)
 
+---
+
+<a id="hauptmerkmale"></a>
+## Hauptmerkmale
+
+- **Einheitlicher Datenkanon:** Arbeitet direkt auf der bestehenden SQLite-Tabelle `bank_accounts` des Konsumenten; legt keine eigenen Tabellen an und verwaltet keine Migrationen.
+- **Idempotenter CAMT-Saldenimport:** Verarbeitet vor-geparste Salden-Dictionaries, gleicht Konten über normalisierte IBANs ab und liefert deterministische deutsche Statusmeldungen (`aktualisiert`, `unverändert`).
+- **Strikte Allowlist-Transitprojektion:** Exportiert exakt 5 bereinigte Felder (`name`, `account_type`, `balance`, `balance_date`, `iban_masked`) und schließt Datenlecks konstruktionsbedingt aus.
+- **Garantierte IBAN-Maskierung:** Bank-Stammdaten (Kontonummer, BIC, Bankname, Kontoinhaber) verlassen niemals die Modulgrenze; IBANs werden auf die letzten 4 Zeichen maskiert.
+- **100% Local-First & Zero Egress:** Keine Netzwerkaufrufe, keine Sockets, keine Telemetrie. Reine Ausführung über die Python-Standardbibliothek im Benutzermodus (`RunAsInvoker`).
+- **Unveränderliche Quell-Isolation:** Quell-Datenbanken werden beim Publizieren explizit mit `mode=ro` geöffnet; Quelle, Projektion und Checkpoint müssen 3 disjunkte Pfade sein.
+
+---
+
+<a id="visuelle-architektur"></a>
 ## Visuelle Architektur
 
 ```mermaid
@@ -82,6 +103,9 @@ flowchart TD
     SNAP -->|"Lokale sichere Abfrage"| AI
 ```
 
+---
+
+<a id="sequenz-lebenszyklus"></a>
 ## Sequenz-Lebenszyklus
 
 ```mermaid
@@ -99,10 +123,10 @@ sequenceDiagram
     rect rgb(240, 248, 255)
     Note over Consumer,DB: "CAMT-Saldenaktualisierung"
     Consumer->>Core: "persist_camt_balances(balances)"
-    Core->>DB: "SELECT bestehendes Konto via normalisierter IBAN"
+    Core->>DB: "Bestehendes Konto über normalisierte IBAN suchen"
     Core->>DB: "UPDATE bank_accounts SET balance = ?, balance_date = ?"
     DB-->>Core: "Betroffene Zeilen"
-    Core-->>Consumer: "Deutsche Statusmeldung (z. B. 'aktualisiert', 'unverändert')"
+    Core-->>Consumer: "Deutscher Statusbericht (z. B. 'aktualisiert', 'unverändert')"
     end
 
     rect rgb(245, 255, 245)
@@ -111,83 +135,159 @@ sequenceDiagram
     Core->>DB: "Quelldatenbank mit mode=ro öffnen"
     Core->>Core: "to_transit_row(): Strikte 5-Felder-Allowlist filtern & IBAN maskieren"
     Core->>Transit: "Atomare Snapshot-Datei schreiben"
-    Core->>Transit: "Publisher-Checkpoint protokollieren"
+    Core->>Transit: "Publisher-Checkpoint festhalten"
     Transit-->>Observer: "Bereinigte Konten abfragen (0 unmaskierte PII / 0 Bankkennungen)"
     end
 ```
 
-## Vertrag
+---
 
-- **Ein Datenkanon.** `AccountStore` bekommt den SQLite-Pfad des Konsumenten (BACH: `bach.db`)
-  und arbeitet auf der vorhandenen Tabelle `bank_accounts`. Das Modul legt keine Tabellen an und
-  hält keine eigenen Daten.
-- **Kein UI-Toolkit, kein HTTP, kein XML-Parsing.** Konsumenten verdrahten Endpunkte gegen diese
-  API und übergeben `persist_camt_balances` bereits geparste Salden-Dicts (die Form, die BACHs
-  `CamtParser.parse_balances()` liefert) — das CAMT-Dateiformat bleibt eine BACH-seitige Sache.
-- **Verhalten identisch zu BACH.** Jede SQL-Anweisung ist die, die BACH vor der Extraktion
-  ausführte; nur die Aufrufstelle ist gewandert.
-- **`credits` (Kredite) ist NICHT Teil von Welle 1.** Laut Analyse eine verwandte, aber eigene
-  Domäne; bei Bedarf in einer späteren Welle ergänzen.
+<a id="zielgruppen--auffindbarkeit"></a>
+## Zielgruppen & Auffindbarkeit
 
-## Privacy: die Transit-Projektion ist eine Allowlist, keine Denylist
+| Persona-ID | Zielgruppe | Primäre Anforderungen & Herausforderungen | Gezielte Suchbegriffe (High-Intent SEO) |
+| :--- | :--- | :--- | :--- |
+| `[PERSONA-01]` | **FinTech- & Buchhaltungs-Entwickler** | Schlanke, robuste Domänen-Grundbausteine für Bankkonten, Girokonten, Kreditkarten, IBAN-Normalisierung und Saldenverfolgung ohne ORM-Ballast. | `python bank account library local sqlite`, `camt balance import python zero dependencies`, `iban normalization python stdlib` |
+| `[PERSONA-02]` | **Privacy-by-Design & Local-First Architekten** | Bereitstellung von Kontoinformationen für Benutzeroberflächen, Caches oder Partnersysteme ohne Weitergabe vertraulicher PII oder Bank-Stammdaten. | `privacy-safe bank balance projection`, `masked iban transit projection sqlite`, `local-first financial data minimization` |
+| `[PERSONA-03]` | **CAMT-Bankdaten-Integratoren** | Einlesen von Saldenaktualisierungen aus CAMT-XML-Dateien (camt.052, camt.053) ohne Dubletten oder destruktives Überschreiben. | `idempotent camt balance update sqlite`, `camt 053 balance parser python`, `iso 20022 account balance persistence` |
+| `[PERSONA-04]` | **Autonome KI-Agenten & Tool-Integratoren** | Sichere, deterministische Primitiven für Agentensysteme (Claude Code, Codex, Antigravity, MCP-Server) zur Kontostandsabfrage mit robuster Fehlerbehandlung und Zero-Egress. | `mcp bank account tools local first`, `ai agent financial balance tool zero egress`, `deterministic offline accounting python` |
+
+---
+
+<a id="vergleichsmatrix--alternativen"></a>
+## Vergleichsmatrix vs. Alternativen
+
+| Architektur-Dimension | `accounts-core` (Dieses Modul) | Direkte Ad-Hoc SQLite-Skripte | Schwergewichtige ERPs / Frameworks (Odoo / Tryton) | Cloud-Banking / Open-Banking SaaS APIs (Plaid / Tink) | Invarianten-Bezug |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Schema-Eigentümerschaft** | Keine Eigentümerschaft; nutzt bestehende Konsumententabelle | Unkontrollierte Schema-Modifikationen | Monolithische, proprietäre Datenbankschemata | Cloud-gehostete proprietäre Schemata | `INV-ACC-01` |
+| **PII- & IBAN-Schutz** | Strikte 5-Felder-Allowlist & garantierte IBAN-Maskierung | Volle Exposition von IBAN, BIC und Kontonummern | Komplexe Denylists mit hohem Leckage-Risiko | Vollständige Übertragung aller Finanzdaten in die Cloud | `INV-ACC-02`, `INV-ACC-03` |
+| **Netzwerkperimeter** | 100% Local-First, null Netzwerkaufrufe | Lokale Skripte, jedoch ohne Perimeter-Garantien | Benötigt Server-Dienste, Daemon-Prozesse | Zwingende Internetverbindung & Telemetrie | `INV-ACC-04` |
+| **Quell-Isolation** | Expliziter `mode=ro` Lesezugriff beim Export | Geteilte Lese-Schreib-Sperren mit Korruptionsrisiko | Geteilte Schreibtransaktionen über Prozesse hinweg | Isolation liegt ausschließlich beim Cloud-Anbieter | `INV-ACC-05` |
+| **Snapshot-Export** | Atomare Bereitstellung & Rename auf Dateisystemebene | Gefahr unvollständiger Lese- oder Schreibvorgänge | Aufwändige Datenbank-Dumps und Exporte | Webhook- oder Polling-Synchronisationskonflikte | `INV-ACC-06` |
+| **CAMT-Aktualisierungslogik** | Idempotente Zuordnung über normalisierte IBAN | Fragile Ad-hoc-Skripte mit Dublettenrisiko | Komplexe zustandsbehaftete Buchungs-Importeure | Anbieterabhängige Transaktionssynchronisation | `INV-ACC-07` |
+| **Fehlerbehandlung** | Typisierte Ausnahmen der Standardbibliothek | Unstrukturierte Zeichenketten-Fehler | Tief verschachtelte Framework-Ausnahmebäume | HTTP-Statuscodes & Netzwerk-Verbindungsfehler | `INV-ACC-08` |
+| **Rechtemodell** | `RunAsInvoker` (unprivilegierter Benutzermodus) | Unkontrollierte Skriptausführung | Oft administrative Hintergrunddienste erforderlich | Erfordert API-Schlüssel und Cloud-Zugangsdaten | `INV-ACC-09` |
+| **Laufzeit-Abhängigkeiten** | Null externe Abhängigkeiten (100% Python-Stdlib) | Variable / unkontrollierte Fremdpakete | Enorme Abhängigkeitsbäume (hunderte Pakete) | Umfangreiche Hersteller-SDKs und HTTP-Clients | `INV-ACC-04` |
+| **Sicherheitsgovernance** | Formelle 48h-Reaktionszeit & Advisory-Prozess | Keine formelle Sicherheitsarchitektur | Abhängig vom kommerziellen Hersteller-Support | Abhängig von Cloud-SLA | `INV-ACC-10` |
+
+---
+
+<a id="vertrag--domaenengrenzen"></a>
+## Vertrag & Domänengrenzen
+
+- **Einheitlicher Datenkanon:** `AccountStore` erhält den SQLite-Pfad des Konsumenten (BACH: `bach.db`)
+  und operiert auf der existierenden Tabelle `bank_accounts`. Es werden keine Tabellen angelegt und keine
+  eigenen Datenbestände vorgehalten.
+- **Kein UI-Toolkit, kein HTTP, kein XML-Parsing:** Konsumenten binden Endpunkte gegen diese API an und
+  übergeben `persist_camt_balances` bereits geparste Salden-Dictionaries (entsprechend dem Rückgabeformat
+  von BACHs `CamtParser.parse_balances()`) -- das CAMT-Dateiformat verbleibt auf Konsumentenseite.
+- **Identisches Verhalten wie in BACH:** Jedes SQL-Statement entspricht exakt dem vor der Extraktion
+  ausgeführten Code; lediglich der Aufrufumfang wurde modularisiert.
+- **`credits` (Kredite) gehört nicht zu Welle 1:** Eine verwandte, aber eigenständige Domäne gemäß Analyse;
+  eine Anbindung erfolgt bei Bedarf in einer späteren Phase.
+
+---
+
+<a id="datenschutz-allowlist-projektion"></a>
+## Datenschutz: Strikte Allowlist-Projektion
 
 `AccountStore.transit_projection()` liefert **ausschließlich** `name`, `account_type`, `balance`,
-`balance_date` und `iban_masked` (letzte 4 Zeichen, Rest durch `*` ersetzt). Keine Kontonummer,
-kein BIC, kein Bankname, kein Inhabername, keine Notizen — und entscheidend: **kein Feld, das
-`bank_accounts` später hinzugefügt wird, kann versehentlich durchsickern**: `to_transit_row()`
-baut das Ergebnis, indem es die fünf erlaubten Felder ausdrücklich benennt, nie indem es Schlüssel
-aus der Quellzeile entfernt. Eine Denylist vergisst die nächste Spalte, die jemand hinzufügt; eine
-Allowlist kann das nicht. Siehe der Regressionstest
-`test_to_transit_row_drops_bank_identifiers_and_unknown_columns`.
+`balance_date` und `iban_masked` (die letzten 4 Zeichen sichtbar, der Rest durch `*` maskiert). Keine
+Kontonummer, keine BIC, kein Bankname, kein Inhabername, keine Notizen -- und entscheidend: **kein
+nachträglich zu `bank_accounts` hinzugefügtes Feld kann versehentlich nach außen dringen**:
+`to_transit_row()` baut das Ergebnis ausschließlich durch explizite Nennung der fünf erlaubten Felder
+auf, niemals durch Entfernen von Schlüsseln aus der Quellzeile. Eine Denylist vergisst die nächste
+Spalte; eine Allowlist kann dies nicht.
 
-## Governance & System-Invarianten
+---
 
-Das Modul `accounts-core` erzwingt 8 verbindliche Architektur-Invarianten:
+<a id="governance--laufzeit-invarianten"></a>
+## Governance & Laufzeit-Invarianten
+
+Das Paket `accounts-core` erzwingt 10 architektonische Invarianten:
 
 | Invariante | Bezeichnung | Spezifikation & Sicherheitsgarantie |
 |---|---|---|
-| `INV-ACC-01` | Zero Database Ownership | `AccountStore` legt keine Tabellen an und führt keine Migrationen durch; arbeitet ausschließlich auf der bestehenden `bank_accounts`-Tabelle des Konsumenten. |
-| `INV-ACC-02` | Strikte Allowlist-Transit-Projektion | Transit-Projektion exportiert exakt 5 Felder: `name`, `account_type`, `balance`, `balance_date`, `iban_masked`. Ausschließlich Positivdefinition, kein Leck-Risiko. |
-| `INV-ACC-03` | Maskierte IBAN-Garantie | Unmaskierte IBAN-Zeichenketten verlassen die Modulgrenze in Transit-Projektionen nie; strikt auf die letzten 4 Zeichen maskiert (`****3000`). |
-| `INV-ACC-04` | Reines Local-First & Zero-Egress | Null externe Netzwerkaufrufe, keine Sockets, keine Telemetrie. 100% reine Standardbibliothek im unprivilegierten Nutzermodus (`RunAsInvoker`). |
-| `INV-ACC-05` | Unveränderliche Quell-Isolation | Quell-SQLite-Datenbanken werden bei der Transit-Publikation mit explizitem `mode=ro` geöffnet. Quelle, Ziel und Checkpoint müssen 3 getrennte Pfade sein. |
-| `INV-ACC-06` | Atomare Snapshot-Publikation | Snapshots werden in temporäre Zwischendateien geschrieben und atomar umbenannt, um unvollständiges Lesen durch nachgelagerte Konsumenten auszuschließen. |
-| `INV-ACC-07` | Idempotenter CAMT-Salden-Import | Saldenabgleich erfolgt strikt über normalisierte IBANs; liefert deterministische deutsche UTF-8-Erfolgsmeldungen (`aktualisiert`, `unverändert`). |
-| `INV-ACC-08` | Deterministische Fail-Closed Fehlerbehandlung | Typisierte Ausnahmen (`FileNotFoundError`, `ValueError`) bei ungültigen Pfaden oder Schema-Verstößen; kein stilles Degradieren. |
+| `INV-ACC-01` | Zero Database Ownership | `AccountStore` legt keine Tabellen an und verwaltet keine Migrationen; arbeitet ausschließlich auf der bestehenden SQLite-Tabelle `bank_accounts`. |
+| `INV-ACC-02` | Strict Allowlist Transit Projection | Die Transit-Projektion exportiert exakt 5 Felder: `name`, `account_type`, `balance`, `balance_date`, `iban_masked`. Konstruktionsbedingt lecksicher. |
+| `INV-ACC-03` | Masked IBAN Guarantee | Unmaskierte IBAN-Strings verlassen die Modulgrenze bei Transit-Projektionen niemals; auf die letzten 4 Zeichen maskiert (`****3000`). |
+| `INV-ACC-04` | Pure Local-First & Zero Egress | Keine Netzwerkaufrufe, keine Sockets, keine Telemetrie. Reine Ausführung über die Python-Standardbibliothek im Benutzermodus (`RunAsInvoker`). |
+| `INV-ACC-05` | Immutable Source Isolation | Quell-Datenbanken werden beim Publizieren explizit mit `mode=ro` geöffnet. Quelle, Ziel und Checkpoint müssen 3 disjunkte Pfade sein. |
+| `INV-ACC-06` | Atomic Snapshot Publishing | Snapshots werden über temporäre Dateien vorbereitet und atomar umbenannt, um unvollständige Lesevorgänge auszuschließen. |
+| `INV-ACC-07` | Idempotent CAMT Balance Ingestion | Salden werden strikt über die normalisierte IBAN zugeordnet; liefert deterministische deutsche UTF-8 Rückmeldungen (`aktualisiert`, `unverändert`). |
+| `INV-ACC-08` | Deterministic Fail-Closed Error Handling | Typisierte Ausnahmen (`FileNotFoundError`, `ValueError`) werden bei ungültigen Pfaden oder Schema-Verletzungen ausgelöst; kein stiller Abbruch. |
+| `INV-ACC-09` | Unprivileged User-Mode Non-Elevation | Arbeitet streng nach dem `RunAsInvoker`-Prinzip; erfordert keinerlei Administrator- oder Root-Rechte auf allen Plattformen. |
+| `INV-ACC-10` | 48h Security Response & 5-Day Triage SLA | Formelle Rückmeldung bei Sicherheitsmeldungen innerhalb von 48 Stunden und Triage-Abschluss innerhalb von 5 Werktagen gemäß `SECURITY.md`. |
 
+---
+
+<a id="installation"></a>
 ## Installation
 
 ```bash
-pip install -e .            # in der Umgebung des Konsumenten
-pip install -e ".[dev]"     # zusätzlich pytest und ruff
+pip install -e .            # in der Konsumenten-Umgebung
+pip install -e ".[dev]"     # inklusive pytest und ruff
 ```
 
-Python 3.10+, keine Laufzeit-Abhängigkeiten.
+Python 3.10+, null Laufzeitabhängigkeiten.
 
-## Nutzung
+---
+
+<a id="schnellstart--anwendungsbeispiele"></a>
+## Schnellstart & Anwendungsbeispiele
 
 ```python
 from accounts_core import AccountStore
 
-store = AccountStore("/pfad/zu/bach.db")          # oder default_db_path() -> BACH_DB-Env
-account_id = store.create_account("Girokonto", bank_name="Sparkasse", iban="DE89...", bic="...")
+store = AccountStore("/pfad/zu/bach.db")          # oder default_db_path() -> BACH_DB env
+account_id = store.create_account("Girokonto", bank_name="Sparkasse", iban="DE89370400440532013000", bic="SPKADE...")
 store.list_accounts()
 store.update_account(account_id, "Neuer Name", bank_name="Sparkasse")
 store.delete_account(account_id)
 
-# CAMT-Import: bereits geparste Salden übergeben (Form von BACHs CamtParser.parse_balances())
-store.persist_camt_balances([{"iban": "DE89...", "balance": 1234.56, "currency": "EUR", "date": "2026-09-01"}])
+# CAMT-Import: Übergabe vor-geparster Salden (Format von BACHs CamtParser.parse_balances())
+store.persist_camt_balances([{"iban": "DE89370400440532013000", "balance": 1234.56, "currency": "EUR", "date": "2026-09-01"}])
 
-# Read-only Projektion für andere Konsumenten (OCEAN via sqlite-transit-sync, Welle 3)
-store.transit_projection()
+# Nur-lesbare Projektion für nachgelagerte Konsumenten (OCEAN über sqlite-transit-sync)
+projection = store.transit_projection()
 # -> [{"name": "Girokonto", "account_type": "girokonto", "balance": 1234.56,
-#      "balance_date": "2026-09-01", "iban_masked": "*"*18 + "3000"}]
+#      "balance_date": "2026-09-01", "iban_masked": "****************3000"}]
 ```
 
-Welle 3 veröffentlicht dieselbe Allowlist als separate, geschlossene
-SQLite-Datei für `sqlite-transit-sync` und OCEAN. Die Quelldatenbank wird nur
-lesend geöffnet; Quelle, Projektion und Publisher-Checkpoint müssen drei
-verschiedene Pfade sein.
+---
+
+<a id="camt-salden-verarbeitung"></a>
+## CAMT-Saldenverarbeitung
+
+Konsumenten überführen CAMT-Auszüge (z. B. CAMT.052, CAMT.053) in Roh-Dictionaries und übergeben
+diese an `persist_camt_balances()`:
+
+```python
+from accounts_core import AccountStore
+
+store = AccountStore("var/data/finance.db")
+camt_daten = [
+    {
+        "iban": "DE89370400440532013000",
+        "balance": 5420.50,
+        "currency": "EUR",
+        "date": "2026-09-15",
+    }
+]
+
+status_bericht = store.persist_camt_balances(camt_daten)
+# Liefert echte deutsche UTF-8 Statusmeldungen:
+# [{'iban': 'DE89370400440532013000', 'status': 'aktualisiert', 'balance': 5420.5}]
+```
+
+---
+
+<a id="transit-publisher-spezifikation"></a>
+## Sichere Transit-Publisher-Spezifikation
+
+Welle 3 exportiert die bereinigte Allowlist als eigenständige, geschlossene SQLite-Datei für
+`sqlite-transit-sync` und OCEAN. Die Quelldatenbank wird strikt nur-lesend geöffnet; Quelle,
+Projektion und Checkpoint müssen drei getrennte Pfade sein.
 
 ```python
 from accounts_core import publish_transit_projection
@@ -200,49 +300,75 @@ publish_transit_projection(
 )
 ```
 
-Die Ausgabe erfüllt `org.ellmos.accounts.balance-projection` v1.0.0 und ist ein
-vollständiger Ersatz-Snapshot: Konsumenten verifizieren ihn und ersetzen danach
-ihre bisherige read-only Sicht. Quell-ID und unmaskierte Bankkennungen werden
-nicht geschrieben.
+Die Ausgabe implementiert `org.ellmos.accounts.balance-projection` v1.0.0 als vollständigen
+Ersatz-Snapshot. Konsumenten verifizieren die Datei und ersetzen ihre bisherige Sicht.
+Es werden weder interne IDs noch unmaskierte Bankkennungen ausgegeben.
 
-`persist_camt_balances()` liefert deutsche UTF-8-Ergebnismeldungen mit echten Umlauten, etwa
-`unverändert` und `übersprungen`.
+---
 
-## Ökosystem & Geschwister-Repositories
+<a id="geschwisterwerkzeuge--oekosystem"></a>
+## Geschwisterwerkzeuge & Ökosystem
 
-`accounts-core` ist ein zentraler Domänen-Baustein im Ökosystem von `ellmos-ai` und `open-bricks`:
+`accounts-core` ist ein zentraler Domänen-Baustein innerhalb des `ellmos-ai`- und `open-bricks`-Ökosystems:
 
 | Repository | Rolle im Ökosystem | Integrationspunkt |
 |---|---|---|
-| [bach](https://github.com/ellmos-ai/bach) | Primärer Finanz-Monolith / Konsument | Quelle für Kontodaten (`bach.db`), Auslöser des CAMT-Imports |
-| [sqlite-transit-sync](https://github.com/ellmos-ai/sqlite-transit-sync) | Offline-SQLite-Sync-Engine | Überträgt schreibgeschützte Konten-Snapshots zwischen Systemen |
-| [assistant-core](https://github.com/ellmos-ai/assistant-core) | Fachkern für LLM-Assistentenzustand | Schwestermodul mit identischem Welle-1-Architekturmuster |
-| [open-ocean](https://github.com/ellmos-ai/open-ocean) | Lokaler Finanz- & Budget-Begleiter | Nachgelagerter Konsument für bereinigte Konten-Snapshots |
-| [report-forge](https://github.com/ellmos-ai/report-forge) | Deterministische Reporting-Engine | Generiert Kontoauszüge & Finanzberichte aus Snapshots |
-| [open-bricks](https://github.com/open-bricks) | Dachorganisation für Open Source | Architektur-Governance, Standardisierung und Paketierung |
+| [bach](https://github.com/ellmos-ai/bach) | Primäres Finanzmonolith / Konsument | Quelle für Bankkonten (`bach.db`), Auslöser für CAMT-Ingestion |
+| [sqlite-transit-sync](https://github.com/ellmos-ai/sqlite-transit-sync) | Offline SQLite-Sync-Engine | Transportiert nur-lesbare Konten-Snapshots zwischen Rechnern |
+| [assistant-core](https://github.com/ellmos-ai/assistant-core) | Fachkern für LLM-Assistentenzustände | Geschwisterkern mit identischem Welle-1-Architekturmuster |
+| [open-ocean](https://github.com/ellmos-ai/open-ocean) | Lokaler Finanz- und Budget-Begleiter | Nachgelagerter Konsument für bereinigte Snapshots |
+| [report-forge](https://github.com/ellmos-ai/report-forge) | Deterministische Reporting-Engine | Generiert Finanzübersichten und Auswertungen |
+| [open-bricks](https://github.com/open-bricks) | Dachorganisation für Open-Source | Architektur-Standards, Governance und Paketierung |
 
-## Privacy (Modulgrenze)
+---
 
-Arbeitet nur auf dem übergebenen Datenbankpfad. Kein Netzwerk, keine Telemetrie, keine eigenen
-Dateien. Bank-Stammdaten (Kontonummer, BIC, Inhabername) verlassen das Modul über die
-Transit-Projektion nie — siehe Allowlist-Abschnitt oben.
+<a id="drittanbieter-lizenzen--transparenz"></a>
+## Drittanbieter-Lizenzen & Transparenz
 
-## Projektstruktur
+`accounts-core` pflegt eine vollständige Level-1-Software-Stückliste (SBOM) mit null externen Laufzeitabhängigkeiten:
+
+- **Laufzeit-Abhängigkeiten:** 100% reine Python-Standardbibliothek unter PSF-Lizenz 2.0 (`sqlite3`, `pathlib`, `typing`, `dataclasses`, `logging`, `os`, `sys`, `re`, `datetime`). Null externe Wheels oder Pakete.
+- **Copyleft-Isolation:** 100% MIT-lizenzierter Code ohne AGPL/GPL-Übertragungen.
+- **RunAsInvoker-Zertifizierung:** Läuft vollständig im unprivilegierten Benutzermodus ohne Administratorrechte.
+- Vollständige Lizenztexte siehe [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
+
+---
+
+<a id="repository-struktur"></a>
+## Repository-Struktur
 
 ```
-src/accounts_core/accounts.py    AccountStore, Transit-Projektion, CAMT-Salden-Persistenz
-src/accounts_core/__init__.py    Öffentliche API-Exporte und Modulversion
-tests/test_accounts.py           Verhalten gegen die exakte BACH-bank_accounts-DDL
-tests/test_metadata.py           Vertragstests für Metadaten, Security SLAs, CI und Parität
-MARKETING-LOG.txt                Personas, Discoverability-Keywords und Integrations-Blueprints
-THIRD_PARTY_LICENSES.md         Pure stdlib Zero-Runtime-Dependency-Inventar (PEP 639)
-TODO.md                          Standardisierter Aufgaben-Tracker mit STATUS-Tabelle & Release-Gates
-SECURITY.md                      Zweisprachige Sicherheitsrichtlinie mit 48h-SLA & 5-Tage-Triage
-llms.txt                         Maschinenlesbares LLM-Kontextdokument
-ellmos-module.v2.json            Modul-Manifest für den ellmos-Modulkatalog
+accounts-core/
+├── src/
+│   └── accounts_core/
+│       ├── __init__.py            # Öffentliche Modul-Exporte und Paketversion
+│       ├── accounts.py            # AccountStore, Transit-Projektion, CAMT-Verarbeitung
+│       └── transit_publisher.py   # Atomarer, nur-lesbarer Transit-Snapshot-Publisher
+├── tests/
+│   ├── test_accounts.py           # Domänentests gegen das exakte BACH-Schema
+│   ├── test_metadata.py           # Vertragstests für Navigation, Personas, Matrix, SLAs, SBOM
+│   └── test_transit_publisher.py  # Snapshot- und Checkpoint-Verifikation
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                 # Multi-OS Testmatrix (Ubuntu, Windows, macOS x Python 3.10-3.13)
+│       └── stale.yml              # Automatisierte Verwaltung inaktiver Issues und PRs
+├── CHANGELOG.md                   # Chronologischer Versionsverlauf und Änderungsprotokolle
+├── LICENSE                        # MIT-Lizenz
+├── MARKETING-LOG.txt              # Personas, SEO-Schlagworte und Integrations-Blaupausen
+├── README.md                      # Englische Dokumentation mit 18-Punkte-Schnellnavigation
+├── README_de.md                   # Deutsche Dokumentation mit 18-Punkte-Schnellnavigation
+├── SECURITY.md                    # Sicherheitsrichtlinie mit 48h-Reaktions- und 5-Tage-Triage-SLA
+├── THIRD_PARTY_LICENSES.md        # Level 1 SBOM und reines Stdlib-Abhängigkeitsinventar
+├── TODO.md                        # Aufgabenverwaltung mit STATUS-Tabelle und Release-Gates
+├── ellmos-module.v2.json          # Modulmanifest für den ellmos-Katalog
+├── llms.txt                       # Maschinenlesbares LLM-Kontextdokument
+└── pyproject.toml                 # PEP 621 Paket-Metadaten und Konfiguration
 ```
 
-## Entwicklung
+---
+
+<a id="entwicklung--testmatrix"></a>
+## Entwicklung & Testmatrix
 
 ```bash
 pytest -ra -v
@@ -250,6 +376,25 @@ python -m ruff check src tests
 python -m compileall -q src tests
 ```
 
-## Lizenz
+---
 
-MIT-Lizenz. Siehe [LICENSE](LICENSE) und [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md). Kanonisches Repository: `ellmos-ai/accounts-core` (privat).
+<a id="sicherheitsrichtlinie--kontakt"></a>
+## Sicherheitsrichtlinie & Kontakt
+
+Sicherheit und Datenschutz haben oberste Priorität:
+
+- **Reaktionszeit (SLA):** Erste Rückmeldung auf Sicherheitsmeldungen innerhalb von **48 Stunden**.
+- **Triage-Garantie:** Bestätigung des Triage- und Behebungsplans innerhalb von **5 Werktagen**.
+- **Sicherheitskontakte:**
+  - `security@open-bricks.org`
+  - `security@ellmos.ai`
+  - `support@lukasgeiger.com`
+  - `lukas@open-bricks.org`
+- **Vertrauliche Meldung:** Einreichung über [GitHub Security Advisories](https://github.com/ellmos-ai/accounts-core/security/advisories/new).
+
+---
+
+<a id="gesetzlicher-hinweis--haftungsbeschraenkung"></a>
+## Gesetzlicher Hinweis & Haftungsbeschränkung
+
+Diese Software wird unentgeltlich unter der MIT-Lizenz als Open-Source-Software bereitgestellt. Gemäß den gesetzlichen Bestimmungen des deutschen Schenkungs- und Gefälligkeitsrechts (§ 521 BGB) ist die Haftung bei unentgeltlicher Überlassung auf Vorsatz und grobe Fahrlässigkeit beschränkt. Insbesondere wird keine Gewährleistung für die Eignung für einen bestimmten Zweck oder die Mängelfreiheit übernommen.

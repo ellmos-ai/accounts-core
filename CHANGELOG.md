@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.4] - 2026-09-20
+
+### Discoverability, Visual Architecture, 18-Point Quick Navigation & SBOM (Pfad B)
+
+- **18-Point Bilingual Navigation Parity**: Restructured `README.md` and `README_de.md` into 18 synchronized sections with reciprocal HTML anchor parity (`<a id="..."></a>`), ensuring comprehensive bi-directional navigation.
+- **Visual Architecture & Lifecycle Flow**: Validated dual Mermaid diagrams (`flowchart TD` architecture and `sequenceDiagram` lifecycle walkthrough with `autonumber`) adhering to strict quote escaping and zero-semicolon formatting.
+- **Target Personas & SEO Discovery**: Codified 4 specific user personas (`[PERSONA-01]` to `[PERSONA-04]`) with high-intent search queries covering local-first FinTech, privacy-by-design architects, CAMT data integrators, and autonomous AI agents.
+- **10-Dimension Comparative Matrix**: Documented full comparative analysis benchmarking `accounts-core` against Raw Ad-Hoc Scripts, Heavyweight ERPs (Odoo/Tryton), and Cloud SaaS APIs (Plaid/Tink) across 10 architectural criteria mapped to system invariants (`INV-ACC-01` to `INV-ACC-10`).
+- **Governance & Runtime Invariants (10 Invariants)**: Expanded invariant index with `INV-ACC-09` (Unprivileged User-Mode Non-Elevation / RunAsInvoker) and `INV-ACC-10` (48h Security Response & 5-Day Triage SLA).
+- **Level 1 SBOM & Software Inventory**: Enhanced `THIRD_PARTY_LICENSES.md` with Level 1 Software Bill of Materials, Invariant Cross-Reference Matrix table, and explicit RunAsInvoker certification.
+- **Statutory Notice (§ 521 BGB)**: Codified legal disclaimer for non-commercial open-source distribution under German law.
+- **GitHub Live Discoverability**: Expanded repository topics to 20/20 on GitHub and configured documentation homepage URL.
+- **Automated Contract Test Suite Expansion**: Added contract tests in `tests/test_metadata.py` verifying quick navigation anchors, persona queries, comparative matrix dimensions, 10 invariants, and § 521 BGB notices.
+- **Version Harmonization & Artifact Parity**: Bumped version to `0.1.4` across all manifests and documentation artifacts.
+
 ## [0.1.3] - 2026-09-12
 
 ### Technical Hygiene, CI Hardening & Stale Lifecycle (Pfad A)

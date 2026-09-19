@@ -11,7 +11,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 def test_pyproject_structure_and_pep621_urls():
-    """Verify pyproject.toml contains required PEP 621 metadata, version 0.1.1,
+    """Verify pyproject.toml contains required PEP 621 metadata, version 0.1.4,
     and ecosystem URLs."""
     pyproject_path = REPO_ROOT / "pyproject.toml"
     assert pyproject_path.is_file(), "pyproject.toml must exist"
@@ -19,7 +19,7 @@ def test_pyproject_structure_and_pep621_urls():
 
     project = data.get("project", {})
     assert project.get("name") == "accounts-core"
-    assert project.get("version") == "0.1.3"
+    assert project.get("version") == "0.1.4"
     assert project.get("requires-python") == ">=3.10"
     assert project.get("license") == "MIT"
 
@@ -39,6 +39,7 @@ def test_pyproject_structure_and_pep621_urls():
     assert urls.get("Changelog") == "https://github.com/ellmos-ai/accounts-core/blob/main/CHANGELOG.md"
     assert urls.get("Security") == "https://github.com/ellmos-ai/accounts-core/blob/main/SECURITY.md"
     assert urls.get("Marketing Log") == "https://github.com/ellmos-ai/accounts-core/blob/main/MARKETING-LOG.txt"
+    assert urls.get("Third-Party Licenses") == "https://github.com/ellmos-ai/accounts-core/blob/main/THIRD_PARTY_LICENSES.md"
     assert urls.get("LLM Ready") == "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/llms.txt"
     assert urls.get("Parent Organization") == "https://github.com/ellmos-ai"
     assert urls.get("Umbrella Ecosystem") == "https://github.com/open-bricks"
@@ -148,9 +149,9 @@ def test_readme_badges_parity():
     de_text = readme_de.read_text(encoding="utf-8")
 
     expected_badges = [
-        "badge/version-0.1.3-blue.svg",
+        "badge/version-0.1.4-blue.svg",
         "actions/workflows/ci.yml/badge.svg",
-        "tests-44%20passed%20%7C%20100%25%20green-brightgreen.svg",
+        "tests-52%20passed%20%7C%20100%25%20green-brightgreen.svg",
         "python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg",
         "platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg",
         "privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg",
@@ -174,9 +175,8 @@ def test_llms_txt_current_timestamp_and_links():
     assert llms_path.is_file(), "llms.txt must exist"
     content = llms_path.read_text(encoding="utf-8")
 
-    assert "## Last-checked: 2026-09-12" in content
-    assert "0.1.3" in content
-    assert "44" in content
+    assert "## Last-checked: 2026-09-20" in content
+    assert "0.1.4" in content
     assert "SECURITY.md" in content
     assert "pyproject.toml" in content
     assert "CHANGELOG.md" in content
@@ -185,38 +185,40 @@ def test_llms_txt_current_timestamp_and_links():
     assert "THIRD_PARTY_LICENSES.md" in content
     assert "TODO.md" in content
     assert "INV-ACC-01" in content
+    assert "INV-ACC-10" in content
 
 
 def test_changelog_release_entry():
-    """Verify CHANGELOG.md contains the 0.1.3, 0.1.2 and 0.1.1 release entries."""
+    """Verify CHANGELOG.md contains the 0.1.4, 0.1.3, 0.1.2 and 0.1.1 release entries."""
     changelog_path = REPO_ROOT / "CHANGELOG.md"
     assert changelog_path.is_file(), "CHANGELOG.md must exist"
     content = changelog_path.read_text(encoding="utf-8")
 
+    assert "## [0.1.4] - 2026-09-20" in content
     assert "## [0.1.3] - 2026-09-12" in content
     assert "## [0.1.2] - 2026-09-11" in content
     assert "## [0.1.1] - 2026-09-09" in content
 
 
 def test_version_parity_across_artifacts():
-    """Verify version 0.1.3 is consistent across pyproject.toml, ellmos-module,
+    """Verify version 0.1.4 is consistent across pyproject.toml, ellmos-module,
     __init__.py, and llms.txt."""
     pyproject_path = REPO_ROOT / "pyproject.toml"
     pyproject_data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
-    assert pyproject_data["project"]["version"] == "0.1.3"
+    assert pyproject_data["project"]["version"] == "0.1.4"
 
     import json
     module_path = REPO_ROOT / "ellmos-module.v2.json"
     module_data = json.loads(module_path.read_text(encoding="utf-8"))
-    assert module_data["version"] == "0.1.3"
+    assert module_data["version"] == "0.1.4"
 
     init_path = REPO_ROOT / "src" / "accounts_core" / "__init__.py"
     init_content = init_path.read_text(encoding="utf-8")
-    assert '__version__ = "0.1.3"' in init_content
+    assert '__version__ = "0.1.4"' in init_content
 
     llms_path = REPO_ROOT / "llms.txt"
     llms_content = llms_path.read_text(encoding="utf-8")
-    assert "- Version: 0.1.3" in llms_content
+    assert "- Version: 0.1.4" in llms_content
 
 
 def test_marketing_log_structure_and_blueprints():
@@ -279,7 +281,7 @@ def test_readme_sequencediagram_mermaid_syntax():
 
 
 def test_governance_invariants_documented():
-    """Verify all 8 governance invariants (INV-ACC-01 to INV-ACC-08) are documented in both READMEs."""
+    """Verify all 10 governance invariants (INV-ACC-01 to INV-ACC-10) are documented in both READMEs."""
     expected_invariants = [
         "INV-ACC-01",
         "INV-ACC-02",
@@ -289,6 +291,8 @@ def test_governance_invariants_documented():
         "INV-ACC-06",
         "INV-ACC-07",
         "INV-ACC-08",
+        "INV-ACC-09",
+        "INV-ACC-10",
     ]
 
     for fname in ("README.md", "README_de.md"):
@@ -327,7 +331,7 @@ def test_readme_bilingual_section_parity():
     assert len(en_h2) == len(de_h2), (
         f"H2 header count mismatch between README.md ({len(en_h2)}) and README_de.md ({len(de_h2)})"
     )
-    assert len(en_h2) == 13, f"Expected exactly 13 H2 sections, found {len(en_h2)}"
+    assert len(en_h2) == 19, f"Expected exactly 19 H2 sections (1 Table of Contents + 18 content sections), found {len(en_h2)}"
 
 
 def test_third_party_licenses_inventory_and_zero_dependencies():
@@ -359,7 +363,7 @@ def test_todo_status_table_and_gate_readiness():
     content = todo_path.read_text(encoding="utf-8")
     assert "## STATUS" in content
     assert "| Category" in content or "|Category" in content
-    assert "0.1.3" in content
+    assert "0.1.4" in content
 
 
 def test_gitignore_complete_gate_entries():
@@ -433,3 +437,152 @@ def test_gitignore_multihost_conflict_patterns():
     for pattern in ["* (kopie)*", "* (copy)*", "*-WORKSTATION*", "uv.lock", "!package-lock.json"]:
         assert pattern in content, f"Missing pattern {pattern} in .gitignore"
 
+
+def test_readme_quick_navigation_anchors_parity():
+    """Verify 18-point quick navigation anchors parity across README.md and README_de.md."""
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    en_anchors = [
+        "key-features",
+        "visual-architecture",
+        "sequence-lifecycle",
+        "target-personas--discoverability",
+        "comparative-matrix--alternatives",
+        "contract--domain-boundaries",
+        "privacy-allowlist-projection",
+        "governance--runtime-invariants",
+        "installation",
+        "quickstart--usage-guide",
+        "camt-balance-ingestion",
+        "transit-publisher-specification",
+        "sibling-tools--ecosystem",
+        "third-party-licenses--transparency",
+        "repository-structure",
+        "development--test-matrix",
+        "security-policy--contact",
+        "statutory-notice--liability-limitation",
+    ]
+
+    de_anchors = [
+        "hauptmerkmale",
+        "visuelle-architektur",
+        "sequenz-lebenszyklus",
+        "zielgruppen--auffindbarkeit",
+        "vergleichsmatrix--alternativen",
+        "vertrag--domaenengrenzen",
+        "datenschutz-allowlist-projektion",
+        "governance--laufzeit-invarianten",
+        "installation",
+        "schnellstart--anwendungsbeispiele",
+        "camt-salden-verarbeitung",
+        "transit-publisher-spezifikation",
+        "geschwisterwerkzeuge--oekosystem",
+        "drittanbieter-lizenzen--transparenz",
+        "repository-struktur",
+        "entwicklung--testmatrix",
+        "sicherheitsrichtlinie--kontakt",
+        "gesetzlicher-hinweis--haftungsbeschraenkung",
+    ]
+
+    assert len(en_anchors) == 18
+    assert len(de_anchors) == 18
+
+    for anchor in en_anchors:
+        assert f'<a id="{anchor}"></a>' in readme_en, f"Anchor '{anchor}' missing in README.md"
+        assert f"(#{anchor})" in readme_en, f"TOC link '#{anchor}' missing in README.md"
+
+    for anchor in de_anchors:
+        assert f'<a id="{anchor}"></a>' in readme_de, f"Anchor '{anchor}' missing in README_de.md"
+        assert f"(#{anchor})" in readme_de, f"TOC link '#{anchor}' missing in README_de.md"
+
+
+def test_target_personas_and_high_intent_keywords():
+    """Verify target personas [PERSONA-01] to [PERSONA-04] and high-intent SEO queries."""
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+    mkt = (REPO_ROOT / "MARKETING-LOG.txt").read_text(encoding="utf-8")
+
+    for persona in ["[PERSONA-01]", "[PERSONA-02]", "[PERSONA-03]", "[PERSONA-04]"]:
+        assert persona in readme_en, f"{persona} missing in README.md"
+        assert persona in readme_de, f"{persona} missing in README_de.md"
+
+    for query in ["camt balance import", "privacy-safe bank balance projection"]:
+        assert query in readme_en, f"Query '{query}' missing in README.md"
+        assert query in readme_de, f"Query '{query}' missing in README_de.md"
+        assert query in mkt, f"Query '{query}' missing in MARKETING-LOG.txt"
+
+
+def test_comparative_matrix_alternatives():
+    """Verify 10-dimension comparative matrix vs. 4 alternatives in both READMEs."""
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    alternatives = [
+        "accounts-core",
+        "Ad-Hoc",
+        "Odoo",
+        "Tryton",
+        "Plaid",
+        "Tink",
+    ]
+
+    for alt in alternatives:
+        assert alt in readme_en, f"Alternative '{alt}' missing in README.md"
+        assert alt in readme_de, f"Alternative '{alt}' missing in README_de.md"
+
+
+def test_statutory_notice_bgb_521():
+    """Verify statutory notice (§ 521 BGB Gefälligkeitsrecht) in documentation and llms.txt."""
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+    llms = (REPO_ROOT / "llms.txt").read_text(encoding="utf-8")
+
+    assert "521 BGB" in readme_en, "§ 521 BGB missing in README.md"
+    assert "521 BGB" in readme_de, "§ 521 BGB missing in README_de.md"
+    assert "521 BGB" in llms, "§ 521 BGB missing in llms.txt"
+
+
+def test_third_party_licenses_audit_recency():
+    """Verify THIRD_PARTY_LICENSES.md audit date, Level 1 SBOM, and Invariant Matrix."""
+    lic_path = REPO_ROOT / "THIRD_PARTY_LICENSES.md"
+    assert lic_path.is_file(), "THIRD_PARTY_LICENSES.md must exist"
+    content = lic_path.read_text(encoding="utf-8")
+
+    assert "2026-09-20" in content, "Audit date 2026-09-20 missing in THIRD_PARTY_LICENSES.md"
+    assert "Level 1 SBOM" in content or "Level 1 Software Bill of Materials" in content
+    assert "RunAsInvoker" in content
+    for inv in [f"INV-ACC-{i:02d}" for i in range(1, 11)]:
+        assert inv in content, f"Invariant {inv} missing in THIRD_PARTY_LICENSES.md"
+
+
+def test_run_as_invoker_user_mode_invariant():
+    """Verify INV-ACC-09 (RunAsInvoker user-mode non-elevation) across all documentation."""
+    for fname in ["README.md", "README_de.md", "THIRD_PARTY_LICENSES.md", "llms.txt"]:
+        content = (REPO_ROOT / fname).read_text(encoding="utf-8")
+        assert "INV-ACC-09" in content, f"INV-ACC-09 missing in {fname}"
+        assert "RunAsInvoker" in content, f"RunAsInvoker missing in {fname}"
+
+
+def test_sla_commitments_security_policy_invariant():
+    """Verify INV-ACC-10 (48h response & 5-day triage SLA) across all documentation."""
+    for fname in ["SECURITY.md", "README.md", "README_de.md", "llms.txt"]:
+        content = (REPO_ROOT / fname).read_text(encoding="utf-8")
+        assert "48" in content, f"48h response missing in {fname}"
+        assert "5" in content, f"5-day triage missing in {fname}"
+    assert "INV-ACC-10" in (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    assert "INV-ACC-10" in (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+    assert "INV-ACC-10" in (REPO_ROOT / "llms.txt").read_text(encoding="utf-8")
+
+
+def test_license_and_bom_level_certification():
+    """Verify Level 1 SBOM certification, zero dependencies, and MIT license consistency."""
+    lic_content = (REPO_ROOT / "THIRD_PARTY_LICENSES.md").read_text(encoding="utf-8")
+    assert "Level 1 SBOM" in lic_content
+    assert "Zero External Runtime Dependencies" in lic_content
+    assert "PSF" in lic_content
+    assert "MIT" in lic_content
+
+    pyproject_data = tomllib.loads((REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    assert pyproject_data["project"]["dependencies"] == []
+    assert pyproject_data["project"]["license"] == "MIT"

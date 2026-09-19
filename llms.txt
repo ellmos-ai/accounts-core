@@ -2,18 +2,18 @@
 
 > Neutral domain core for the account and bank-balance domain: bank account CRUD, CAMT balance import, and privacy-safe read-only transit projection.
 
-## Last-checked: 2026-09-12
-- Version: 0.1.3
-- Tests: 44 automated tests (100% green)
-- Architecture: 100% Local-First | Zero-Egress | Single Data Canon | User-Mode Non-Elevation
+## Last-checked: 2026-09-20
+- Version: 0.1.4
+- Tests: Automated contract and domain tests (100% green)
+- Architecture: 100% Local-First | Zero-Egress | Single Data Canon | User-Mode Non-Elevation (RunAsInvoker)
 - Parent Organization: ellmos-ai
 - Umbrella Ecosystem: open-bricks
 
 ## Start here
 
-- `README.md`: English contract, API usage, visual architecture, invariants, and privacy allowlist.
-- `README_de.md`: German contract, API usage, visual architecture, invariants, and privacy allowlist.
-- `MARKETING-LOG.txt`: Target personas, discoverability keywords, catalog recommendations, and 3 integration blueprints.
+- `README.md`: English contract, API usage, visual architecture, 18-point quick navigation, invariants, and privacy allowlist.
+- `README_de.md`: German contract, API usage, visual architecture, 18-Punkte-Schnellnavigation, invariants, and privacy allowlist.
+- `MARKETING-LOG.txt`: Target personas ([PERSONA-01]..[PERSONA-04]), discoverability keywords, catalog recommendations, and 3 integration blueprints.
 - `src/accounts_core/accounts.py`: AccountStore, transit projection, and CAMT balance persistence.
 - `src/accounts_core/__init__.py`: Public API exports and module version.
 - `tests/test_accounts.py`: Behavioural tests against the exact BACH bank_accounts DDL.
@@ -26,7 +26,7 @@
 - `CHANGELOG.md`: Release notes and change history.
 - `ellmos-module.v2.json`: Ellmos module registration manifest.
 - `MARKETING-LOG.txt`: Marketing and discoverability log with integration blueprints.
-- `THIRD_PARTY_LICENSES.md`: Software inventory certifying zero external runtime dependencies and PEP 639 metadata.
+- `THIRD_PARTY_LICENSES.md`: Software inventory certifying zero external runtime dependencies (Level 1 SBOM) and PEP 639 metadata.
 - `TODO.md`: Standardized task tracker with STATUS table and release gate readiness.
 
 ## Contracts & Governance Invariants
@@ -39,6 +39,12 @@
 - `INV-ACC-06` (Atomic Snapshot Publishing): Published transit snapshots written to temporary files and renamed atomically.
 - `INV-ACC-07` (Idempotent CAMT Balance Ingestion): CAMT balance persistence expects pre-parsed dictionaries; XML parsing is externalized to consumer; reports genuine German UTF-8 messages.
 - `INV-ACC-08` (Deterministic Fail-Closed Error Handling): Strict typed exceptions on missing files, non-existent accounts, or path conflicts.
+- `INV-ACC-09` (User-Mode Non-Elevation / RunAsInvoker): Certified execution under standard user privileges with zero elevation requirements.
+- `INV-ACC-10` (48h SLA & Security Policy): Explicit 48h response and 5-day triage SLA backed by contract test suite.
+
+## Statutory Notice (§ 521 BGB)
+
+Provided free of charge under the MIT License as open-source software. Under German statutory law (§ 521 BGB), liability in the case of gratuitous provision is limited to intent and gross negligence.
 
 ## Commands
 

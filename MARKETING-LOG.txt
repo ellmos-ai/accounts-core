@@ -4,7 +4,7 @@
 - **Repository**: `ellmos-ai/accounts-core`
 - **Canonical Path**: `C:\_Local_DEV\repos\accounts-core`
 - **Default Branch**: `main`
-- **Current Version**: `0.1.3`
+- **Current Version**: `0.1.4`
 - **License**: MIT
 - **Architecture**: Domain-neutral, zero network egress, stdlib-only core library
 
@@ -12,26 +12,39 @@
 
 ## 1. Target Personas & Audiences
 
-### Persona 1: FinTech & Local Accounting Engineers
+### `[PERSONA-01]` FinTech & Local Accounting Engineers
 - **Need**: Lightweight, robust domain primitives for bank accounts, checking accounts, credit cards, IBAN normalization, and balance tracking.
 - **Value Prop**: Zero heavy dependencies, pure standard library, robust SQLite integration that respects existing schemas without creating or owning tables.
 
-### Persona 2: Privacy-by-Design & Local-First Architects
+### `[PERSONA-02]` Privacy-by-Design & Local-First Architects
 - **Need**: Sharing account information with UI components, caching layers, or external services without leaking sensitive PII or full account identifiers.
 - **Value Prop**: Read-only transit projection (`publish_accounts_transit`) with strict 5-field allowlist and guaranteed IBAN masking (`****1234`). Source database opened in immutable read-only mode (`mode=ro`).
 
-### Persona 3: Multi-Source Banking Data Integrators
+### `[PERSONA-03]` Multi-Source Banking Data Integrators
 - **Need**: Ingesting bank balance updates from CAMT XML files (camt.052, camt.053) without duplicate records or destructive overwrites.
 - **Value Prop**: Idempotent CAMT parser and updater that matches accounts by normalized IBAN, reporting genuine German status feedback and balance diffs.
 
-### Persona 4: Autonomous AI Agent Framework Builders
+### `[PERSONA-04]` Autonomous AI Agent Framework Builders
 - **Need**: Safe, predictable tools for agentic systems (e.g. Claude Code, Codex, Antigravity, MCP servers) to query financial balances with deterministic error handling and zero risk of network egress or data corruption.
 - **Value Prop**: Pure local-first execution, typed exceptions, atomic file publishing, and zero external telemetry.
 
 ---
 
 ## 2. Discoverability & SEO Keywords
-- `bank-accounts`, `iban-validation`, `camt-parser`, `camt053`, `financial-primitives`, `sqlite-transit`, `privacy-by-design`, `local-first`, `zero-telemetry`, `python-stdlib`, `ellmos-ai`, `open-bricks`
+- **Core Topics**: `bank-accounts`, `iban-validation`, `camt-parser`, `camt053`, `financial-primitives`, `sqlite-transit`, `privacy-by-design`, `local-first`, `zero-telemetry`, `python-stdlib`, `ellmos-ai`, `open-bricks`
+- **High-Intent Search Queries**:
+  - `python bank account library local sqlite`
+  - `camt balance import python zero dependencies`
+  - `camt balance import`
+  - `privacy-safe bank balance projection`
+  - `masked iban transit projection sqlite`
+  - `local-first financial data minimization`
+  - `idempotent camt balance update sqlite`
+  - `camt 053 balance parser python`
+  - `iso 20022 account balance persistence`
+  - `mcp bank account tools local first`
+  - `ai agent financial balance tool zero egress`
+  - `deterministic offline accounting python`
 
 ---
 
@@ -116,3 +129,15 @@ print(f"Published {result['count']} accounts securely.")
 - **PEP 621 Metadata Expansion**: Added `"LLM Ready"` context endpoint URL to `[project.urls]` in `pyproject.toml` pointing directly to raw `llms.txt`.
 - **Ruff Linter Configuration**: Configured explicit `[tool.ruff.lint]` rule selection (`["E4", "E7", "E9", "F", "W", "B", "SIM", "C4", "RUF"]`) and harmonized `__all__` sorting in `src/accounts_core/__init__.py`.
 - **Contract Test Suite Expansion**: Added dedicated contract tests in `tests/test_metadata.py` verifying CI timeout guardrail, stale lifecycle workflow existence, PEP 621 LLM-Ready URL, and gitignore conflict patterns.
+
+---
+
+## 6. Discoverability, Visual Architecture & Marketing Audit (2026-09-20)
+
+- **18-Point Bilingual Navigation Parity**: Established reciprocal HTML anchor navigation (`<a id="..."></a>`) in `README.md` and `README_de.md` across 18 synchronized sections with 1:1 parity and full backlink alignment.
+- **Target Personas & SEO Discovery**: Codified 4 specific user personas (`[PERSONA-01]` to `[PERSONA-04]`) with high-intent search queries spanning local FinTech, privacy-first storage, CAMT parsing, and AI agent frameworks.
+- **10-Dimension Comparative Matrix**: Mapped `accounts-core` against Raw Ad-Hoc Scripts, Heavyweight ERPs (Odoo/Tryton), and Cloud SaaS APIs (Plaid/Tink) across 10 architectural criteria and formal invariants (`INV-ACC-01` to `INV-ACC-10`).
+- **Level 1 SBOM & Invariant Matrix**: Codified pure stdlib dependency verification in `THIRD_PARTY_LICENSES.md` with explicit RunAsInvoker non-elevation certification and cross-reference table.
+- **Statutory Notice (§ 521 BGB)**: Codified legal disclaimer for non-commercial open-source distribution under German law.
+- **GitHub Live Discoverability**: Expanded repository topics to 20/20 on GitHub and set documentation homepage URL.
+- **Contract Test Suite Expansion**: Added automated contract tests verifying quick navigation anchors, persona queries, comparative matrix dimensions, 10 invariants, and § 521 BGB notices.

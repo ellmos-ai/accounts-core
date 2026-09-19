@@ -1,8 +1,8 @@
 # TODO.md — Active work
 
-**Version:** 0.1.3
-**Updated:** 2026-09-12
-**Reason:** Technical hygiene, CI matrix hardening, stale workflow, gitignore defense, and PEP 621 metadata expansion
+**Version:** 0.1.4
+**Updated:** 2026-09-20
+**Reason:** Discoverability, visual architecture, 18-point bilingual quick navigation parity, target personas, 10-dimension comparative matrix, dual Mermaid diagrams, Level 1 SBOM, and statutory notice (§ 521 BGB)
 **Purpose:** Track only work that remains open.
 
 ## STATUS
