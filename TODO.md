@@ -1,8 +1,8 @@
 # TODO.md — Active work
 
 **Version:** 0.1.4
-**Updated:** 2026-09-20
-**Reason:** Discoverability, visual architecture, 18-point bilingual quick navigation parity, target personas, 10-dimension comparative matrix, dual Mermaid diagrams, Level 1 SBOM, and statutory notice (§ 521 BGB)
+**Updated:** 2026-09-22
+**Reason:** CI/CD Lifecycle-Härtung (welcome.yml, stale.yml), kanonische NOTICE-Attribution, Multi-Host-Lock-Schutz, Level 1 SBOM Re-Audit und Vertragstests (Pfad A)
 **Purpose:** Track only work that remains open.
 
 ## STATUS

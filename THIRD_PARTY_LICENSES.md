@@ -2,8 +2,9 @@
 
 **Project:** `accounts-core`
 **License:** [MIT License](LICENSE)
-**Audit Date:** 2026-09-20 (v0.1.4)
+**Audit Date:** 2026-09-22 (v0.1.4)
 **Status:** Invariant Confirmed — Zero External Runtime Dependencies (Level 1 SBOM)
+**Notice & Attribution:** [NOTICE](NOTICE)
 **Privilege Model:** `RunAsInvoker` (Strict User-Mode Non-Elevation)
 
 ---

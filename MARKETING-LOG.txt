@@ -141,3 +141,15 @@ print(f"Published {result['count']} accounts securely.")
 - **Statutory Notice (§ 521 BGB)**: Codified legal disclaimer for non-commercial open-source distribution under German law.
 - **GitHub Live Discoverability**: Expanded repository topics to 20/20 on GitHub and set documentation homepage URL.
 - **Contract Test Suite Expansion**: Added automated contract tests verifying quick navigation anchors, persona queries, comparative matrix dimensions, 10 invariants, and § 521 BGB notices.
+
+---
+
+## 7. Technical Hygiene, CI Lifecycle Hardening & Lock Defense Audit (2026-09-22)
+
+- **Canonical NOTICE Attribution**: Added root `NOTICE` file declaring canonical attribution to Lukas Geiger, ellmos-ai, and open-bricks with MIT licensing and Level 1 SBOM reference.
+- **CI/CD Lifecycle Hardening**: Deployed `.github/workflows/welcome.yml` (`actions/first-interaction@v3`, `timeout-minutes: 5`, `cancel-in-progress: true`) and hardened `.github/workflows/stale.yml` with `timeout-minutes: 10` and concurrency `cancel-in-progress: true`.
+- **Multi-Host Cloud-Sync & Lock Protection**: Hardened `.gitignore` against multi-host conflict tokens (`*-ASUS*`, `*-Mac Studio*`, `*-MacBook*`), canonical lock patterns (`LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`, `.automation-lock`), and testing/build caches (`.hypothesis/`, `.turbo/`, `.nyc_output/`).
+- **Level 1 SBOM Re-Audit**: Re-audited `THIRD_PARTY_LICENSES.md` confirming zero external runtime dependencies, 10 system invariants (`INV-ACC-01` through `INV-ACC-10`), and `RunAsInvoker` non-elevation privilege model.
+- **PEP 621 Metadata Expansion**: Added `"Notice"` URL to `[project.urls]` in `pyproject.toml`, included `NOTICE` in `license-files`, added `norecursedirs` to `[tool.pytest.ini_options]`, and strictly preserved version `0.1.4` per `T-20260920-167562623`.
+- **Documentation & Badge Parity**: Updated `llms.txt` timestamp to 2026-09-22, synchronized NOTICE badge and test count badge across `README.md` and `README_de.md`.
+- **Contract Test Suite Expansion**: Added dedicated contract tests in `tests/test_metadata.py` verifying NOTICE attribution, CI lifecycle workflows, lock defense patterns, and PEP 621 metadata.
