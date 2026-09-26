@@ -1,31 +1,55 @@
-GATE: lifted
-SCOPE: released
+GATE: conditional
+SCOPE: released-pending-history-decision
 CREATED: 2026-09-26 Europe/Berlin
+UPDATED: 2026-09-26 Europe/Berlin (Korrektur nach zweitem Fund durch merge-reviewer)
 TICKET: T-20260926-audit-private-bach-ocean-deps (ellmos-ai/bach PR #111 Anlass)
 
 Freigabe: Nutzer-Go 2026-09-26 ("grossartig, freigegeben" zum Banner), relayed
 durch team-lead; vorher hatte LOCK.txt (LOCK.user.claude-code, Banner-Commit)
-diesen Repo gesperrt. Mit der Freigabe war der Lock-Zweck erfuellt und die
-Datei wurde vom team-lead entfernt.
+diesen Repo gesperrt.
 
-repo-publish-check, mit der gehaerteten Methode (nach dem Fund bei
-doc-services, siehe dortiges PUBLIC.txt): Pfadmuster UND Secret-Muster liefen
-gemeinsam ueber `git log -p --all`, nicht getrennt.
+repo-publish-check, erster Durchlauf (2026-09-26) — UNVOLLSTAENDIG:
+Der Pfadmuster-Grep lief nur ueber die Historie (`git log -p --all`), NICHT
+ueber den Arbeitsbaum. Der reale Fund in MARKETING-LOG.txt (Arbeitsbaum) blieb
+deshalb unentdeckt. merge-reviewer stoppte den PR und fand zusaetzlich, dass
+derselbe Grep-Befehl bei direkter Ausfuehrung durch das Werkzeug den
+Arbeitsbaum-Fund UND die Historien-Fund NICHT meldete — Ursache war eine
+Backslash-Transportluecke beim Aufruf (Muster kam mit falscher
+Backslash-Anzahl bei grep an), nicht die Regex selbst.
 
-FUND (Historie, woertlich): keiner.
-  Befehl: git log -p --all | grep -EnI 'C:\\Users\\|C:\\_Local_DEV|/home/[a-z]+|/Users/[A-Za-z]+|OneDrive|\.docx|\.xlsx|\.pdf|CREDENTIALS'
-  Ergebnis: 0 Treffer.
-  Secret-Token-Muster (ghp_/sk-/AKIA/PEM-Header) in derselben Historie:
-  0 Treffer.
+repo-publish-check, zweiter Durchlauf (2026-09-26) — mit Positivprobe
+verifizierte Methode: Pfadmuster liegen jetzt in einer Datei
+(`grep -f`), nicht als Inline-String im Aufruf, dazu ein Testrepo mit
+bekanntem eingepflanztem Pfad, das die Suche nachweislich findet, bevor sie
+auf echte Repos angewendet wird.
 
-Arbeitsbaum:
-  - Secret-/Token-Muster: 0 Treffer.
-  - E-Mail-Adressen: nur die vier oeffentlichen Security-/Support-Kontakte
-    (security@open-bricks.org, security@ellmos.ai, support@lukasgeiger.com,
-    lukas@open-bricks.org) — bewusst als Kontaktadressen dokumentiert,
-    kein Datenleck.
-  - Lizenz: MIT (LICENSE, THIRD_PARTY_LICENSES.md vorhanden).
-  - Banner: assets/banner.png + assets/banner.svg bereits getrackt, aber in
-    keiner README eingebunden — nachgeholt (README.md + README_de.md).
+FUND (Arbeitsbaum): `MARKETING-LOG.txt:5` — `C:\_Local_DEV\repos\accounts-core`
+(kanonischer Klonpfad, kein Benutzername).
+FUND (Historie, 3x): dieselbe Zeichenkette in drei frueheren Fassungen von
+MARKETING-LOG.txt (Commits mit den Marketing-/Discoverability-Aenderungen).
+Kein Zugangsdaten- oder Secret-Fund, kein Benutzername — ausschliesslich der
+Klonpfad-String.
 
-Freigabe: erteilt (Nutzer-Go + sauberer gehaerteter Check).
+KORRIGIERT (Arbeitsbaum, dieser Branch):
+  - MARKETING-LOG.txt: aus dem Git-Tracking genommen (`git rm --cached`) und
+    in `.gitignore` aufgenommen — Nutzerentscheid vom 2026-09-26: interne
+    Marketing-/Automationsnotizen gehoeren grundsaetzlich nicht in oeffentliche
+    Repos.
+  - Alle Anschlussstellen dieser Entscheidung mitgezogen, damit nichts auf die
+    Datei zeigt, die es nach dem Push nicht mehr gibt: `pyproject.toml`
+    ("Marketing Log"-URL entfernt), `llms.txt` (zwei Dateilisten-Eintraege
+    entfernt), README.md/README_de.md (Badge + Verzeichnisbaum-Zeile
+    entfernt), `tests/test_metadata.py` (Badge-Parity-Assertion entfernt,
+    zwei MARKETING-LOG-Inhaltstests auf "nur pruefen wenn lokal vorhanden"
+    umgestellt statt hart zu scheitern).
+  - `tests/test_accounts.py:158`: Test-Fixture `holder_name` von "Lukas
+    Geiger" (echter Name) auf "Erika Musterfrau" (generischer Platzhalter)
+    geaendert.
+
+OFFEN — Nutzerentscheidung ausstehend (team-lead holt sie ein):
+  Duerfen die 3 Historien-Treffer (nur Klonpfad, kein Benutzername) bleiben,
+  oder wird die Historie ebenfalls bereinigt/neu aufgesetzt? Bis zur
+  Entscheidung bleibt dieses Gate CONDITIONAL. GitHub-Sichtbarkeit wurde
+  bislang so oder so NICHT auf public umgeschaltet.
+
+52/52 Tests gruen nach der Korrektur.
