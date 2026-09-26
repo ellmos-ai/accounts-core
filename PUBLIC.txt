@@ -1,7 +1,7 @@
 GATE: conditional
 SCOPE: released-pending-history-decision
 CREATED: 2026-09-26 Europe/Berlin
-UPDATED: 2026-09-26 Europe/Berlin (Korrektur nach zweitem Fund durch merge-reviewer)
+UPDATED: 2026-09-27 Europe/Berlin (Merge von main 39bbd7a nach merge-reviewer-OK)
 TICKET: T-20260926-audit-private-bach-ocean-deps (ellmos-ai/bach PR #111 Anlass)
 
 Freigabe: Nutzer-Go 2026-09-26 ("grossartig, freigegeben" zum Banner), relayed
@@ -23,7 +23,7 @@ verifizierte Methode: Pfadmuster liegen jetzt in einer Datei
 bekanntem eingepflanztem Pfad, das die Suche nachweislich findet, bevor sie
 auf echte Repos angewendet wird.
 
-FUND (Arbeitsbaum): `MARKETING-LOG.txt:5` — `C:\_Local_DEV\repos\accounts-core`
+FUND (Arbeitsbaum): `MARKETING-LOG.txt:5` — `<klonpfad>\accounts-core`
 (kanonischer Klonpfad, kein Benutzername).
 FUND (Historie, 3x): dieselbe Zeichenkette in drei frueheren Fassungen von
 MARKETING-LOG.txt (Commits mit den Marketing-/Discoverability-Aenderungen).
@@ -40,8 +40,9 @@ KORRIGIERT (Arbeitsbaum, dieser Branch):
     ("Marketing Log"-URL entfernt), `llms.txt` (zwei Dateilisten-Eintraege
     entfernt), README.md/README_de.md (Badge + Verzeichnisbaum-Zeile
     entfernt), `tests/test_metadata.py` (Badge-Parity-Assertion entfernt,
-    zwei MARKETING-LOG-Inhaltstests auf "nur pruefen wenn lokal vorhanden"
-    umgestellt statt hart zu scheitern).
+    drei MARKETING-LOG-Inhaltstests auf "nur pruefen wenn lokal vorhanden"
+    umgestellt statt hart zu scheitern — der dritte kam per Merge aus
+    main 39bbd7a hinzu).
   - `tests/test_accounts.py:158`: Test-Fixture `holder_name` von "Lukas
     Geiger" (echter Name) auf "Erika Musterfrau" (generischer Platzhalter)
     geaendert.
@@ -52,4 +53,6 @@ OFFEN — Nutzerentscheidung ausstehend (team-lead holt sie ein):
   Entscheidung bleibt dieses Gate CONDITIONAL. GitHub-Sichtbarkeit wurde
   bislang so oder so NICHT auf public umgeschaltet.
 
-52/52 Tests gruen nach der Korrektur.
+58/58 Tests gruen nach Korrektur + Merge von main (39bbd7a brachte 6 neue Tests mit,
+davon einer mit demselben MARKETING-LOG.txt-Hardcode-Muster — ebenfalls auf
+"nur pruefen wenn lokal vorhanden" umgestellt).

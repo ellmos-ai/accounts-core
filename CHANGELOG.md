@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Repository Hygiene, CI Lifecycle Hardening, Lock Defense & Level 1 SBOM Audit (Pfad A)
+
+- **Canonical Attribution**: Added root `NOTICE` file declaring attribution to Lukas Geiger, ellmos-ai, and the open-bricks open-source umbrella with MIT licensing and Level 1 SBOM cross-reference.
+- **CI/CD Lifecycle Hardening**: Deployed `.github/workflows/welcome.yml` (`actions/first-interaction@v3`, `timeout-minutes: 5`, `cancel-in-progress: true`, least-privilege permissions) and hardened `.github/workflows/stale.yml` with explicit `timeout-minutes: 10` and concurrency `cancel-in-progress: true`.
+- **Multi-Host Cloud-Sync & Lock Defense**: Hardened `.gitignore` against cross-host conflict tokens (`*-ASUS*`, `*-Mac Studio*`, `*-MacBook*`), canonical lock patterns (`LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`, `.automation-lock`), and testing/build caches (`.hypothesis/`, `.turbo/`, `.nyc_output/`).
+- **Level 1 SBOM Re-Audit**: Re-audited `THIRD_PARTY_LICENSES.md` (Stand 2026-09-22), verifying zero external runtime dependencies, 10 governance invariants (`INV-ACC-01` to `INV-ACC-10`), and unprivileged `RunAsInvoker` non-elevation mode.
+- **PEP 621 Standardisierung in pyproject.toml**: Added `"Notice"` URL under `[project.urls]`, included `NOTICE` in `license-files`, configured `norecursedirs` in `[tool.pytest.ini_options]`, and strictly preserved version `0.1.4` per `T-20260920-167562623`.
+- **Synchronized Documentation & Badges**: Updated `llms.txt` (Last-checked: 2026-09-22, NOTICE and Level 1 SBOM references), synchronized `README.md` and `README_de.md` badges (NOTICE badge, test count), and updated `MARKETING-LOG.txt`.
+- **Contract Test Suite Expansion**: Extended `tests/test_metadata.py` with contract tests verifying canonical NOTICE attribution, hardened CI lifecycle workflows (timeouts and concurrency), gitignore tokens, and pyproject.toml configuration.
+
 ## [0.1.4] - 2026-09-20
 
 ### Discoverability, Visual Architecture, 18-Point Quick Navigation & SBOM (Pfad B)

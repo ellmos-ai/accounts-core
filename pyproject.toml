@@ -9,7 +9,7 @@ description = "Neutral domain core for the account/bank-balance domain: bank acc
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-license-files = ["LICENSE", "THIRD_PARTY_LICENSES.md"]
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md"]
 authors = [{name = "Lukas Geiger"}]
 dependencies = []
 keywords = ["accounts", "bank-accounts", "camt", "sqlite", "local-first", "bach", "ocean", "financial-primitives", "iban-validation", "privacy-by-design", "zero-telemetry"]
@@ -35,6 +35,7 @@ Issues = "https://github.com/ellmos-ai/accounts-core/issues"
 Changelog = "https://github.com/ellmos-ai/accounts-core/blob/main/CHANGELOG.md"
 Security = "https://github.com/ellmos-ai/accounts-core/blob/main/SECURITY.md"
 "Third-Party Licenses" = "https://github.com/ellmos-ai/accounts-core/blob/main/THIRD_PARTY_LICENSES.md"
+Notice = "https://github.com/ellmos-ai/accounts-core/blob/main/NOTICE"
 "LLM Ready" = "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/llms.txt"
 "Parent Organization" = "https://github.com/ellmos-ai"
 "Umbrella Ecosystem" = "https://github.com/open-bricks"
@@ -49,6 +50,7 @@ where = ["src"]
 testpaths = ["tests"]
 pythonpath = ["src", "."]
 addopts = "-ra -v"
+norecursedirs = [".git", ".pytest_cache", "__pycache__", "build", "dist", ".venv", "venv"]
 
 [tool.ruff]
 line-length = 120

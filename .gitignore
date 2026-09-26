@@ -14,6 +14,9 @@ wheelhouse/
 .coverage
 coverage/
 htmlcov/
+.hypothesis/
+.turbo/
+.nyc_output/
 
 # Multi-Host-Synchronisationskonflikte
 *-conflict-*
@@ -32,7 +35,11 @@ LOCK
 LOCK.*
 *.lock
 LOCK*.txt
+LOCK.user.*
+LOCK.until.*
+LOCK.condition.*
 LOCK.permissions.json
+.automation-lock
 uv.lock
 !package-lock.json
 
@@ -69,8 +76,11 @@ id_ed25519*
 # Multi-Host Host-Tokens & Merge-Reste
 *-WORKSTATION*
 *-WORKSTATION-LG*
+*-ASUS*
 *-ASUS-GEI*
 *-LAPTOP*
+*-Mac Studio*
+*-MacBook*
 *.orig
 *.rej
 

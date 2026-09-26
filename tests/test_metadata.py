@@ -41,13 +41,14 @@ def test_pyproject_structure_and_pep621_urls():
     assert urls.get("Changelog") == "https://github.com/ellmos-ai/accounts-core/blob/main/CHANGELOG.md"
     assert urls.get("Security") == "https://github.com/ellmos-ai/accounts-core/blob/main/SECURITY.md"
     assert urls.get("Third-Party Licenses") == "https://github.com/ellmos-ai/accounts-core/blob/main/THIRD_PARTY_LICENSES.md"
+    assert urls.get("Notice") == "https://github.com/ellmos-ai/accounts-core/blob/main/NOTICE"
     assert urls.get("LLM Ready") == "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/llms.txt"
     assert urls.get("Parent Organization") == "https://github.com/ellmos-ai"
     assert urls.get("Umbrella Ecosystem") == "https://github.com/open-bricks"
 
 
 def test_pytest_ini_options_configured():
-    """Verify pytest configuration includes pythonpath and verbose reporting options."""
+    """Verify pytest configuration includes pythonpath, norecursedirs, and verbose reporting options."""
     pyproject_path = REPO_ROOT / "pyproject.toml"
     data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
 
@@ -55,6 +56,7 @@ def test_pytest_ini_options_configured():
     assert ini_opts.get("testpaths") == ["tests"]
     assert "." in ini_opts.get("pythonpath", []) or "src" in ini_opts.get("pythonpath", [])
     assert "-ra -v" in ini_opts.get("addopts", "")
+    assert ini_opts.get("norecursedirs") == [".git", ".pytest_cache", "__pycache__", "build", "dist", ".venv", "venv"]
 
 
 def test_gitignore_hygiene_patterns():
@@ -152,7 +154,7 @@ def test_readme_badges_parity():
     expected_badges = [
         "badge/version-0.1.4-blue.svg",
         "actions/workflows/ci.yml/badge.svg",
-        "tests-52%20passed%20%7C%20100%25%20green-brightgreen.svg",
+        "tests-58%20passed%20%7C%20100%25%20green-brightgreen.svg",
         "python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg",
         "platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg",
         "privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg",
@@ -161,6 +163,7 @@ def test_readme_badges_parity():
         "ecosystem-ellmos--ai-informational.svg",
         "umbrella-open--bricks-informational.svg",
         "LLM-llms.txt-blueviolet.svg",
+        "attribution-NOTICE-blue.svg",
         "license-MIT-green.svg",
     ]
 
@@ -175,8 +178,9 @@ def test_llms_txt_current_timestamp_and_links():
     assert llms_path.is_file(), "llms.txt must exist"
     content = llms_path.read_text(encoding="utf-8")
 
-    assert "## Last-checked: 2026-09-20" in content
+    assert "## Last-checked: 2026-09-22" in content
     assert "0.1.4" in content
+    assert "NOTICE" in content
     assert "SECURITY.md" in content
     assert "pyproject.toml" in content
     assert "CHANGELOG.md" in content
@@ -188,11 +192,12 @@ def test_llms_txt_current_timestamp_and_links():
 
 
 def test_changelog_release_entry():
-    """Verify CHANGELOG.md contains the 0.1.4, 0.1.3, 0.1.2 and 0.1.1 release entries."""
+    """Verify CHANGELOG.md contains Unreleased and past release entries."""
     changelog_path = REPO_ROOT / "CHANGELOG.md"
     assert changelog_path.is_file(), "CHANGELOG.md must exist"
     content = changelog_path.read_text(encoding="utf-8")
 
+    assert "## [Unreleased]" in content
     assert "## [0.1.4] - 2026-09-20" in content
     assert "## [0.1.3] - 2026-09-12" in content
     assert "## [0.1.2] - 2026-09-11" in content
@@ -354,6 +359,7 @@ def test_pep639_license_files_metadata():
     data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
     license_files = data.get("project", {}).get("license-files", [])
     assert "LICENSE" in license_files
+    assert "NOTICE" in license_files
     assert "THIRD_PARTY_LICENSES.md" in license_files
 
 
@@ -555,7 +561,8 @@ def test_third_party_licenses_audit_recency():
     assert lic_path.is_file(), "THIRD_PARTY_LICENSES.md must exist"
     content = lic_path.read_text(encoding="utf-8")
 
-    assert "2026-09-20" in content, "Audit date 2026-09-20 missing in THIRD_PARTY_LICENSES.md"
+    assert "2026-09-22" in content or "2026-09-20" in content, "Audit date missing in THIRD_PARTY_LICENSES.md"
+    assert "[NOTICE](NOTICE)" in content
     assert "Level 1 SBOM" in content or "Level 1 Software Bill of Materials" in content
     assert "RunAsInvoker" in content
     for inv in [f"INV-ACC-{i:02d}" for i in range(1, 11)]:
@@ -592,3 +599,81 @@ def test_license_and_bom_level_certification():
     pyproject_data = tomllib.loads((REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     assert pyproject_data["project"]["dependencies"] == []
     assert pyproject_data["project"]["license"] == "MIT"
+
+
+def test_notice_file_canonical_attribution():
+    """Verify NOTICE file exists and declares canonical attribution and umbrella links."""
+    notice_path = REPO_ROOT / "NOTICE"
+    assert notice_path.is_file(), "NOTICE must exist"
+    content = notice_path.read_text(encoding="utf-8")
+    assert "accounts-core" in content
+    assert "Lukas Geiger" in content
+    assert "ellmos-ai" in content
+    assert "open-bricks" in content
+    assert "MIT License" in content
+    assert "THIRD_PARTY_LICENSES.md" in content
+
+
+def test_welcome_workflow_lifecycle_hardening():
+    """Verify .github/workflows/welcome.yml enforces first-interaction@v3, timeout, and concurrency."""
+    welcome_path = REPO_ROOT / ".github" / "workflows" / "welcome.yml"
+    assert welcome_path.is_file(), "welcome.yml must exist"
+    content = welcome_path.read_text(encoding="utf-8")
+    assert "actions/first-interaction@v3" in content
+    assert "timeout-minutes: 5" in content
+    assert "concurrency:" in content
+    assert "cancel-in-progress: true" in content
+    assert "issues: write" in content
+    assert "pull-requests: write" in content
+
+
+def test_stale_workflow_lifecycle_hardening():
+    """Verify .github/workflows/stale.yml enforces timeout-minutes: 10 and concurrency cancel-in-progress."""
+    stale_path = REPO_ROOT / ".github" / "workflows" / "stale.yml"
+    assert stale_path.is_file(), "stale.yml must exist"
+    content = stale_path.read_text(encoding="utf-8")
+    assert "timeout-minutes: 10" in content
+    assert "concurrency:" in content
+    assert "cancel-in-progress: true" in content
+
+
+def test_gitignore_extended_lock_and_conflict_tokens():
+    """Verify .gitignore includes multi-host, lock, and test cache patterns."""
+    gitignore_path = REPO_ROOT / ".gitignore"
+    content = gitignore_path.read_text(encoding="utf-8")
+    for token in [
+        "*-ASUS*",
+        "*-Mac Studio*",
+        "*-MacBook*",
+        "LOCK.user.*",
+        "LOCK.until.*",
+        "LOCK.condition.*",
+        ".automation-lock",
+        ".hypothesis/",
+        ".turbo/",
+        ".nyc_output/",
+    ]:
+        assert token in content, f"Missing token '{token}' in .gitignore"
+
+
+def test_marketing_log_audit_recency_and_sections():
+    """Verify MARKETING-LOG.txt includes Section 7 and 2026-09-22 Pfad A audit.
+
+    MARKETING-LOG.txt is gitignored (user decision 2026-09-26) and only
+    checked when present locally, same as the other MARKETING-LOG tests."""
+    mkt_path = REPO_ROOT / "MARKETING-LOG.txt"
+    if not mkt_path.is_file():
+        pytest.skip("MARKETING-LOG.txt is gitignored and not present in this checkout")
+    content = mkt_path.read_text(encoding="utf-8")
+    assert "## 7. Technical Hygiene, CI Lifecycle Hardening & Lock Defense Audit (2026-09-22)" in content
+    assert "NOTICE" in content
+    assert "RunAsInvoker" in content
+
+
+def test_unreleased_changelog_section():
+    """Verify CHANGELOG.md contains ## [Unreleased] for Pfad A changes."""
+    changelog_path = REPO_ROOT / "CHANGELOG.md"
+    content = changelog_path.read_text(encoding="utf-8")
+    assert "## [Unreleased]" in content
+    assert "Repository Hygiene" in content
+    assert "Level 1 SBOM" in content

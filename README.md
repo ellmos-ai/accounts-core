@@ -7,7 +7,7 @@
 <p align="center">
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/version-0.1.4-blue.svg" alt="Version 0.1.4"></a>
   <a href="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml"><img src="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="tests/"><img src="https://img.shields.io/badge/tests-52%20passed%20%7C%20100%25%20green-brightgreen.svg" alt="Tests"></a>
+  <a href="tests/"><img src="https://img.shields.io/badge/tests-58%20passed%20%7C%20100%25%20green-brightgreen.svg" alt="Tests"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg" alt="Python"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg" alt="Platform"></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg" alt="Local-First Zero-Egress"></a>
@@ -16,6 +16,7 @@
   <a href="https://github.com/ellmos-ai"><img src="https://img.shields.io/badge/ecosystem-ellmos--ai-informational.svg" alt="Ecosystem ellmos-ai"></a>
   <a href="https://github.com/open-bricks"><img src="https://img.shields.io/badge/umbrella-open--bricks-informational.svg" alt="Umbrella open-bricks"></a>
   <a href="llms.txt"><img src="https://img.shields.io/badge/LLM-llms.txt-blueviolet.svg" alt="LLM Context"></a>
+  <a href="NOTICE"><img src="https://img.shields.io/badge/attribution-NOTICE-blue.svg" alt="Attribution: NOTICE"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
 </p>
 
