@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+import pytest
+
 try:
     import tomllib
 except ImportError:  # pragma: no cover - Python 3.10 compatibility
@@ -38,7 +40,6 @@ def test_pyproject_structure_and_pep621_urls():
     assert urls.get("Issues") == "https://github.com/ellmos-ai/accounts-core/issues"
     assert urls.get("Changelog") == "https://github.com/ellmos-ai/accounts-core/blob/main/CHANGELOG.md"
     assert urls.get("Security") == "https://github.com/ellmos-ai/accounts-core/blob/main/SECURITY.md"
-    assert urls.get("Marketing Log") == "https://github.com/ellmos-ai/accounts-core/blob/main/MARKETING-LOG.txt"
     assert urls.get("Third-Party Licenses") == "https://github.com/ellmos-ai/accounts-core/blob/main/THIRD_PARTY_LICENSES.md"
     assert urls.get("Notice") == "https://github.com/ellmos-ai/accounts-core/blob/main/NOTICE"
     assert urls.get("LLM Ready") == "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/llms.txt"
@@ -161,7 +162,6 @@ def test_readme_badges_parity():
         "code%20style-ruff-000000.svg",
         "ecosystem-ellmos--ai-informational.svg",
         "umbrella-open--bricks-informational.svg",
-        "marketing%20log-blueprints-informational.svg",
         "LLM-llms.txt-blueviolet.svg",
         "attribution-NOTICE-blue.svg",
         "license-MIT-green.svg",
@@ -185,7 +185,6 @@ def test_llms_txt_current_timestamp_and_links():
     assert "pyproject.toml" in content
     assert "CHANGELOG.md" in content
     assert "ellmos-module.v2.json" in content
-    assert "MARKETING-LOG.txt" in content
     assert "THIRD_PARTY_LICENSES.md" in content
     assert "TODO.md" in content
     assert "INV-ACC-01" in content
@@ -227,10 +226,12 @@ def test_version_parity_across_artifacts():
 
 
 def test_marketing_log_structure_and_blueprints():
-    """Verify MARKETING-LOG.txt exists, contains target personas, keywords,
-    directory recommendations, and 3 integration blueprints."""
+    """MARKETING-LOG.txt is a gitignored, local-only artifact (user decision
+    2026-09-26): it never ships in the public repo, so its structure is only
+    checked when present locally instead of asserted as a hard requirement."""
     mkt_path = REPO_ROOT / "MARKETING-LOG.txt"
-    assert mkt_path.is_file(), "MARKETING-LOG.txt must exist"
+    if not mkt_path.is_file():
+        pytest.skip("MARKETING-LOG.txt is gitignored and not present in this checkout")
     content = mkt_path.read_text(encoding="utf-8")
 
     assert "## 1. Target Personas & Audiences" in content
@@ -504,10 +505,14 @@ def test_readme_quick_navigation_anchors_parity():
 
 
 def test_target_personas_and_high_intent_keywords():
-    """Verify target personas [PERSONA-01] to [PERSONA-04] and high-intent SEO queries."""
+    """Verify target personas [PERSONA-01] to [PERSONA-04] and high-intent SEO queries.
+
+    MARKETING-LOG.txt is gitignored (user decision 2026-09-26) and only checked
+    when present locally; the README assertions remain hard requirements."""
     readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
     readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
-    mkt = (REPO_ROOT / "MARKETING-LOG.txt").read_text(encoding="utf-8")
+    mkt_path = REPO_ROOT / "MARKETING-LOG.txt"
+    mkt = mkt_path.read_text(encoding="utf-8") if mkt_path.is_file() else None
 
     for persona in ["[PERSONA-01]", "[PERSONA-02]", "[PERSONA-03]", "[PERSONA-04]"]:
         assert persona in readme_en, f"{persona} missing in README.md"
@@ -516,7 +521,8 @@ def test_target_personas_and_high_intent_keywords():
     for query in ["camt balance import", "privacy-safe bank balance projection"]:
         assert query in readme_en, f"Query '{query}' missing in README.md"
         assert query in readme_de, f"Query '{query}' missing in README_de.md"
-        assert query in mkt, f"Query '{query}' missing in MARKETING-LOG.txt"
+        if mkt is not None:
+            assert query in mkt, f"Query '{query}' missing in MARKETING-LOG.txt"
 
 
 def test_comparative_matrix_alternatives():
@@ -651,9 +657,13 @@ def test_gitignore_extended_lock_and_conflict_tokens():
 
 
 def test_marketing_log_audit_recency_and_sections():
-    """Verify MARKETING-LOG.txt includes Section 7 and 2026-09-22 Pfad A audit."""
+    """Verify MARKETING-LOG.txt includes Section 7 and 2026-09-22 Pfad A audit.
+
+    MARKETING-LOG.txt is gitignored (user decision 2026-09-26) and only
+    checked when present locally, same as the other MARKETING-LOG tests."""
     mkt_path = REPO_ROOT / "MARKETING-LOG.txt"
-    assert mkt_path.is_file(), "MARKETING-LOG.txt must exist"
+    if not mkt_path.is_file():
+        pytest.skip("MARKETING-LOG.txt is gitignored and not present in this checkout")
     content = mkt_path.read_text(encoding="utf-8")
     assert "## 7. Technical Hygiene, CI Lifecycle Hardening & Lock Defense Audit (2026-09-22)" in content
     assert "NOTICE" in content

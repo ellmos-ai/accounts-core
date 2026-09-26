@@ -91,6 +91,9 @@ id_ed25519*
 *~
 *.log
 
+# Interne Automations-/Marketing-Notizen, nicht fuer die Veroeffentlichung (Nutzerentscheid 2026-09-26)
+MARKETING-LOG.txt
+
 # IDE
 .vscode/
 .idea/

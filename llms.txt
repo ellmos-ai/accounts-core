@@ -13,7 +13,6 @@
 
 - `README.md`: English contract, API usage, visual architecture, 18-point quick navigation, invariants, and privacy allowlist.
 - `README_de.md`: German contract, API usage, visual architecture, 18-Punkte-Schnellnavigation, invariants, and privacy allowlist.
-- `MARKETING-LOG.txt`: Target personas ([PERSONA-01]..[PERSONA-04]), discoverability keywords, catalog recommendations, and 3 integration blueprints.
 - `src/accounts_core/accounts.py`: AccountStore, transit projection, and CAMT balance persistence.
 - `src/accounts_core/__init__.py`: Public API exports and module version.
 - `tests/test_accounts.py`: Behavioural tests against the exact BACH bank_accounts DDL.
@@ -26,7 +25,6 @@
 - `pyproject.toml`: PEP 621 package metadata and ecosystem URLs.
 - `CHANGELOG.md`: Release notes and change history.
 - `ellmos-module.v2.json`: Ellmos module registration manifest.
-- `MARKETING-LOG.txt`: Marketing and discoverability log with integration blueprints.
 - `THIRD_PARTY_LICENSES.md`: Software inventory certifying zero external runtime dependencies (Level 1 SBOM) and PEP 639 metadata.
 - `TODO.md`: Standardized task tracker with STATUS table and release gate readiness.
 

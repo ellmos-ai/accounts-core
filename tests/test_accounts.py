@@ -155,7 +155,7 @@ def test_to_transit_row_drops_bank_identifiers_and_unknown_columns():
         "balance": 10.0, "balance_date": "2026-09-01",
         "iban": "DE89370400440532013000",
         "account_number": "0532013000", "bic": "COBADEFFXXX",
-        "bank_name": "Sparkasse", "holder_name": "Lukas Geiger", "notes": "geheim",
+        "bank_name": "Sparkasse", "holder_name": "Erika Musterfrau", "notes": "geheim",
         "brand_new_column_nobody_expected": "IBAN2-DE00-SECRET",
     }
     row = to_transit_row(account)

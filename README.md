@@ -1,3 +1,5 @@
+<img src="assets/banner.png" width="100%" alt="accounts-core banner">
+
 # accounts-core
 
 [English](README.md) | [Deutsch](README_de.md)
@@ -13,7 +15,6 @@
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/code%20style-ruff-000000.svg" alt="Code style: ruff"></a>
   <a href="https://github.com/ellmos-ai"><img src="https://img.shields.io/badge/ecosystem-ellmos--ai-informational.svg" alt="Ecosystem ellmos-ai"></a>
   <a href="https://github.com/open-bricks"><img src="https://img.shields.io/badge/umbrella-open--bricks-informational.svg" alt="Umbrella open-bricks"></a>
-  <a href="MARKETING-LOG.txt"><img src="https://img.shields.io/badge/marketing%20log-blueprints-informational.svg" alt="Marketing Log"></a>
   <a href="llms.txt"><img src="https://img.shields.io/badge/LLM-llms.txt-blueviolet.svg" alt="LLM Context"></a>
   <a href="NOTICE"><img src="https://img.shields.io/badge/attribution-NOTICE-blue.svg" alt="Attribution: NOTICE"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
@@ -353,7 +354,6 @@ accounts-core/
 │       └── stale.yml              # Automated issue and PR lifecycle management
 ├── CHANGELOG.md                   # Chronological version history and release notes
 ├── LICENSE                        # MIT License
-├── MARKETING-LOG.txt              # Personas, SEO keywords, and integration blueprints
 ├── README.md                      # English documentation with 18-point quick navigation
 ├── README_de.md                   # German documentation with 18-point quick navigation
 ├── SECURITY.md                    # Security policy with 48h response and 5-day triage SLA
