@@ -1,0 +1,31 @@
+GATE: lifted
+SCOPE: released
+CREATED: 2026-09-26 Europe/Berlin
+TICKET: T-20260926-audit-private-bach-ocean-deps (ellmos-ai/bach PR #111 Anlass)
+
+Freigabe: Nutzer-Go 2026-09-26 ("grossartig, freigegeben" zum Banner), relayed
+durch team-lead; vorher hatte LOCK.txt (LOCK.user.claude-code, Banner-Commit)
+diesen Repo gesperrt. Mit der Freigabe war der Lock-Zweck erfuellt und die
+Datei wurde vom team-lead entfernt.
+
+repo-publish-check, mit der gehaerteten Methode (nach dem Fund bei
+doc-services, siehe dortiges PUBLIC.txt): Pfadmuster UND Secret-Muster liefen
+gemeinsam ueber `git log -p --all`, nicht getrennt.
+
+FUND (Historie, woertlich): keiner.
+  Befehl: git log -p --all | grep -EnI 'C:\\Users\\|C:\\_Local_DEV|/home/[a-z]+|/Users/[A-Za-z]+|OneDrive|\.docx|\.xlsx|\.pdf|CREDENTIALS'
+  Ergebnis: 0 Treffer.
+  Secret-Token-Muster (ghp_/sk-/AKIA/PEM-Header) in derselben Historie:
+  0 Treffer.
+
+Arbeitsbaum:
+  - Secret-/Token-Muster: 0 Treffer.
+  - E-Mail-Adressen: nur die vier oeffentlichen Security-/Support-Kontakte
+    (security@open-bricks.org, security@ellmos.ai, support@lukasgeiger.com,
+    lukas@open-bricks.org) — bewusst als Kontaktadressen dokumentiert,
+    kein Datenleck.
+  - Lizenz: MIT (LICENSE, THIRD_PARTY_LICENSES.md vorhanden).
+  - Banner: assets/banner.png + assets/banner.svg bereits getrackt, aber in
+    keiner README eingebunden — nachgeholt (README.md + README_de.md).
+
+Freigabe: erteilt (Nutzer-Go + sauberer gehaerteter Check).

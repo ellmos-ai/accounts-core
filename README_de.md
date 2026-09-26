@@ -1,3 +1,5 @@
+<img src="assets/banner.png" width="100%" alt="accounts-core banner">
+
 # accounts-core
 
 [English](README.md) | [Deutsch](README_de.md)

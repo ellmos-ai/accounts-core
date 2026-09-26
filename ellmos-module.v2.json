@@ -6,7 +6,7 @@
   "category": "runtime",
   "kind": "library",
   "status": "staging",
-  "visibility": "private",
+  "visibility": "public",
   "provides": [
     "accounts.bank_accounts.store",
     "accounts.camt.import",
