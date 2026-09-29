@@ -9,10 +9,31 @@ description = "Neutral domain core for the account/bank-balance domain: bank acc
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md"]
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md", "THIRD_PARTY_LICENSES.txt"]
 authors = [{name = "Lukas Geiger"}]
 dependencies = []
-keywords = ["accounts", "bank-accounts", "camt", "sqlite", "local-first", "bach", "ocean", "financial-primitives", "iban-validation", "privacy-by-design", "zero-telemetry"]
+keywords = [
+  "accounts",
+  "bank-accounts",
+  "banking",
+  "camt",
+  "camt-053",
+  "sqlite",
+  "local-first",
+  "offline-first",
+  "bach",
+  "open-ocean",
+  "financial-primitives",
+  "iban-validation",
+  "iban-masking",
+  "privacy-by-design",
+  "zero-egress",
+  "runasinvoker",
+  "ellmos-ai",
+  "open-bricks",
+  "data-minimization",
+  "fintech",
+]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -35,6 +56,9 @@ Issues = "https://github.com/ellmos-ai/accounts-core/issues"
 Changelog = "https://github.com/ellmos-ai/accounts-core/blob/main/CHANGELOG.md"
 Security = "https://github.com/ellmos-ai/accounts-core/blob/main/SECURITY.md"
 "Third-Party Licenses" = "https://github.com/ellmos-ai/accounts-core/blob/main/THIRD_PARTY_LICENSES.md"
+"Third-Party Licenses (Text)" = "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/THIRD_PARTY_LICENSES.txt"
+"Plain-Text Licenses" = "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/THIRD_PARTY_LICENSES.txt"
+"Level 1 SBOM" = "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/THIRD_PARTY_LICENSES.txt"
 Notice = "https://github.com/ellmos-ai/accounts-core/blob/main/NOTICE"
 "LLM Ready" = "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/llms.txt"
 "Parent Organization" = "https://github.com/ellmos-ai"

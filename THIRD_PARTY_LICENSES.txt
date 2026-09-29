@@ -1,0 +1,142 @@
+# Third-Party Licenses & Software Inventory
+# Project: ellmos-ai/accounts-core
+# Audited: 2026-09-29 against Level 1 SBOM, zero-copyleft core, and runtime invariants
+# License: MIT License (see LICENSE and NOTICE)
+# Repository: https://github.com/ellmos-ai/accounts-core
+# Umbrella Collective: open-bricks (https://github.com/open-bricks)
+
+================================================================================
+1. PROJECT LICENSE & ATTRIBUTION
+================================================================================
+accounts-core is licensed under the MIT License.
+Copyright (c) 2026 Lukas Geiger, ellmos-ai, and open-bricks.
+See `LICENSE` and `NOTICE` in the repository root for full legal texts.
+
+================================================================================
+2. CORE RUNTIME DISTRIBUTION (100% PERMISSIVE & ZERO EXTERNAL DEPENDENCIES - LEVEL 1 SBOM)
+================================================================================
+The base distribution wheel of accounts-core declares zero external runtime
+dependencies (`dependencies = []` in pyproject.toml).
+The entire core runtime execution relies strictly on the official Python
+Standard Library under Python Software Foundation License 2.0 (PSFL-2.0).
+
+| Component / Module      | Scope   | License  | Upstream Reference                    |
+|-------------------------|---------|----------|---------------------------------------|
+| Python Standard Library | Runtime | PSFL-2.0 | https://docs.python.org/3/license.html|
+  Modules utilized: sqlite3, pathlib, typing, dataclasses, logging, os,
+                    sys, re, datetime
+
+All AccountStore CRUD operations, CAMT balance ingestion (camt.052, camt.053),
+and allowlist-based transit projections execute purely using standard library modules.
+Zero third-party telemetry, analytics, cloud storage, or remote networking
+services are bundled, contacted, or initiated by the package (100% Local-First & Zero Egress).
+
+================================================================================
+3. DIRECT BUILD & DEVELOPMENT DEPENDENCIES
+================================================================================
+The following tools are utilized exclusively for offline automated testing, code
+quality auditing, packaging, and linting in isolated development environments:
+
+| Package    | Declared Use           | Constraint | License          | Source |
+|------------|------------------------|------------|------------------|--------|
+| pytest     | Development test runner| >=8.0      | MIT              | https://pytest.org/ |
+| ruff       | Development linter     | >=0.5      | MIT / Apache-2.0 | https://github.com/astral-sh/ruff |
+| setuptools | Build backend          | >=68.0     | MIT              | https://github.com/pypa/setuptools |
+| tomli      | Python 3.10 fallback   | >=2.0      | MIT              | https://github.com/hukkin/tomli |
+
+================================================================================
+4. ZERO-COPYLEFT BASE WHEEL & UNPRIVILEGED EXECUTION GUARANTEES
+================================================================================
+- Zero-Copyleft Core Guarantee: The core runtime package is 100% MIT-licensed
+  with zero copyleft dependencies. Zero GPL, AGPL, or viral copyleft contamination.
+- Unprivileged User-Mode Operation (RunAsInvoker): All operations, SQLite
+  transactions, and snapshot publications execute purely within unprivileged user
+  space. No administrative rights, root elevation, sudo, or UAC prompts are ever
+  required or requested across Windows, Linux, or macOS.
+- Immutable Source Database Isolation: Source SQLite databases are opened with
+  explicit `mode=ro` during publishing; source, destination, and publisher
+  checkpoint paths remain strictly distinct.
+
+================================================================================
+5. GOVERNANCE & RUNTIME INVARIANTS MATRIX
+================================================================================
+accounts-core strictly enforces ten foundational governance and runtime invariants:
+
+| Invariant ID | Title                                 | Architectural Scope    | Compliance & License Guarantee |
+|:-------------|:--------------------------------------|:-----------------------|:-------------------------------|
+| INV-ACC-01   | Zero Database Ownership               | Schema Isolation       | Standard library sqlite3 only; operates on consumer table; 0 tables created. |
+| INV-ACC-02   | Strict Allowlist Transit Projection   | Data Minimization      | Explicit 5-field projection (name, type, balance, date, iban_masked). |
+| INV-ACC-03   | Masked IBAN Guarantee                 | Privacy by Design      | Bank IDs (BIC, bank, holder) excluded; IBAN masked to last 4 chars (****3000). |
+| INV-ACC-04   | Pure Local-First & Zero Egress        | Network Perimeter      | Zero network calls, zero sockets, 100% offline stdlib execution in user space. |
+| INV-ACC-05   | Immutable Source Isolation            | Concurrency & Safety   | Source DB opened with explicit mode=ro during transit publishing. |
+| INV-ACC-06   | Atomic Snapshot Publishing            | Fault Tolerance        | Staged via temporary file and committed via atomic filesystem rename. |
+| INV-ACC-07   | Idempotent CAMT Balance Ingestion     | Data Integrity         | Balances matched by normalized IBAN; returns German UTF-8 status reports. |
+| INV-ACC-08   | Deterministic Fail-Closed Error       | Error Handling         | Typed standard library exceptions (FileNotFoundError, ValueError); no fallthrough. |
+| INV-ACC-09   | RunAsInvoker Non-Elevation            | Execution Privilege    | Operates in unprivileged user space; zero admin elevation required. |
+| INV-ACC-10   | 48h Security Response & 5-Day SLA     | Vulnerability Mgmt     | Formal 48h response and 5-day triage commitment documented in SECURITY.md. |
+
+================================================================================
+6. COMPLETE LICENSE TEXTS
+================================================================================
+
+--- MIT License (accounts-core, pytest, ruff, setuptools, tomli) ---
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+--- Python Software Foundation License Version 2 (Python Standard Library) ---
+
+1. This LICENSE AGREEMENT is between the Python Software Foundation ("PSF"), and
+the Individual or Organization ("Licensee") accessing and otherwise using this
+software ("Python") in source or binary form and its associated documentation.
+
+2. Subject to the terms and conditions of this License Agreement, PSF hereby
+grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce,
+analyze, test, perform and/or display publicly, prepare derivative works, distribute,
+and otherwise use Python alone or in any derivative version, provided, however, that
+PSF's License Agreement and PSF's notice of copyright, i.e., "Copyright (c) 2001-2026
+Python Software Foundation; All Rights Reserved" are included in Python alone or
+in any derivative version prepared by Licensee.
+
+3. In the event Licensee prepares a derivative work that is based on or incorporates
+Python or any part thereof, and wants to make the derivative work available to
+others as provided herein, then Licensee hereby agrees to include in any such work
+a brief summary of the changes made to Python.
+
+4. PSF is making Python available to Licensee on an "AS IS" basis. PSF MAKES NO
+REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT
+LIMITATION, PSF MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF
+MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON
+WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
+
+5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON FOR ANY
+INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF MODIFYING,
+DISTRIBUTING, OR OTHERWISE USING PYTHON, OR ANY DERIVATIVE THEREOF, EVEN IF
+ADVISED OF THE POSSIBILITY THEREOF.
+
+6. This License Agreement will automatically terminate upon a material breach of
+its terms and conditions.
+
+7. Nothing in this License Agreement shall be deemed to create any relationship
+of agency, partnership, or joint venture between PSF and Licensee. This License
+Agreement does not grant permission to use PSF trademarks or trade name in a
+trademark sense to endorse or promote products or services of Licensee, or any
+third party.
+
+8. By copying, installing or otherwise using Python, Licensee agrees to be bound
+by the terms and conditions of this License Agreement.

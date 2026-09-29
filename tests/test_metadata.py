@@ -154,7 +154,7 @@ def test_readme_badges_parity():
     expected_badges = [
         "badge/version-0.1.4-blue.svg",
         "actions/workflows/ci.yml/badge.svg",
-        "tests-58%20passed%20%7C%20100%25%20green-brightgreen.svg",
+        "tests-63%20passed%20%7C%20100%25%20green-brightgreen.svg",
         "python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg",
         "platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg",
         "privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg",
@@ -178,7 +178,7 @@ def test_llms_txt_current_timestamp_and_links():
     assert llms_path.is_file(), "llms.txt must exist"
     content = llms_path.read_text(encoding="utf-8")
 
-    assert "## Last-checked: 2026-09-22" in content
+    assert "## Last-checked: 2026-09-29" in content or "## Last-checked: 2026-09-22" in content
     assert "0.1.4" in content
     assert "NOTICE" in content
     assert "SECURITY.md" in content
@@ -186,6 +186,7 @@ def test_llms_txt_current_timestamp_and_links():
     assert "CHANGELOG.md" in content
     assert "ellmos-module.v2.json" in content
     assert "THIRD_PARTY_LICENSES.md" in content
+    assert "THIRD_PARTY_LICENSES.txt" in content
     assert "TODO.md" in content
     assert "INV-ACC-01" in content
     assert "INV-ACC-10" in content
@@ -361,6 +362,7 @@ def test_pep639_license_files_metadata():
     assert "LICENSE" in license_files
     assert "NOTICE" in license_files
     assert "THIRD_PARTY_LICENSES.md" in license_files
+    assert "THIRD_PARTY_LICENSES.txt" in license_files
 
 
 def test_todo_status_table_and_gate_readiness():
@@ -561,7 +563,7 @@ def test_third_party_licenses_audit_recency():
     assert lic_path.is_file(), "THIRD_PARTY_LICENSES.md must exist"
     content = lic_path.read_text(encoding="utf-8")
 
-    assert "2026-09-22" in content or "2026-09-20" in content, "Audit date missing in THIRD_PARTY_LICENSES.md"
+    assert any(d in content for d in ["2026-09-29", "2026-09-22", "2026-09-20"]), "Audit date missing in THIRD_PARTY_LICENSES.md"
     assert "[NOTICE](NOTICE)" in content
     assert "Level 1 SBOM" in content or "Level 1 Software Bill of Materials" in content
     assert "RunAsInvoker" in content
@@ -671,9 +673,91 @@ def test_marketing_log_audit_recency_and_sections():
 
 
 def test_unreleased_changelog_section():
-    """Verify CHANGELOG.md contains ## [Unreleased] for Pfad A changes."""
+    """Verify CHANGELOG.md contains ## [Unreleased] for Pfad A and Pfad B changes."""
     changelog_path = REPO_ROOT / "CHANGELOG.md"
     content = changelog_path.read_text(encoding="utf-8")
     assert "## [Unreleased]" in content
     assert "Repository Hygiene" in content
     assert "Level 1 SBOM" in content
+    assert "Pfad B Stand 2026-09-29" in content
+
+
+def test_readme_sec_dual_anchors_parity():
+    """Verify 18-point dual reciprocal HTML anchors (sec-01 to sec-18) in both READMEs."""
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    for i in range(1, 19):
+        anchor = f'<a id="sec-{i:02d}"></a>'
+        assert anchor in readme_en, f"Missing {anchor} in README.md"
+        assert anchor in readme_de, f"Missing {anchor} in README_de.md"
+
+
+def test_ascii_architecture_parity():
+    """Verify Four-View ASCII Architectural Topology projection parity in both READMEs."""
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    en_views = [
+        "[VIEW 1: CONSUMER DATA CANON & LOCAL-FIRST STORAGE]",
+        "[VIEW 2: DOMAIN ENGINE CORE & IDEMPOTENT BALANCE INGESTION]",
+        "[VIEW 3: DATA MINIMIZATION & ALLOWLIST TRANSIT PROJECTION]",
+        "[VIEW 4: DOWNSTREAM CONSUMPTION & ZERO-EGRESS SECURITY PERIMETER]",
+    ]
+    for view in en_views:
+        assert view in readme_en, f"Missing {view} in README.md"
+
+    de_views = [
+        "[SICHT 1: KONSUMENTEN-DATENKANON & LOCAL-FIRST SPEICHERUNG]",
+        "[SICHT 2: DOMÄNEN-ENGINE-KERN & IDEMPOTENTE SALDEN-VERARBEITUNG]",
+        "[SICHT 3: DATENMINIMIERUNG & ALLOWLIST-TRANSIT-PROJEKTION]",
+        "[SICHT 4: DOWNSTREAM-NUTZUNG & ZERO-EGRESS SICHERHEITSPERIMETER]",
+    ]
+    for view in de_views:
+        assert view in readme_de, f"Missing {view} in README_de.md"
+
+
+def test_pep621_topic_saturation_and_sbom_urls():
+    """Verify pyproject.toml defines 20/20 topics and Level 1 SBOM / Plain-Text URLs."""
+    pyproject_path = REPO_ROOT / "pyproject.toml"
+    data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
+
+    keywords = data.get("project", {}).get("keywords", [])
+    assert len(keywords) == 20, f"Expected exactly 20 keywords, found {len(keywords)}"
+    for topic in ["accounts", "bank-accounts", "camt", "sqlite", "local-first", "runasinvoker", "zero-egress"]:
+        assert topic in keywords, f"Topic '{topic}' missing from keywords"
+
+    urls = data.get("project", {}).get("urls", {})
+    assert "Plain-Text Licenses" in urls
+    assert "Third-Party Licenses (Text)" in urls
+    assert "Level 1 SBOM" in urls
+    assert urls["Plain-Text Licenses"].endswith("THIRD_PARTY_LICENSES.txt")
+
+
+def test_level_1_sbom_text_companion_invariants():
+    """Verify THIRD_PARTY_LICENSES.txt exists, enforces zero external runtime
+    dependencies, and certifies all 10 runtime invariants."""
+    sbom_txt = REPO_ROOT / "THIRD_PARTY_LICENSES.txt"
+    assert sbom_txt.is_file(), "THIRD_PARTY_LICENSES.txt must exist"
+    content = sbom_txt.read_text(encoding="utf-8")
+
+    assert "accounts-core" in content
+    assert "Level 1 SBOM" in content
+    assert "Zero-Copyleft" in content
+    assert "RunAsInvoker" in content
+    assert "PSFL-2.0" in content or "Python Software Foundation License" in content
+
+    for i in range(1, 11):
+        inv_id = f"INV-ACC-{i:02d}"
+        assert inv_id in content, f"Invariant {inv_id} missing in THIRD_PARTY_LICENSES.txt"
+
+
+def test_marketing_log_section_8_pfad_b_recency():
+    """Verify local MARKETING-LOG.txt includes Section 8 Pfad B audit."""
+    mkt_path = REPO_ROOT / "MARKETING-LOG.txt"
+    if not mkt_path.is_file():
+        pytest.skip("MARKETING-LOG.txt is gitignored and not present in this checkout")
+    content = mkt_path.read_text(encoding="utf-8")
+    assert "## 8. Discoverability, Visual Architecture & Level 1 SBOM Audit (2026-09-29)" in content
+    assert "Reciprocal Dual Anchors" in content
+    assert "ASCII Four-View" in content

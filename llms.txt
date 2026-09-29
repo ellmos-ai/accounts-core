@@ -2,7 +2,7 @@
 
 > Neutral domain core for the account and bank-balance domain: bank account CRUD, CAMT balance import, and privacy-safe read-only transit projection.
 
-## Last-checked: 2026-09-22
+## Last-checked: 2026-09-29
 - Version: 0.1.4
 - Tests: Automated contract and domain tests (100% green)
 - Architecture: 100% Local-First | Zero-Egress | Single Data Canon | User-Mode Non-Elevation (RunAsInvoker)
@@ -26,6 +26,7 @@
 - `CHANGELOG.md`: Release notes and change history.
 - `ellmos-module.v2.json`: Ellmos module registration manifest.
 - `THIRD_PARTY_LICENSES.md`: Software inventory certifying zero external runtime dependencies (Level 1 SBOM) and PEP 639 metadata.
+- `THIRD_PARTY_LICENSES.txt`: Plain-text companion Level 1 SBOM software inventory, RunAsInvoker certification, and Invariant Cross-Reference Matrix.
 - `TODO.md`: Standardized task tracker with STATUS table and release gate readiness.
 
 ## Contracts & Governance Invariants

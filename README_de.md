@@ -7,7 +7,7 @@
 <p align="center">
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/version-0.1.4-blue.svg" alt="Version 0.1.4"></a>
   <a href="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml"><img src="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="tests/"><img src="https://img.shields.io/badge/tests-58%20passed%20%7C%20100%25%20green-brightgreen.svg" alt="Tests"></a>
+  <a href="tests/"><img src="https://img.shields.io/badge/tests-63%20passed%20%7C%20100%25%20green-brightgreen.svg" alt="Tests"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg" alt="Python"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg" alt="Platform"></a>
   <a href="SECURITY.md"><img src="https://img.shields.io/badge/privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg" alt="Local-First Zero-Egress"></a>
@@ -17,6 +17,9 @@
   <a href="https://github.com/open-bricks"><img src="https://img.shields.io/badge/umbrella-open--bricks-informational.svg" alt="Umbrella open-bricks"></a>
   <a href="llms.txt"><img src="https://img.shields.io/badge/LLM-llms.txt-blueviolet.svg" alt="LLM Context"></a>
   <a href="NOTICE"><img src="https://img.shields.io/badge/attribution-NOTICE-blue.svg" alt="Attribution: NOTICE"></a>
+  <a href="THIRD_PARTY_LICENSES.txt"><img src="https://img.shields.io/badge/Level%201%20SBOM-Plain--Text%20Auditiert-brightgreen.svg" alt="Level 1 SBOM Plain-Text Auditiert"></a>
+  <a href="THIRD_PARTY_LICENSES.txt"><img src="https://img.shields.io/badge/Drittanbieter--Lizenzen-Text--Begleitdatei-blue.svg" alt="Drittanbieter-Lizenzen Text-Begleitdatei"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Gepr%C3%BCft-2026--09--29-blue.svg" alt="Geprüft 2026-09-29"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
 </p>
 
@@ -53,7 +56,7 @@ Kopie hält (Entscheidung D-20260903-003 = A, Analyse
 
 ---
 
-<a id="hauptmerkmale"></a>
+<a id="sec-01"></a><a id="hauptmerkmale"></a>
 ## Hauptmerkmale
 
 - **Einheitlicher Datenkanon:** Arbeitet direkt auf der bestehenden SQLite-Tabelle `bank_accounts` des Konsumenten; legt keine eigenen Tabellen an und verwaltet keine Migrationen.
@@ -65,7 +68,7 @@ Kopie hält (Entscheidung D-20260903-003 = A, Analyse
 
 ---
 
-<a id="visuelle-architektur"></a>
+<a id="sec-02"></a><a id="visuelle-architektur"></a>
 ## Visuelle Architektur
 
 ```mermaid
@@ -105,9 +108,59 @@ flowchart TD
     SNAP -->|"Lokale sichere Abfrage"| AI
 ```
 
+### ASCII-Architektur-Topologie (Vier-Sichten-Projektion)
+
+```text
+========================================================================================
+                     accounts-core: Vier-Sichten Architektur-Topologie
+========================================================================================
+
+[SICHT 1: KONSUMENTEN-DATENKANON & LOCAL-FIRST SPEICHERUNG]
+  +----------------------------------------------------------------------------------+
+  | Konsumenten-SQLite-Datenbank (z. B. bach.db, var/data/finance.db)                |
+  | - Tabelle: bank_accounts (bestehendes Konsumenten-Schema; 0 eigene Tabellen)     |
+  | - Null Migrations-Footprint: passt sich dynamisch an vorhandene Spalten an       |
+  | - Multi-OS-Kompatibilität: Windows NTFS, Linux ext4/tmpfs, macOS APFS            |
+  +----------------------------------------------------------------------------------+
+                                           |
+                                           | (Direkte unprivilegierte stdlib sqlite3-Verbindung)
+                                           v
+[SICHT 2: DOMÄNEN-ENGINE-KERN & IDEMPOTENTE SALDEN-VERARBEITUNG]
+  +----------------------------------------------------------------------------------+
+  | AccountStore (CRUD & Konten-Lebenszyklus-Engine)                                 |
+  | - create_account(), list_accounts(), update_account(), delete_account()          |
+  | - normalize_iban(): deterministische Bereinigung von Leerzeichen & Groß-/Klein.  |
+  | - persist_camt_balances(): idempotente Saldenaktualisierung via CAMT.052/CAMT.053|
+  |   Liefert deterministische deutsche Statusmeldungen: 'aktualisiert', 'unverändert'|
+  +----------------------------------------------------------------------------------+
+                                           |
+                                           | (Rohzeilen-Filterung über strikte Einschlussliste)
+                                           v
+[SICHT 3: DATENMINIMIERUNG & ALLOWLIST-TRANSIT-PROJEKTION]
+  +----------------------------------------------------------------------------------+
+  | to_transit_row() / transit_projection() (Strikte 5-Felder-Allowlist-Grenze)      |
+  | - Explizite Felder: name, account_type, balance, balance_date, iban_masked       |
+  | - Garantierte IBAN-Maskierung: ****3000 (letzte 4 Zeichen erhalten, Rest maskiert)|
+  | - Null PII- / Bank-ID-Abfluss: BIC, Bankname, Kontonummer, Notizen ausgeschlossen|
+  | - Nicht-erweiterbare Allowlist: neu hinzugefügte Spalten lecken niemals durch    |
+  +----------------------------------------------------------------------------------+
+                                           |
+                                           | (Temporäre Bereitstellung & atomares Rename)
+                                           v
+[SICHT 4: DOWNSTREAM-NUTZUNG & ZERO-EGRESS SICHERHEITSPERIMETER]
+  +----------------------------------------------------------------------------------+
+  | publish_transit_projection() -> Isolierte Read-Only SQLite-Snapshot (mode=ro)    |
+  | - Konsument: OCEAN (Lokaler persönlicher Finanz-Begleiter)                       |
+  | - Transport: sqlite-transit-sync (Verschlüsselte Offline-Peer-Synchronisation)   |
+  | - Integration: Autonome KI-Agenten (Claude, Codex, Antigravity) & CLI-Werkzeuge  |
+  | - Perimeter: 100% Local-First, Zero Egress, RunAsInvoker Standard-Benutzerrechte |
+  +----------------------------------------------------------------------------------+
+========================================================================================
+```
+
 ---
 
-<a id="sequenz-lebenszyklus"></a>
+<a id="sec-03"></a><a id="sequenz-lebenszyklus"></a>
 ## Sequenz-Lebenszyklus
 
 ```mermaid
@@ -144,7 +197,7 @@ sequenceDiagram
 
 ---
 
-<a id="zielgruppen--auffindbarkeit"></a>
+<a id="sec-04"></a><a id="zielgruppen--auffindbarkeit"></a>
 ## Zielgruppen & Auffindbarkeit
 
 | Persona-ID | Zielgruppe | Primäre Anforderungen & Herausforderungen | Gezielte Suchbegriffe (High-Intent SEO) |
@@ -156,7 +209,7 @@ sequenceDiagram
 
 ---
 
-<a id="vergleichsmatrix--alternativen"></a>
+<a id="sec-05"></a><a id="vergleichsmatrix--alternativen"></a>
 ## Vergleichsmatrix vs. Alternativen
 
 | Architektur-Dimension | `accounts-core` (Dieses Modul) | Direkte Ad-Hoc SQLite-Skripte | Schwergewichtige ERPs / Frameworks (Odoo / Tryton) | Cloud-Banking / Open-Banking SaaS APIs (Plaid / Tink) | Invarianten-Bezug |
@@ -174,7 +227,7 @@ sequenceDiagram
 
 ---
 
-<a id="vertrag--domaenengrenzen"></a>
+<a id="sec-06"></a><a id="vertrag--domaenengrenzen"></a>
 ## Vertrag & Domänengrenzen
 
 - **Einheitlicher Datenkanon:** `AccountStore` erhält den SQLite-Pfad des Konsumenten (BACH: `bach.db`)
@@ -190,7 +243,7 @@ sequenceDiagram
 
 ---
 
-<a id="datenschutz-allowlist-projektion"></a>
+<a id="sec-07"></a><a id="datenschutz-allowlist-projektion"></a>
 ## Datenschutz: Strikte Allowlist-Projektion
 
 `AccountStore.transit_projection()` liefert **ausschließlich** `name`, `account_type`, `balance`,
@@ -203,7 +256,7 @@ Spalte; eine Allowlist kann dies nicht.
 
 ---
 
-<a id="governance--laufzeit-invarianten"></a>
+<a id="sec-08"></a><a id="governance--laufzeit-invarianten"></a>
 ## Governance & Laufzeit-Invarianten
 
 Das Paket `accounts-core` erzwingt 10 architektonische Invarianten:
@@ -223,7 +276,7 @@ Das Paket `accounts-core` erzwingt 10 architektonische Invarianten:
 
 ---
 
-<a id="installation"></a>
+<a id="sec-09"></a><a id="installation"></a>
 ## Installation
 
 ```bash
@@ -235,7 +288,7 @@ Python 3.10+, null Laufzeitabhängigkeiten.
 
 ---
 
-<a id="schnellstart--anwendungsbeispiele"></a>
+<a id="sec-10"></a><a id="schnellstart--anwendungsbeispiele"></a>
 ## Schnellstart & Anwendungsbeispiele
 
 ```python
@@ -258,7 +311,7 @@ projection = store.transit_projection()
 
 ---
 
-<a id="camt-salden-verarbeitung"></a>
+<a id="sec-11"></a><a id="camt-salden-verarbeitung"></a>
 ## CAMT-Saldenverarbeitung
 
 Konsumenten überführen CAMT-Auszüge (z. B. CAMT.052, CAMT.053) in Roh-Dictionaries und übergeben
@@ -284,7 +337,7 @@ status_bericht = store.persist_camt_balances(camt_daten)
 
 ---
 
-<a id="transit-publisher-spezifikation"></a>
+<a id="sec-12"></a><a id="transit-publisher-spezifikation"></a>
 ## Sichere Transit-Publisher-Spezifikation
 
 Welle 3 exportiert die bereinigte Allowlist als eigenständige, geschlossene SQLite-Datei für
@@ -308,7 +361,7 @@ Es werden weder interne IDs noch unmaskierte Bankkennungen ausgegeben.
 
 ---
 
-<a id="geschwisterwerkzeuge--oekosystem"></a>
+<a id="sec-13"></a><a id="geschwisterwerkzeuge--oekosystem"></a>
 ## Geschwisterwerkzeuge & Ökosystem
 
 `accounts-core` ist ein zentraler Domänen-Baustein innerhalb des `ellmos-ai`- und `open-bricks`-Ökosystems:
@@ -324,7 +377,7 @@ Es werden weder interne IDs noch unmaskierte Bankkennungen ausgegeben.
 
 ---
 
-<a id="drittanbieter-lizenzen--transparenz"></a>
+<a id="sec-14"></a><a id="drittanbieter-lizenzen--transparenz"></a>
 ## Drittanbieter-Lizenzen & Transparenz
 
 `accounts-core` pflegt eine vollständige Level-1-Software-Stückliste (SBOM) mit null externen Laufzeitabhängigkeiten:
@@ -332,11 +385,12 @@ Es werden weder interne IDs noch unmaskierte Bankkennungen ausgegeben.
 - **Laufzeit-Abhängigkeiten:** 100% reine Python-Standardbibliothek unter PSF-Lizenz 2.0 (`sqlite3`, `pathlib`, `typing`, `dataclasses`, `logging`, `os`, `sys`, `re`, `datetime`). Null externe Wheels oder Pakete.
 - **Copyleft-Isolation:** 100% MIT-lizenzierter Code ohne AGPL/GPL-Übertragungen.
 - **RunAsInvoker-Zertifizierung:** Läuft vollständig im unprivilegierten Benutzermodus ohne Administratorrechte.
-- Vollständige Lizenztexte siehe [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
+- **Text-Begleitdatei:** Vollständiges Inventar, Invarianten-Matrix und Lizenztexte sind in [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt) dokumentiert.
+- Vollständige Lizenztexte siehe [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) und [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt).
 
 ---
 
-<a id="repository-struktur"></a>
+<a id="sec-15"></a><a id="repository-struktur"></a>
 ## Repository-Struktur
 
 ```
@@ -356,10 +410,12 @@ accounts-core/
 │       └── stale.yml              # Automatisierte Verwaltung inaktiver Issues und PRs
 ├── CHANGELOG.md                   # Chronologischer Versionsverlauf und Änderungsprotokolle
 ├── LICENSE                        # MIT-Lizenz
+├── NOTICE                         # Attribution und open-bricks Dachorganisation
 ├── README.md                      # Englische Dokumentation mit 18-Punkte-Schnellnavigation
 ├── README_de.md                   # Deutsche Dokumentation mit 18-Punkte-Schnellnavigation
 ├── SECURITY.md                    # Sicherheitsrichtlinie mit 48h-Reaktions- und 5-Tage-Triage-SLA
 ├── THIRD_PARTY_LICENSES.md        # Level 1 SBOM und reines Stdlib-Abhängigkeitsinventar
+├── THIRD_PARTY_LICENSES.txt       # Kanonische Level 1 SBOM Text-Begleitdatei
 ├── TODO.md                        # Aufgabenverwaltung mit STATUS-Tabelle und Release-Gates
 ├── ellmos-module.v2.json          # Modulmanifest für den ellmos-Katalog
 ├── llms.txt                       # Maschinenlesbares LLM-Kontextdokument
@@ -368,7 +424,7 @@ accounts-core/
 
 ---
 
-<a id="entwicklung--testmatrix"></a>
+<a id="sec-16"></a><a id="entwicklung--testmatrix"></a>
 ## Entwicklung & Testmatrix
 
 ```bash
@@ -379,7 +435,7 @@ python -m compileall -q src tests
 
 ---
 
-<a id="sicherheitsrichtlinie--kontakt"></a>
+<a id="sec-17"></a><a id="sicherheitsrichtlinie--kontakt"></a>
 ## Sicherheitsrichtlinie & Kontakt
 
 Sicherheit und Datenschutz haben oberste Priorität:
@@ -395,7 +451,7 @@ Sicherheit und Datenschutz haben oberste Priorität:
 
 ---
 
-<a id="gesetzlicher-hinweis--haftungsbeschraenkung"></a>
+<a id="sec-18"></a><a id="gesetzlicher-hinweis--haftungsbeschraenkung"></a>
 ## Gesetzlicher Hinweis & Haftungsbeschränkung
 
 Diese Software wird unentgeltlich unter der MIT-Lizenz als Open-Source-Software bereitgestellt. Gemäß den gesetzlichen Bestimmungen des deutschen Schenkungs- und Gefälligkeitsrechts (§ 521 BGB) ist die Haftung bei unentgeltlicher Überlassung auf Vorsatz und grobe Fahrlässigkeit beschränkt. Insbesondere wird keine Gewährleistung für die Eignung für einen bestimmten Zweck oder die Mängelfreiheit übernommen.

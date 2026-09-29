@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Discoverability, Visual Architecture, Level 1 SBOM Companion & PEP 621 Saturation (Pfad B Stand 2026-09-29)
+
+- **18-Point Bilingual Navigation Parity & Dual Reciprocal Anchors**: Upgraded `README.md` and `README_de.md` with reciprocal dual HTML anchors (`<a id="sec-01"></a>` .. `<a id="sec-18"></a>` alongside slug anchors `<a id="..."></a>`), ensuring frictionless section-indexed jump-linking across both languages.
+- **ASCII Four-View Architectural Topology Projection**: Added complete ASCII topology projections in Section 2 across English and German READMEs (`[VIEW 1: CONSUMER DATA CANON & LOCAL-FIRST STORAGE]`, `[VIEW 2: DOMAIN ENGINE CORE & IDEMPOTENT BALANCE INGESTION]`, `[VIEW 3: DATA MINIMIZATION & ALLOWLIST TRANSIT PROJECTION]`, `[VIEW 4: DOWNSTREAM CONSUMPTION & ZERO-EGRESS SECURITY PERIMETER]`; German `[SICHT 1]` .. `[SICHT 4]`).
+- **Level 1 SBOM Plain-Text Companion**: Authored canonical plain-text Level 1 SBOM companion `THIRD_PARTY_LICENSES.txt` (zero runtime dependencies, 100% Python stdlib under PSFL-2.0, Invariant Cross-Reference Matrix table for `INV-ACC-01` .. `INV-ACC-10`, unprivileged `RunAsInvoker` non-elevation certification, and full license texts for MIT and PSFL-2.0). Re-audited `THIRD_PARTY_LICENSES.md` to Stand 2026-09-29 and cross-referenced in root `NOTICE`.
+- **PEP 621 Saturation (20/20 Topics)**: Expanded `keywords` in `pyproject.toml` to full 20/20 topics saturation (`accounts`, `bank-accounts`, `banking`, `camt`, `camt-053`, `sqlite`, `local-first`, `offline-first`, `bach`, `open-ocean`, `financial-primitives`, `iban-validation`, `iban-masking`, `privacy-by-design`, `zero-egress`, `runasinvoker`, `ellmos-ai`, `open-bricks`, `data-minimization`, `fintech`). Added `"Plain-Text Licenses"`, `"Third-Party Licenses (Text)"`, and `"Level 1 SBOM"` URLs under `[project.urls]`. Added `THIRD_PARTY_LICENSES.txt` to PEP 621 `license-files` whitelist. Preserved version `0.1.4` strictly per `T-20260920-167562623`.
+- **Synchronized Badges & Documentation**: Synchronized Shields.io badges across `README.md` and `README_de.md` (Level 1 SBOM Plain-Text, Third-Party Licenses Text Companion, Verified 2026-09-29 / Geprüft 2026-09-29, test pass count). Updated `llms.txt` to Stand 2026-09-29.
+- **Contract Test Suite Expansion**: Added new contract tests in `tests/test_metadata.py` verifying sec-01..sec-18 dual reciprocal HTML anchors, ASCII Four-View topology projection parity, 20/20 PEP 621 topics saturation, Level 1 SBOM plain-text companion invariants, and local marketing log recency.
+
 ### Repository Hygiene, CI Lifecycle Hardening, Lock Defense & Level 1 SBOM Audit (Pfad A)
 
 - **Canonical Attribution**: Added root `NOTICE` file declaring attribution to Lukas Geiger, ellmos-ai, and the open-bricks open-source umbrella with MIT licensing and Level 1 SBOM cross-reference.
