@@ -2,6 +2,27 @@
 
 ## [Unreleased]
 
+### CI/CD Lifecycle Provisioning, Multi-Host Lock Defense, PEP 621 Standard & Contract Expansion (Pfad A Stand 2026-09-30)
+
+- **CI/CD Lifecycle Workflows & Governance Labels**:
+  - Deployed `.github/workflows/auto-assign.yml` with `actions/github-script@v7`, `timeout-minutes: 5`, `concurrency: cancel-in-progress: true`, and least-privilege permissions (`pull-requests: write`, `issues: write`).
+  - Deployed `.github/workflows/label-sync.yml` with `EndBug/label-sync@v2`, `timeout-minutes: 5`, `concurrency: cancel-in-progress: true`, and least-privilege permissions (`issues: write`).
+  - Created canonical `.github/labels.yml` with 11 standard governance labels (`bug`, `enhancement`, `good first issue`, `help wanted`, `documentation`, `duplicate`, `wontfix`, `priority: high`, `priority: low`, `needs-triage`, `stale`) per GOVERNANCE.md §4.2.
+  - Authored bilingual `CONTRIBUTING.md` defining architectural principles (`INV-ACC-01` to `INV-ACC-10`), `RunAsInvoker` user-mode non-elevation, Plan D local-first development rules, and quality gates.
+- **Multi-Host Cloud-Sync & Lock Defense**:
+  - Hardened `.gitignore` with cross-host sync tokens (`*-IDEAPAD*`, `*-IDEAPAD-GEI*`, `*_WORKSTATION*`, `*_WORKSTATION-LG*`, `*-WORKSTATION.*`, `*-WORKSTATION-LG.*`), canonical lock patterns (`LOCK.dev.*`, `LOCK.antigravity.*`, `LOCK.bugsearch.*`), test/cache temp directories (`.pytest_temp/`, `.pytest_tmp*/`, `.tox/`), and OS/editor artifacts (`*.swo`, `Desktop.ini`, `desktop.ini`, `ehthumbs.db`).
+- **Level 1 SBOM Re-Audit**:
+  - Re-audited `THIRD_PARTY_LICENSES.md` and `THIRD_PARTY_LICENSES.txt` Stand 2026-09-30, reaffirming zero external runtime dependencies, 100% Python stdlib under PSFL-2.0, unprivileged `RunAsInvoker` non-elevation mode, and all 10 governance invariants (`INV-ACC-01` to `INV-ACC-10`).
+- **PEP 621 Metadata & Pytest Hardening**:
+  - Added `"Contributing"` URL under `[project.urls]` in `pyproject.toml`.
+  - Configured `[tool.pytest.ini_options]` with `addopts = "-ra -v --basetemp=.pytest_temp"` and hardened `norecursedirs` protecting `.pytest_temp`, `.hypothesis`, `.turbo`, `.nyc_output`, `.tox`.
+  - Maintained version `0.1.4` strictly frozen per `T-20260920-167562623`.
+- **Documentation & Badges Parity**:
+  - Synchronized Shields.io test pass and `Verified-2026--09--30` badges across `README.md` and `README_de.md` while preserving all 18 bilateral reciprocal HTML anchors (`<a id="sec-01"></a>` to `<a id="sec-18"></a>`).
+  - Updated `llms.txt` to Stand 2026-09-30 with test baseline and `CONTRIBUTING.md` references.
+- **Contract Test Suite Expansion**:
+  - Expanded `tests/test_metadata.py` with 5 new automated contract tests covering `auto-assign.yml`, `label-sync.yml`, `labels.yml`, `CONTRIBUTING.md`, pytest basetemp options, and local marketing log Section 9 Pfad A audit. Total tests expanded to 68/68 (100% green).
+
 ### Discoverability, Visual Architecture, Level 1 SBOM Companion & PEP 621 Saturation (Pfad B Stand 2026-09-29)
 
 - **18-Point Bilingual Navigation Parity & Dual Reciprocal Anchors**: Upgraded `README.md` and `README_de.md` with reciprocal dual HTML anchors (`<a id="sec-01"></a>` .. `<a id="sec-18"></a>` alongside slug anchors `<a id="..."></a>`), ensuring frictionless section-indexed jump-linking across both languages.

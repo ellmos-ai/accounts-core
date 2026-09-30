@@ -17,6 +17,9 @@ htmlcov/
 .hypothesis/
 .turbo/
 .nyc_output/
+.pytest_temp/
+.pytest_tmp*/
+.tox/
 
 # Multi-Host-Synchronisationskonflikte
 *-conflict-*
@@ -38,6 +41,9 @@ LOCK*.txt
 LOCK.user.*
 LOCK.until.*
 LOCK.condition.*
+LOCK.dev.*
+LOCK.antigravity.*
+LOCK.bugsearch.*
 LOCK.permissions.json
 .automation-lock
 uv.lock
@@ -76,20 +82,30 @@ id_ed25519*
 # Multi-Host Host-Tokens & Merge-Reste
 *-WORKSTATION*
 *-WORKSTATION-LG*
+*_WORKSTATION*
+*_WORKSTATION-LG*
+*-WORKSTATION.*
+*-WORKSTATION-LG.*
 *-ASUS*
 *-ASUS-GEI*
 *-LAPTOP*
 *-Mac Studio*
 *-MacBook*
+*-IDEAPAD*
+*-IDEAPAD-GEI*
 *.orig
 *.rej
 
-# Editor-, Backup- & Log-Dateien
+# Editor-, Backup-, OS- & Log-Dateien
 *.tmp
 *.bak
 *.swp
+*.swo
 *~
 *.log
+Desktop.ini
+desktop.ini
+ehthumbs.db
 
 # Interne Automations-/Marketing-Notizen, nicht fuer die Veroeffentlichung (Nutzerentscheid 2026-09-26)
 MARKETING-LOG.txt

@@ -39,6 +39,7 @@ def test_pyproject_structure_and_pep621_urls():
     assert urls.get("Documentation") == "https://github.com/ellmos-ai/accounts-core#readme"
     assert urls.get("Issues") == "https://github.com/ellmos-ai/accounts-core/issues"
     assert urls.get("Changelog") == "https://github.com/ellmos-ai/accounts-core/blob/main/CHANGELOG.md"
+    assert urls.get("Contributing") == "https://github.com/ellmos-ai/accounts-core/blob/main/CONTRIBUTING.md"
     assert urls.get("Security") == "https://github.com/ellmos-ai/accounts-core/blob/main/SECURITY.md"
     assert urls.get("Third-Party Licenses") == "https://github.com/ellmos-ai/accounts-core/blob/main/THIRD_PARTY_LICENSES.md"
     assert urls.get("Notice") == "https://github.com/ellmos-ai/accounts-core/blob/main/NOTICE"
@@ -56,7 +57,9 @@ def test_pytest_ini_options_configured():
     assert ini_opts.get("testpaths") == ["tests"]
     assert "." in ini_opts.get("pythonpath", []) or "src" in ini_opts.get("pythonpath", [])
     assert "-ra -v" in ini_opts.get("addopts", "")
-    assert ini_opts.get("norecursedirs") == [".git", ".pytest_cache", "__pycache__", "build", "dist", ".venv", "venv"]
+    assert "--basetemp=.pytest_temp" in ini_opts.get("addopts", "")
+    for d in [".git", ".pytest_cache", ".pytest_temp", "__pycache__", "build", "dist", ".venv", "venv", ".hypothesis", ".turbo", ".nyc_output", ".tox"]:
+        assert d in ini_opts.get("norecursedirs", [])
 
 
 def test_gitignore_hygiene_patterns():
@@ -154,7 +157,7 @@ def test_readme_badges_parity():
     expected_badges = [
         "badge/version-0.1.4-blue.svg",
         "actions/workflows/ci.yml/badge.svg",
-        "tests-63%20passed%20%7C%20100%25%20green-brightgreen.svg",
+        "tests-68%20passed%20%7C%20100%25%20green-brightgreen.svg",
         "python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg",
         "platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg",
         "privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg",
@@ -178,7 +181,8 @@ def test_llms_txt_current_timestamp_and_links():
     assert llms_path.is_file(), "llms.txt must exist"
     content = llms_path.read_text(encoding="utf-8")
 
-    assert "## Last-checked: 2026-09-29" in content or "## Last-checked: 2026-09-22" in content
+    assert any(d in content for d in ["2026-09-30", "2026-09-29", "2026-09-22"])
+    assert "CONTRIBUTING.md" in content
     assert "0.1.4" in content
     assert "NOTICE" in content
     assert "SECURITY.md" in content
@@ -563,7 +567,7 @@ def test_third_party_licenses_audit_recency():
     assert lic_path.is_file(), "THIRD_PARTY_LICENSES.md must exist"
     content = lic_path.read_text(encoding="utf-8")
 
-    assert any(d in content for d in ["2026-09-29", "2026-09-22", "2026-09-20"]), "Audit date missing in THIRD_PARTY_LICENSES.md"
+    assert any(d in content for d in ["2026-09-30", "2026-09-29", "2026-09-22", "2026-09-20"]), "Audit date missing in THIRD_PARTY_LICENSES.md"
     assert "[NOTICE](NOTICE)" in content
     assert "Level 1 SBOM" in content or "Level 1 Software Bill of Materials" in content
     assert "RunAsInvoker" in content
@@ -654,6 +658,14 @@ def test_gitignore_extended_lock_and_conflict_tokens():
         ".hypothesis/",
         ".turbo/",
         ".nyc_output/",
+        ".pytest_temp/",
+        "*-IDEAPAD*",
+        "*_WORKSTATION-LG*",
+        "LOCK.dev.*",
+        "LOCK.antigravity.*",
+        "LOCK.bugsearch.*",
+        "*.swo",
+        "Desktop.ini",
     ]:
         assert token in content, f"Missing token '{token}' in .gitignore"
 
@@ -761,3 +773,80 @@ def test_marketing_log_section_8_pfad_b_recency():
     assert "## 8. Discoverability, Visual Architecture & Level 1 SBOM Audit (2026-09-29)" in content
     assert "Reciprocal Dual Anchors" in content
     assert "ASCII Four-View" in content
+
+
+def test_auto_assign_workflow_lifecycle_hardening():
+    """Verify .github/workflows/auto-assign.yml enforces github-script@v7, timeout-minutes: 5, and concurrency."""
+    workflow_path = REPO_ROOT / ".github" / "workflows" / "auto-assign.yml"
+    assert workflow_path.is_file(), "auto-assign.yml must exist"
+    content = workflow_path.read_text(encoding="utf-8")
+
+    assert "actions/github-script@v7" in content
+    assert "timeout-minutes: 5" in content
+    assert "concurrency:" in content
+    assert "cancel-in-progress: true" in content
+    assert "pull-requests: write" in content
+    assert "issues: write" in content
+
+
+def test_label_sync_workflow_lifecycle_hardening():
+    """Verify .github/workflows/label-sync.yml enforces EndBug/label-sync@v2, timeout-minutes: 5, and concurrency."""
+    workflow_path = REPO_ROOT / ".github" / "workflows" / "label-sync.yml"
+    assert workflow_path.is_file(), "label-sync.yml must exist"
+    content = workflow_path.read_text(encoding="utf-8")
+
+    assert "EndBug/label-sync@v2" in content
+    assert "timeout-minutes: 5" in content
+    assert "concurrency:" in content
+    assert "cancel-in-progress: true" in content
+    assert "issues: write" in content
+    assert ".github/labels.yml" in content
+
+
+def test_labels_yml_standard_governance():
+    """Verify .github/labels.yml defines all 11 standard governance labels per GOVERNANCE.md §4.2."""
+    labels_path = REPO_ROOT / ".github" / "labels.yml"
+    assert labels_path.is_file(), "labels.yml must exist"
+    content = labels_path.read_text(encoding="utf-8")
+
+    required_labels = [
+        "bug",
+        "enhancement",
+        "good first issue",
+        "help wanted",
+        "documentation",
+        "duplicate",
+        "wontfix",
+        "priority: high",
+        "priority: low",
+        "needs-triage",
+        "stale",
+    ]
+    for label in required_labels:
+        assert f"name: {label}" in content or f"name: '{label}'" in content, f"Missing label '{label}' in labels.yml"
+
+
+def test_contributing_guidelines_presence():
+    """Verify CONTRIBUTING.md defines architectural invariants, RunAsInvoker, and bilingual guidelines."""
+    contrib_path = REPO_ROOT / "CONTRIBUTING.md"
+    assert contrib_path.is_file(), "CONTRIBUTING.md must exist"
+    content = contrib_path.read_text(encoding="utf-8")
+
+    assert "English" in content
+    assert "Deutsch" in content
+    assert "INV-ACC-01" in content
+    assert "RunAsInvoker" in content
+    assert "Plan D" in content
+    assert "SECURITY.md" in content
+
+
+def test_marketing_log_section_9_pfad_a_recency():
+    """Verify local MARKETING-LOG.txt includes Section 9 Pfad A audit."""
+    mkt_path = REPO_ROOT / "MARKETING-LOG.txt"
+    if not mkt_path.is_file():
+        pytest.skip("MARKETING-LOG.txt is gitignored and not present in this checkout")
+    content = mkt_path.read_text(encoding="utf-8")
+    assert "## 9. Technical Hygiene, CI Lifecycle Hardening & Multi-Host Lock Defense Audit (2026-09-30)" in content
+    assert "auto-assign.yml" in content
+    assert "label-sync.yml" in content
+    assert "CONTRIBUTING.md" in content

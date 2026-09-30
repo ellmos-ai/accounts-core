@@ -1,6 +1,6 @@
 # Third-Party Licenses & Software Inventory
 # Project: ellmos-ai/accounts-core
-# Audited: 2026-09-29 against Level 1 SBOM, zero-copyleft core, and runtime invariants
+# Audited: 2026-09-30 against Level 1 SBOM, zero-copyleft core, and runtime invariants
 # License: MIT License (see LICENSE and NOTICE)
 # Repository: https://github.com/ellmos-ai/accounts-core
 # Umbrella Collective: open-bricks (https://github.com/open-bricks)

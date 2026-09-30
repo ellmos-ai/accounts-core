@@ -54,6 +54,7 @@ Repository = "https://github.com/ellmos-ai/accounts-core"
 Documentation = "https://github.com/ellmos-ai/accounts-core#readme"
 Issues = "https://github.com/ellmos-ai/accounts-core/issues"
 Changelog = "https://github.com/ellmos-ai/accounts-core/blob/main/CHANGELOG.md"
+Contributing = "https://github.com/ellmos-ai/accounts-core/blob/main/CONTRIBUTING.md"
 Security = "https://github.com/ellmos-ai/accounts-core/blob/main/SECURITY.md"
 "Third-Party Licenses" = "https://github.com/ellmos-ai/accounts-core/blob/main/THIRD_PARTY_LICENSES.md"
 "Third-Party Licenses (Text)" = "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/THIRD_PARTY_LICENSES.txt"
@@ -73,8 +74,8 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src", "."]
-addopts = "-ra -v"
-norecursedirs = [".git", ".pytest_cache", "__pycache__", "build", "dist", ".venv", "venv"]
+addopts = "-ra -v --basetemp=.pytest_temp"
+norecursedirs = [".git", ".pytest_cache", ".pytest_temp", "__pycache__", "build", "dist", ".venv", "venv", ".hypothesis", ".turbo", ".nyc_output", ".tox"]
 
 [tool.ruff]
 line-length = 120
