@@ -157,7 +157,7 @@ def test_readme_badges_parity():
     expected_badges = [
         "badge/version-0.1.4-blue.svg",
         "actions/workflows/ci.yml/badge.svg",
-        "tests-68%20passed%20%7C%20100%25%20green-brightgreen.svg",
+        "tests-72%20passed%20%7C%20100%25%20green-brightgreen.svg",
         "python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg",
         "platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg",
         "privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg",
@@ -181,7 +181,7 @@ def test_llms_txt_current_timestamp_and_links():
     assert llms_path.is_file(), "llms.txt must exist"
     content = llms_path.read_text(encoding="utf-8")
 
-    assert any(d in content for d in ["2026-09-30", "2026-09-29", "2026-09-22"])
+    assert any(d in content for d in ["2026-10-02", "2026-09-30", "2026-09-29", "2026-09-22"])
     assert "CONTRIBUTING.md" in content
     assert "0.1.4" in content
     assert "NOTICE" in content
@@ -567,7 +567,7 @@ def test_third_party_licenses_audit_recency():
     assert lic_path.is_file(), "THIRD_PARTY_LICENSES.md must exist"
     content = lic_path.read_text(encoding="utf-8")
 
-    assert any(d in content for d in ["2026-09-30", "2026-09-29", "2026-09-22", "2026-09-20"]), "Audit date missing in THIRD_PARTY_LICENSES.md"
+    assert any(d in content for d in ["2026-10-02", "2026-09-30", "2026-09-29", "2026-09-22", "2026-09-20"]), "Audit date missing in THIRD_PARTY_LICENSES.md"
     assert "[NOTICE](NOTICE)" in content
     assert "Level 1 SBOM" in content or "Level 1 Software Bill of Materials" in content
     assert "RunAsInvoker" in content
@@ -850,3 +850,38 @@ def test_marketing_log_section_9_pfad_a_recency():
     assert "auto-assign.yml" in content
     assert "label-sync.yml" in content
     assert "CONTRIBUTING.md" in content
+
+
+def test_marketing_log_section_10_pfad_b_recency():
+    """Verify local MARKETING-LOG.txt includes Section 10 Pfad B audit."""
+    mkt_path = REPO_ROOT / "MARKETING-LOG.txt"
+    if not mkt_path.is_file():
+        pytest.skip("MARKETING-LOG.txt is gitignored and not present in this checkout")
+    content = mkt_path.read_text(encoding="utf-8")
+    assert "## 10. Discoverability, Visual Architecture & Design Parity Audit (2026-10-02)" in content
+    assert "Radar & Eligibility" in content
+    assert "Target Persona & Query Validation" in content
+    assert "Level 1 SBOM Re-Audit" in content
+
+
+def test_sbom_companion_re_audit_recency_2026_10_02():
+    """Verify THIRD_PARTY_LICENSES.txt plain-text companion re-audit date 2026-10-02."""
+    sbom_txt = REPO_ROOT / "THIRD_PARTY_LICENSES.txt"
+    assert sbom_txt.is_file(), "THIRD_PARTY_LICENSES.txt must exist"
+    content = sbom_txt.read_text(encoding="utf-8")
+    assert "Audited: 2026-10-02" in content
+
+
+def test_readme_verified_badge_recency_2026_10_02():
+    """Verify README.md and README_de.md include Verified-2026-10-02 badges."""
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+    assert "Verified-2026--10--02-blue.svg" in readme_en
+    assert "Gepr%C3%BCft-2026--10--02-blue.svg" in readme_de
+
+
+def test_version_freeze_discipline():
+    """Verify strict version freeze discipline per T-20260920-167562623."""
+    pyproject_path = REPO_ROOT / "pyproject.toml"
+    data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
+    assert data.get("project", {}).get("version") == "0.1.4"

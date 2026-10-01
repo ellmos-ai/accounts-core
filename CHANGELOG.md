@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+### Discoverability, Visual Architecture & Level 1 SBOM Re-Audit Parity (Pfad B Stand 2026-10-02)
+
+- **Level 1 SBOM Re-Audit Stand 2026-10-02**:
+  - Re-audited `THIRD_PARTY_LICENSES.md` and plain-text companion `THIRD_PARTY_LICENSES.txt` to Stand 2026-10-02, verifying zero external runtime dependencies (`dependencies = []`), 100% Python standard library execution under PSFL-2.0, unprivileged `RunAsInvoker` user-mode non-elevation, and complete mapping of all 10 governance invariants (`INV-ACC-01` to `INV-ACC-10`).
+- **Visual Architecture & 18-Section Navigation Parity**:
+  - Verified 18-point bilingual navigation parity across `README.md` and `README_de.md` with reciprocal dual HTML anchors (`<a id="sec-01"></a>` to `<a id="sec-18"></a>`).
+  - Re-audited four-view ASCII topology projections (`[VIEW 1]` .. `[VIEW 4]` and `[SICHT 1]` .. `[SICHT 4]`), Mermaid flowchart and sequence diagram lifecycle workflows, and target personas (`[PERSONA-01]` to `[PERSONA-04]`).
+  - Verified 10-dimension comparative matrix benchmarking against raw ad-hoc scripts, heavyweight ERPs, and cloud SaaS APIs.
+- **Synchronized Badges & Documentation**:
+  - Updated `Verified-2026--10--02` (EN) and `Gepr%C3%BCft-2026--10--02` (DE) status badges and test pass count in both READMEs.
+  - Synchronized `llms.txt` to Stand 2026-10-02 with updated test baseline and references.
+  - Maintained version `0.1.4` strictly frozen per `T-20260920-167562623`.
+- **Marketing Log Documentation**:
+  - Documented Section 10 in `MARKETING-LOG.txt` covering Pfad B discoverability audit, persona validation, zero-egress invariants mapping, and Level 1 SBOM recency.
+- **Contract Test Suite Expansion**:
+  - Expanded `tests/test_metadata.py` with 4 new contract tests validating 2026-10-02 Pfad B recency, Level 1 SBOM companion audit, Verified badges, and version freeze discipline.
+
 ### CI/CD Lifecycle Provisioning, Multi-Host Lock Defense, PEP 621 Standard & Contract Expansion (Pfad A Stand 2026-09-30)
 
 - **CI/CD Lifecycle Workflows & Governance Labels**:

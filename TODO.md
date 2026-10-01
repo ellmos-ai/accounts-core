@@ -1,8 +1,8 @@
 # TODO.md — Active work
 
 **Version:** 0.1.4
-**Updated:** 2026-09-22
-**Reason:** CI/CD Lifecycle-Härtung (welcome.yml, stale.yml), kanonische NOTICE-Attribution, Multi-Host-Lock-Schutz, Level 1 SBOM Re-Audit und Vertragstests (Pfad A)
+**Updated:** 2026-10-02
+**Reason:** Discoverability, Visual Architecture & Level 1 SBOM Re-Audit Parity (Pfad B Stand 2026-10-02)
 **Purpose:** Track only work that remains open.
 
 ## STATUS
