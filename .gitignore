@@ -88,11 +88,15 @@ id_ed25519*
 *-WORKSTATION-LG.*
 *-ASUS*
 *-ASUS-GEI*
+*-ASUS-GEI.*
 *-LAPTOP*
 *-Mac Studio*
 *-MacBook*
 *-IDEAPAD*
 *-IDEAPAD-GEI*
+*-IDEAPAD-GEI.*
+TASKPLAN_*.md
+*-TASKPLAN*
 *.orig
 *.rej
 
@@ -106,6 +110,8 @@ id_ed25519*
 Desktop.ini
 desktop.ini
 ehthumbs.db
+Thumbs.db
+thumbs.db
 
 # Interne Automations-/Marketing-Notizen, nicht fuer die Veroeffentlichung (Nutzerentscheid 2026-09-26)
 MARKETING-LOG.txt

@@ -1,8 +1,8 @@
 # TODO.md — Active work
 
 **Version:** 0.1.4
-**Updated:** 2026-10-02
-**Reason:** Discoverability, Visual Architecture & Level 1 SBOM Re-Audit Parity (Pfad B Stand 2026-10-02)
+**Updated:** 2026-10-04
+**Reason:** CI Lifecycle Hardening, Dependabot Workflow, Multi-Host Lock Defense & Level 1 SBOM Re-Audit (Pfad A Stand 2026-10-04)
 **Purpose:** Track only work that remains open.
 
 ## STATUS
@@ -29,6 +29,9 @@
 
 - [x] **TASK-AC-03: Release-Hygiene, Lizenzinventar & Gate-Bereitschaft (v0.1.1)** (`effort=low`, `scope=hygiene`, priority `high`).
   - **Ergebnis:** Standard-`TODO.md` mit `## STATUS`-Tabelle etabliert, `THIRD_PARTY_LICENSES.md` angelegt, `.gitignore` um `data/` und Sicherheitsmuster gehärtet, `final_gate_check.py` auf 10/10 PASS gebracht.
+
+- [x] **TASK-AC-04: CI Lifecycle Härtung, Dependabot Workflow & Multi-Host Lock Defense (Pfad A, v0.1.4)** (`effort=low`, `scope=hygiene`, priority `high`).
+  - **Ergebnis:** `.github/dependabot.yml` provisioniert, zweisprachige `CONTRIBUTING.md` mit 10 Invarianten und 48h SLA erweitert, `.gitignore` gehärtet, `license-files` um `CONTRIBUTING.md` ergänzt, Level 1 SBOM auf 2026-10-04 re-auditiert, Vertragstests auf 78/78 erweitert.
 
 ---
 <!-- REMEMBER: ENDUSERTEXTE BEKOMMEN ECHTE UMLAUTE Ü Ö Ä ß -->

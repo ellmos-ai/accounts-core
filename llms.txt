@@ -2,9 +2,9 @@
 
 > Neutral domain core for the account and bank-balance domain: bank account CRUD, CAMT balance import, and privacy-safe read-only transit projection.
 
-## Last-checked: 2026-10-02
+## Last-checked: 2026-10-04
 - Version: 0.1.4
-- Tests: Automated contract and domain tests (100% green)
+- Tests: 78 automated contract and domain tests (100% green)
 - Architecture: 100% Local-First | Zero-Egress | Single Data Canon | User-Mode Non-Elevation (RunAsInvoker)
 - Parent Organization: ellmos-ai
 - Umbrella Ecosystem: open-bricks
@@ -22,6 +22,7 @@
 
 - `NOTICE`: Canonical attribution and copyright notice.
 - `CONTRIBUTING.md`: Bilingual contribution guidelines, architectural invariants, and quality gates.
+- `.github/dependabot.yml`: Automated weekly CI maintenance guard for GitHub Actions.
 - `SECURITY.md`: Bilingual security policy with 48h response SLA and 5-day triage commitment.
 - `pyproject.toml`: PEP 621 package metadata and ecosystem URLs.
 - `CHANGELOG.md`: Release notes and change history.

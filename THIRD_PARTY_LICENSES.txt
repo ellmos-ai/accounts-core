@@ -1,7 +1,7 @@
 # Third-Party Licenses & Software Inventory
 # Project: ellmos-ai/accounts-core
-# Audited: 2026-10-02 against Level 1 SBOM, zero-copyleft core, and runtime invariants
-# License: MIT License (see LICENSE and NOTICE)
+# Audited: 2026-10-04 against Level 1 SBOM, zero-copyleft core, and runtime invariants
+# License: MIT License (see LICENSE, NOTICE, and CONTRIBUTING.md)
 # Repository: https://github.com/ellmos-ai/accounts-core
 # Umbrella Collective: open-bricks (https://github.com/open-bricks)
 
@@ -10,7 +10,7 @@
 ================================================================================
 accounts-core is licensed under the MIT License.
 Copyright (c) 2026 Lukas Geiger, ellmos-ai, and open-bricks.
-See `LICENSE` and `NOTICE` in the repository root for full legal texts.
+See `LICENSE`, `NOTICE`, and `CONTRIBUTING.md` in the repository root for full legal texts.
 
 ================================================================================
 2. CORE RUNTIME DISTRIBUTION (100% PERMISSIVE & ZERO EXTERNAL DEPENDENCIES - LEVEL 1 SBOM)

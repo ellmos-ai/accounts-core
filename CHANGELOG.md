@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+### CI Lifecycle Hardening, Dependabot Workflow, Multi-Host Lock Defense & Level 1 SBOM Re-Audit (Pfad A Stand 2026-10-04)
+
+- **Automated CI Maintenance Guard & Dependabot Provisioning**:
+  - Deployed `.github/dependabot.yml` configured for weekly automated checks of GitHub Actions dependencies on Mondays at 06:00 Berlin time (`Europe/Berlin`), limiting open PRs to 3 and applying `dependencies` and `github-actions` labels.
+- **Bilingual Contributing Guidelines Expansion**:
+  - Expanded `CONTRIBUTING.md` with full bilingual parity (EN/DE) explicitly detailing all 10 governance and architectural invariants (`INV-ACC-01` to `INV-ACC-10`), `RunAsInvoker` unprivileged user-mode non-elevation, Plan D local development setup (`C:\_Local_DEV\repos\accounts-core`), statutory limitation of liability (§ 521 BGB Gefälligkeitsrecht), responsible disclosure policy with 48h Security Response SLA (`security@ellmos.ai`, `security@open-bricks.org`, `support@lukasgeiger.com`, `lukas@open-bricks.org`), and strict version freeze discipline (`T-20260920-167562623`).
+- **Multi-Host Cloud-Sync & Lock Defense Härtung**:
+  - Hardened `.gitignore` with additional taskplan patterns (`TASKPLAN_*.md`, `*-TASKPLAN*`), Windows desktop database files (`Thumbs.db`, `thumbs.db`), and host-extension patterns (`*-ASUS-GEI.*`, `*-IDEAPAD-GEI.*`).
+- **PEP 621 / PEP 639 Standardisierung in pyproject.toml**:
+  - Added `CONTRIBUTING.md` to `license-files` whitelist in `pyproject.toml`.
+  - Maintained version `0.1.4` strictly frozen per `T-20260920-167562623` (0 version bumps).
+- **Level 1 SBOM Re-Audit Stand 2026-10-04**:
+  - Re-audited `THIRD_PARTY_LICENSES.md` and plain-text companion `THIRD_PARTY_LICENSES.txt` to Stand 2026-10-04, reaffirming zero external runtime dependencies (`dependencies = []`), 100% Python Standard Library execution under PSFL-2.0, unprivileged `RunAsInvoker` non-elevation mode, and cross-referencing `CONTRIBUTING.md`.
+- **Documentation & Badges Currency**:
+  - Synchronized status badges across `README.md` and `README_de.md` (`Verified-2026--10--04` / `Geprüft-2026--10--04`, test pass count 78 passed | 100% green, and Contributing badges).
+  - Synchronized `llms.txt` with Last-checked timestamp 2026-10-04, 78 tests baseline, and `.github/dependabot.yml` link.
+- **Contract Test Suite Expansion**:
+  - Expanded `tests/test_metadata.py` with 6 new/updated contract tests covering Dependabot lifecycle hardening, bilingual contributing invariants and SLA parity, gitignore tokens, PEP 639 license-files whitelist, and 2026-10-04 SBOM recency. Total test suite expanded to 78/78 tests (100% green).
+
 ### Discoverability, Visual Architecture & Level 1 SBOM Re-Audit Parity (Pfad B Stand 2026-10-02)
 
 - **Level 1 SBOM Re-Audit Stand 2026-10-02**:

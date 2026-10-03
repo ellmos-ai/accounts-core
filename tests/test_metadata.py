@@ -157,7 +157,7 @@ def test_readme_badges_parity():
     expected_badges = [
         "badge/version-0.1.4-blue.svg",
         "actions/workflows/ci.yml/badge.svg",
-        "tests-72%20passed%20%7C%20100%25%20green-brightgreen.svg",
+        "tests-78%20passed%20%7C%20100%25%20green-brightgreen.svg",
         "python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg",
         "platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg",
         "privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg",
@@ -181,7 +181,7 @@ def test_llms_txt_current_timestamp_and_links():
     assert llms_path.is_file(), "llms.txt must exist"
     content = llms_path.read_text(encoding="utf-8")
 
-    assert any(d in content for d in ["2026-10-02", "2026-09-30", "2026-09-29", "2026-09-22"])
+    assert any(d in content for d in ["2026-10-04", "2026-10-02", "2026-09-30", "2026-09-29", "2026-09-22"])
     assert "CONTRIBUTING.md" in content
     assert "0.1.4" in content
     assert "NOTICE" in content
@@ -367,6 +367,7 @@ def test_pep639_license_files_metadata():
     assert "NOTICE" in license_files
     assert "THIRD_PARTY_LICENSES.md" in license_files
     assert "THIRD_PARTY_LICENSES.txt" in license_files
+    assert "CONTRIBUTING.md" in license_files
 
 
 def test_todo_status_table_and_gate_readiness():
@@ -567,7 +568,7 @@ def test_third_party_licenses_audit_recency():
     assert lic_path.is_file(), "THIRD_PARTY_LICENSES.md must exist"
     content = lic_path.read_text(encoding="utf-8")
 
-    assert any(d in content for d in ["2026-10-02", "2026-09-30", "2026-09-29", "2026-09-22", "2026-09-20"]), "Audit date missing in THIRD_PARTY_LICENSES.md"
+    assert any(d in content for d in ["2026-10-04", "2026-10-02", "2026-09-30", "2026-09-29", "2026-09-22", "2026-09-20"]), "Audit date missing in THIRD_PARTY_LICENSES.md"
     assert "[NOTICE](NOTICE)" in content
     assert "Level 1 SBOM" in content or "Level 1 Software Bill of Materials" in content
     assert "RunAsInvoker" in content
@@ -864,20 +865,25 @@ def test_marketing_log_section_10_pfad_b_recency():
     assert "Level 1 SBOM Re-Audit" in content
 
 
-def test_sbom_companion_re_audit_recency_2026_10_02():
-    """Verify THIRD_PARTY_LICENSES.txt plain-text companion re-audit date 2026-10-02."""
+def test_sbom_companion_re_audit_recency_2026_10_04():
+    """Verify THIRD_PARTY_LICENSES.txt plain-text companion re-audit date 2026-10-04."""
     sbom_txt = REPO_ROOT / "THIRD_PARTY_LICENSES.txt"
     assert sbom_txt.is_file(), "THIRD_PARTY_LICENSES.txt must exist"
     content = sbom_txt.read_text(encoding="utf-8")
-    assert "Audited: 2026-10-02" in content
+    assert "Audited: 2026-10-04" in content
+
+    sbom_md = REPO_ROOT / "THIRD_PARTY_LICENSES.md"
+    assert sbom_md.is_file(), "THIRD_PARTY_LICENSES.md must exist"
+    content_md = sbom_md.read_text(encoding="utf-8")
+    assert "Audit Date:** 2026-10-04" in content_md
 
 
-def test_readme_verified_badge_recency_2026_10_02():
-    """Verify README.md and README_de.md include Verified-2026-10-02 badges."""
+def test_readme_verified_badge_recency_2026_10_04():
+    """Verify README.md and README_de.md include Verified-2026-10-04 badges."""
     readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
     readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
-    assert "Verified-2026--10--02-blue.svg" in readme_en
-    assert "Gepr%C3%BCft-2026--10--02-blue.svg" in readme_de
+    assert "Verified-2026--10--04-blue.svg" in readme_en
+    assert "Gepr%C3%BCft-2026--10--04-blue.svg" in readme_de
 
 
 def test_version_freeze_discipline():
@@ -885,3 +891,64 @@ def test_version_freeze_discipline():
     pyproject_path = REPO_ROOT / "pyproject.toml"
     data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
     assert data.get("project", {}).get("version") == "0.1.4"
+
+
+def test_dependabot_workflow_lifecycle_hardening():
+    """Verify .github/dependabot.yml exists and configures weekly github-actions maintenance."""
+    dep_path = REPO_ROOT / ".github" / "dependabot.yml"
+    assert dep_path.is_file(), ".github/dependabot.yml must exist"
+    content = dep_path.read_text(encoding="utf-8")
+    assert "package-ecosystem: \"github-actions\"" in content or "package-ecosystem: 'github-actions'" in content
+    assert "interval: \"weekly\"" in content or "interval: 'weekly'" in content
+    assert "monday" in content
+    assert "Europe/Berlin" in content
+    assert "github-actions" in content
+
+
+def test_contributing_bilingual_invariants_and_sla():
+    """Verify CONTRIBUTING.md defines all 10 invariants, RunAsInvoker, § 521 BGB, and security contacts."""
+    contrib_path = REPO_ROOT / "CONTRIBUTING.md"
+    assert contrib_path.is_file(), "CONTRIBUTING.md must exist"
+    content = contrib_path.read_text(encoding="utf-8")
+    for inv in [f"INV-ACC-{i:02d}" for i in range(1, 11)]:
+        assert inv in content, f"Missing invariant {inv} in CONTRIBUTING.md"
+    assert "RunAsInvoker" in content
+    assert "521 BGB" in content
+    assert "security@ellmos.ai" in content
+    assert "T-20260920-167562623" in content
+
+
+def test_gitignore_additional_multihost_tokens():
+    """Verify .gitignore contains extended taskplan, thumbnail, and host extension patterns."""
+    gitignore_path = REPO_ROOT / ".gitignore"
+    assert gitignore_path.is_file(), ".gitignore must exist"
+    content = gitignore_path.read_text(encoding="utf-8")
+    for pat in ["TASKPLAN_*.md", "*-TASKPLAN*", "Thumbs.db", "thumbs.db", "*-ASUS-GEI.*", "*-IDEAPAD-GEI.*"]:
+        assert pat in content, f"Missing pattern {pat} in .gitignore"
+
+
+def test_marketing_log_section_11_pfad_a_recency():
+    """Verify local MARKETING-LOG.txt includes Section 11 Pfad A audit."""
+    mkt_path = REPO_ROOT / "MARKETING-LOG.txt"
+    if not mkt_path.is_file():
+        pytest.skip("MARKETING-LOG.txt is gitignored and not present in this checkout")
+    content = mkt_path.read_text(encoding="utf-8")
+    assert "## 11. Technical Hygiene, CI Lifecycle Hardening & Multi-Host Lock Defense Audit (2026-10-04)" in content
+    assert "dependabot.yml" in content
+    assert "CONTRIBUTING.md" in content
+
+
+def test_readme_contributing_badge_parity():
+    """Verify README.md and README_de.md include synchronized Contributing badges."""
+    readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+    assert "Contributing-Welcome-brightgreen.svg" in readme_en
+    assert "Mitwirken-Willkommen-brightgreen.svg" in readme_de
+
+
+def test_license_files_contributing_whitelisted():
+    """Verify CONTRIBUTING.md is explicitly present in pyproject.toml license-files whitelist."""
+    pyproject_path = REPO_ROOT / "pyproject.toml"
+    data = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
+    license_files = data.get("project", {}).get("license-files", [])
+    assert "CONTRIBUTING.md" in license_files
