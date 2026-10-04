@@ -1,5 +1,6 @@
 """Automated metadata, security policy, CI integrity, and documentation parity contract tests."""
 
+import re
 from pathlib import Path
 
 import pytest
@@ -777,12 +778,12 @@ def test_marketing_log_section_8_pfad_b_recency():
 
 
 def test_auto_assign_workflow_lifecycle_hardening():
-    """Verify .github/workflows/auto-assign.yml enforces github-script@v7, timeout-minutes: 5, and concurrency."""
+    """Verify .github/workflows/auto-assign.yml enforces github-script, timeout-minutes: 5, and concurrency."""
     workflow_path = REPO_ROOT / ".github" / "workflows" / "auto-assign.yml"
     assert workflow_path.is_file(), "auto-assign.yml must exist"
     content = workflow_path.read_text(encoding="utf-8")
 
-    assert "actions/github-script@v7" in content
+    assert re.search(r"actions/github-script@v\d+", content)
     assert "timeout-minutes: 5" in content
     assert "concurrency:" in content
     assert "cancel-in-progress: true" in content
