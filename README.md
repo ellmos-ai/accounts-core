@@ -7,7 +7,7 @@
 <p align="center">
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/version-0.1.4-blue.svg" alt="Version 0.1.4"></a>
   <a href="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml"><img src="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="tests/"><img src="https://img.shields.io/badge/tests-78%20passed%20%7C%20100%25%20green-brightgreen.svg" alt="Tests"></a>
+  <a href="tests/"><img src="https://img.shields.io/badge/tests-72%20passed%20%7C%206%20skipped-brightgreen.svg" alt="Tests"></a>
   <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contributing-Welcome-brightgreen.svg" alt="Contributing: Welcome"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg" alt="Python"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg" alt="Platform"></a>
@@ -30,8 +30,8 @@ consumers (e.g. OCEAN).
 
 Extracted from [BACH](https://github.com/ellmos-ai/bach) so that BACH and OCEAN read the same
 account data through one implementation instead of BACH owning a second, drifting copy
-(decision D-20260903-003 = A, analysis `KONTEN-DOMAENE-OCEAN-ANALYSE_2026-09-03.md`). Same wave-1
-pattern as [assistant-core](https://github.com/ellmos-ai/assistant-core) (D-20260830-002).
+(wave 1 of the account domain cut). Same wave-1
+pattern as [assistant-core](https://github.com/ellmos-ai/assistant-core).
 
 ## Table of Contents
 

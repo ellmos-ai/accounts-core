@@ -7,7 +7,7 @@
 <p align="center">
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/version-0.1.4-blue.svg" alt="Version 0.1.4"></a>
   <a href="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml"><img src="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="tests/"><img src="https://img.shields.io/badge/tests-78%20passed%20%7C%20100%25%20green-brightgreen.svg" alt="Tests"></a>
+  <a href="tests/"><img src="https://img.shields.io/badge/tests-72%20passed%20%7C%206%20skipped-brightgreen.svg" alt="Tests"></a>
   <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/Mitwirken-Willkommen-brightgreen.svg" alt="Mitwirken: Willkommen"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg" alt="Python"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg" alt="Platform"></a>
@@ -30,9 +30,8 @@ Konsumenten (z. B. OCEAN).
 
 Aus [BACH](https://github.com/ellmos-ai/bach) extrahiert, damit BACH und OCEAN dieselben
 Kontodaten über eine Implementierung lesen, statt dass BACH eine zweite, auseinanderdriftende
-Kopie hält (Entscheidung D-20260903-003 = A, Analyse
-`KONTEN-DOMAENE-OCEAN-ANALYSE_2026-09-03.md`). Gleiches Welle-1-Muster wie
-[assistant-core](https://github.com/ellmos-ai/assistant-core) (D-20260830-002).
+Kopie hält (Welle 1 des Konten-Domänenschnitts). Gleiches Welle-1-Muster wie
+[assistant-core](https://github.com/ellmos-ai/assistant-core).
 
 ## Inhaltsverzeichnis
 

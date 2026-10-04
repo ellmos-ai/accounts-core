@@ -4,8 +4,7 @@ read-only projection for other consumers (e.g. OCEAN).
 
 Extracted from BACH (the raw SQL of the ``/api/financial/bank-accounts``
 endpoints in ``gui/server.py`` plus ``hub/steuer.py::_persist_camt_balances``)
-as wave 1 of the account domain cut (decision D-20260903-003 = A, analysis
-``KONTEN-DOMAENE-OCEAN-ANALYSE_2026-09-03.md``).
+as wave 1 of the account domain cut.
 
 Contract (same as ``assistant-core``, the wave-1 sibling module):
 
