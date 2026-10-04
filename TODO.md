@@ -14,7 +14,7 @@
 | Transit Projection Allowlist | DONE | Strict allowlist projection (`name`, `account_type`, `balance`, `balance_date`, `iban_masked`) with zero data leakage. |
 | Path Neutrality & Hygiene | DONE | Neutral environments, standard `.gitignore` patterns, zero personal paths, zero secrets. |
 | AI Discoverability & Metadata | DONE | Machine-readable `llms.txt`, PEP 621 classifiers, PEP 639 license inventory, schema v2 metadata parity. |
-| Ecosystem Integration | DONE | Registered in `.MODULES/.RUNTIME/accounts-core`, Plan-D pointer configured, shared between BACH and OCEAN. |
+| Ecosystem Integration | DONE | Shared between BACH and OCEAN through the transit projection. |
 | Public Release Gate | USER | MIT License selected; explicit public visibility approval pending from user. |
 
 ## Formalized next tasks

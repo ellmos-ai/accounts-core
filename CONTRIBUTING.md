@@ -30,7 +30,7 @@ Thank you for your interest in contributing to **accounts-core**!
 
 ### Development & Quality Gates
 
-- **Plan D Architecture**: Development, git operations, and tests occur strictly in the local git repository clone (`C:\_Local_DEV\repos\accounts-core`). OneDrive mirrors are derived read-only surfaces.
+- **Plan D Architecture**: Development, git operations, and tests occur strictly in the local git repository clone. OneDrive mirrors are derived read-only surfaces.
 - **Python Version Support**: Compatible with Python 3.10 through 3.13. Zero external runtime dependencies (`dependencies = []`).
 - **Pre-commit Quality Gates**:
   - Bytecode compilation: `python -m compileall -q src tests`
@@ -71,7 +71,7 @@ Vielen Dank für Ihr Interesse an einer Mitarbeit an **accounts-core**!
 
 ### Richtlinien für Entwickler
 
-- **Plan D Architektur**: Entwicklung und Tests erfolgen ausschließlich im lokalen Git-Repository (`C:\_Local_DEV\repos\accounts-core`). OneDrive-Spiegel dienen als abgeleitete Leseansichten.
+- **Plan D Architektur**: Entwicklung und Tests erfolgen ausschließlich im lokalen Git-Repository. OneDrive-Spiegel dienen als abgeleitete Leseansichten.
 - **Python-Unterstützung**: Python 3.10 bis 3.13. Null externe Laufzeit-Abhängigkeiten (`dependencies = []`).
 - **Qualitäts-Tore vor Commits**:
   - Bytecode-Prüfung: `python -m compileall -q src tests`

@@ -119,3 +119,6 @@ MARKETING-LOG.txt
 # IDE
 .vscode/
 .idea/
+
+# Interner Veroeffentlichungs-Gate-Status (Pipeline-Material, kein Repo-Inhalt)
+PUBLIC.txt
