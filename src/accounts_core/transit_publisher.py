@@ -143,7 +143,7 @@ def _read_projection_rows(
     source_checkpoint: int,
     publisher_instance: str,
 ) -> list[dict[str, Any]]:
-    connection = sqlite3.connect(f"file:{source.resolve().as_posix()}?mode=ro", uri=True)
+    connection = sqlite3.connect(f"{source.resolve().as_uri()}?mode=ro", uri=True)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA query_only = ON")
     try:

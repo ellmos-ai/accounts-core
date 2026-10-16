@@ -343,6 +343,9 @@ Wave 3 publishes the allowlisted projection as an isolated, closed SQLite databa
 `sqlite-transit-sync` and OCEAN. The source database is opened read-only; the
 source, projection, and publisher checkpoint must be three distinct paths.
 
+Source paths are treated as literal filesystem paths, including spaces, Unicode, `#`, and `%`;
+URI encoding preserves these characters while keeping the source read-only.
+
 ```python
 from accounts_core import publish_transit_projection
 
