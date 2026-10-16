@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Percent-encode source database paths in the transit publisher so literal `#` and `%` characters select the intended database while preserving read-only access. Added filename regression coverage, including spaces and Unicode.
+
 ### CI Lifecycle Hardening, Dependabot Workflow, Multi-Host Lock Defense & Level 1 SBOM Re-Audit (Pfad A Stand 2026-10-04)
 
 - **Automated CI Maintenance Guard & Dependabot Provisioning**:

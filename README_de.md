@@ -344,6 +344,9 @@ Welle 3 exportiert die bereinigte Allowlist als eigenständige, geschlossene SQL
 `sqlite-transit-sync` und OCEAN. Die Quelldatenbank wird strikt nur-lesend geöffnet; Quelle,
 Projektion und Checkpoint müssen drei getrennte Pfade sein.
 
+Quellpfade werden als wörtliche Dateisystempfade behandelt, einschließlich Leerzeichen,
+Umlauten, `#` und `%`. Die URI-Kodierung erhält diese Zeichen und den Nur-Lese-Zugriff.
+
 ```python
 from accounts_core import publish_transit_projection
 
