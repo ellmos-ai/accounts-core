@@ -122,3 +122,26 @@ def test_missing_source_and_unsafe_path_aliases_fail_closed(tmp_path):
         publish_transit_projection(source, source, checkpoint, publisher_instance="bach-primary")
     with pytest.raises(ValueError, match="publisher_instance"):
         publish_transit_projection(source, output, checkpoint, publisher_instance="not valid!")
+
+
+@pytest.mark.parametrize("filename", ["Konten #1.db", "Konten %23.db", "Konten ü space.db"])
+def test_publisher_preserves_literal_source_filename(source_db, tmp_path, filename):
+    source = tmp_path / filename
+    source.write_bytes(source_db.read_bytes())
+    source_before = source.read_bytes()
+    output = tmp_path / "accounts.sqlite"
+    checkpoint = tmp_path / "checkpoint.json"
+    files_before = set(tmp_path.iterdir())
+
+    report = publish_transit_projection(
+        source, output, checkpoint, publisher_instance="path-test", salt="c" * 32
+    )
+
+    assert report["record_count"] == 1
+    assert source.read_bytes() == source_before
+    assert set(tmp_path.iterdir()) == files_before | {output, checkpoint}
+    connection = sqlite3.connect(output)
+    try:
+        assert connection.execute("SELECT balance FROM account_balances").fetchall() == [("1234.50",)]
+    finally:
+        connection.close()
