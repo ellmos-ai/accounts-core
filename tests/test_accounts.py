@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: MIT
 """Behavioural tests against the exact BACH ``bank_accounts`` DDL (schema.sql, main 6b6a038)."""
+import os
 import sqlite3
 
 import pytest
@@ -86,6 +87,34 @@ def test_delete_account(store):
     acc_id = store.create_account("Weg")
     store.delete_account(acc_id)
     assert store.list_accounts() == []
+
+
+def test_missing_db_path_rejected(store, tmp_path):
+    """A missing DB must be rejected before sqlite3 creates a 0-byte file."""
+    missing = tmp_path / "does_not_exist.db"
+    assert not missing.exists()
+    with pytest.raises(FileNotFoundError):
+        AccountStore(str(missing)).list_accounts()
+    assert not missing.exists()
+
+
+def test_connection_releases_handle_after_success(store, tmp_path):
+    """After a successful operation the DB file can be moved/deleted."""
+    store.list_accounts()
+    moved = tmp_path / "moved.db"
+    os.rename(store.db_path, str(moved))
+    assert moved.exists()
+    assert not os.path.exists(store.db_path)
+
+
+def test_connection_releases_handle_after_sql_error(store, tmp_path):
+    """After an SQL error the DB file can be moved/deleted."""
+    with pytest.raises(sqlite3.OperationalError), store.connect() as conn:
+        conn.execute("SELECT * FROM nonexistent_table")
+    moved = tmp_path / "moved_after_error.db"
+    os.rename(store.db_path, str(moved))
+    assert moved.exists()
+    assert not os.path.exists(store.db_path)
 
 
 def test_default_db_path_reads_only_the_env(monkeypatch):

@@ -19,8 +19,8 @@ __all__ = [
     "DB_ENV",
     "TRANSIT_FIELDS",
     "AccountStore",
+    "__version__",
     "default_db_path",
     "mask_iban",
     "to_transit_row",
-    "__version__",
 ]

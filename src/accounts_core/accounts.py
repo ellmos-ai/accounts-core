@@ -106,6 +106,15 @@ class AccountStore:
         self.timeout = timeout
 
     def connect(self) -> sqlite3.Connection:
+        """Open a connection to the consumer's existing DB.
+
+        Context-manager only: callers must use ``with self.connect() as conn``
+        so the connection (and its file handle) is closed. This method never
+        creates the database file; if ``db_path`` does not exist a
+        ``FileNotFoundError`` is raised before sqlite3.connect() is called.
+        """
+        if not os.path.exists(self.db_path):
+            raise FileNotFoundError(f"DB nicht gefunden: {self.db_path}")
         conn = sqlite3.connect(self.db_path, timeout=self.timeout)
         conn.row_factory = sqlite3.Row
         return conn
