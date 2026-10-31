@@ -285,6 +285,18 @@ pip install -e ".[dev]"     # plus pytest and ruff
 
 Python 3.10+, zero runtime dependencies.
 
+### Install with your LLM
+
+Copy the following prompt into your coding agent (Claude Code, Codex, Gemini CLI, Cursor) to install and verify `accounts-core` locally:
+
+```text
+Read https://github.com/ellmos-ai/accounts-core (README.md and llms.txt)
+and install accounts-core on my system.
+1. Check prerequisites (Python >= 3.10, zero external runtime dependencies) and explain what will be installed before running commands.
+2. Clone the repository or install it in an isolated virtual environment (`pip install -e .`), without modifying unrelated projects or global system packages.
+3. Run a non-destructive verification check (`python -c "from accounts_core import AccountStore, __version__; print(__version__)"`) and show me a short usage example.
+```
+
 ---
 
 <a id="sec-10"></a><a id="quickstart--usage-guide"></a>

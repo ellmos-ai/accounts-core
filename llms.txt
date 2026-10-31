@@ -48,6 +48,13 @@
 
 Provided free of charge under the MIT License as open-source software. Under German statutory law (§ 521 BGB), liability in the case of gratuitous provision is limited to intent and gross negligence.
 
+## Installation & Quickstart for LLMs
+
+- Prerequisites: Python >= 3.10 (zero external runtime dependencies)
+- Install command: `git clone https://github.com/ellmos-ai/accounts-core.git && cd accounts-core && python -m venv .venv && .venv/bin/pip install -e .` (Windows: `.venv\Scripts\pip install -e .`)
+- Verification command: `python -c "from accounts_core import AccountStore, __version__; print(__version__)"`
+- Minimal example: `from accounts_core import AccountStore; store = AccountStore("path/to/finance.db"); print(store.transit_projection())`
+
 ## Commands
 
 ```bash
