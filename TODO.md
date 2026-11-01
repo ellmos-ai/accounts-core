@@ -1,8 +1,8 @@
 # TODO.md — Active work
 
 **Version:** 0.1.4
-**Updated:** 2026-10-04
-**Reason:** CI Lifecycle Hardening, Dependabot Workflow, Multi-Host Lock Defense & Level 1 SBOM Re-Audit (Pfad A Stand 2026-10-04)
+**Updated:** 2026-11-01
+**Reason:** Discoverability, Visual Architecture & Level 1 SBOM Re-Audit Parity (Pfad B Stand 2026-11-01)
 **Purpose:** Track only work that remains open.
 
 ## STATUS

@@ -2,9 +2,9 @@
 
 > Neutral domain core for the account and bank-balance domain: bank account CRUD, CAMT balance import, and privacy-safe read-only transit projection.
 
-## Last-checked: 2026-10-04
+## Last-checked: 2026-11-01
 - Version: 0.1.4
-- Tests: 78 automated contract and domain tests (72 passed, 6 skipped: the skips cover files that are intentionally not part of the public checkout)
+- Tests: 84 automated contract and domain tests (78 passed, 6 skipped: the skips cover files that are intentionally not part of the public checkout; 84 passed in local test suite)
 - Architecture: 100% Local-First | Zero-Egress | Single Data Canon | User-Mode Non-Elevation (RunAsInvoker)
 - Parent Organization: ellmos-ai
 - Umbrella Ecosystem: open-bricks
