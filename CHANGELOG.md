@@ -6,6 +6,23 @@
 
 - Percent-encode source database paths in the transit publisher so literal `#` and `%` characters select the intended database while preserving read-only access. Added filename regression coverage, including spaces and Unicode.
 
+### Discoverability, Visual Architecture & Level 1 SBOM Re-Audit Parity (Pfad B Stand 2026-11-01)
+
+- **Level 1 SBOM Re-Audit Stand 2026-11-01**:
+  - Re-audited `THIRD_PARTY_LICENSES.md` and plain-text companion `THIRD_PARTY_LICENSES.txt` to Stand 2026-11-01, verifying zero external runtime dependencies (`dependencies = []`), 100% Python standard library execution under PSFL-2.0, unprivileged `RunAsInvoker` user-mode non-elevation, and complete mapping of all 10 governance invariants (`INV-ACC-01` to `INV-ACC-10`).
+- **Visual Architecture & Bilingual Navigation Parity**:
+  - Verified 18-point bilingual navigation parity across `README.md` and `README_de.md` with reciprocal dual HTML anchors (`<a id="sec-01"></a>` to `<a id="sec-18"></a>`).
+  - Re-audited four-view ASCII topology projections (`[VIEW 1]` .. `[VIEW 4]` and `[SICHT 1]` .. `[SICHT 4]`), Mermaid flowchart and sequence diagram lifecycle workflows, and target personas (`[PERSONA-01]` to `[PERSONA-04]`).
+  - Maintained 10-dimension comparative matrix benchmarking against raw ad-hoc scripts, heavyweight ERPs, and cloud SaaS APIs.
+- **Synchronized Badges & Documentation Currency**:
+  - Synchronized `tests-78 passed | 6 skipped` test pass count and `Verified-2026--11--01` / `Geprüft-2026--11--01` status badges in both `README.md` and `README_de.md`.
+  - Synchronized `llms.txt` to Stand 2026-11-01 with 84 automated tests baseline (78 passed, 6 skipped in public CI; 84 passed in local test suite).
+  - Maintained version `0.1.4` strictly frozen per `T-20260920-167562623` (0 version bumps).
+- **Marketing Log Documentation**:
+  - Documented Section 12 in `MARKETING-LOG.txt` covering Pfad B discoverability audit, persona validation, zero-egress invariants mapping, and Level 1 SBOM recency.
+- **Contract Test Suite Expansion**:
+  - Expanded `tests/test_metadata.py` with contract tests validating 2026-11-01 Pfad B recency, Level 1 SBOM companion audit, Verified badges, and version freeze discipline.
+
 ### CI Lifecycle Hardening, Dependabot Workflow, Multi-Host Lock Defense & Level 1 SBOM Re-Audit (Pfad A Stand 2026-10-04)
 
 - **Automated CI Maintenance Guard & Dependabot Provisioning**:
