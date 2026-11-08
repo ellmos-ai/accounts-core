@@ -14,3 +14,18 @@ updates:
     commit-message:
       prefix: "ci"
       include: "scope"
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "python"
+    commit-message:
+      prefix: "chore"
+      include: "scope"

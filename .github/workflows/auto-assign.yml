@@ -20,9 +20,17 @@ jobs:
       - uses: actions/github-script@v9
         with:
           script: |
+            const pr = context.payload.pull_request;
+            const author = pr.user ? pr.user.login : '';
+            // Skip bot-authored PRs (e.g. dependabot, github-actions) to prevent notification fatigue
+            if (author.endsWith('[bot]') || author === 'dependabot' || author === 'github-actions') {
+              core.info(`Skipping auto-assignment for bot-authored PR from ${author}`);
+              return;
+            }
+
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const pr_number = context.payload.pull_request.number;
+            const pr_number = pr.number;
 
             // Get repo owner (first admin)
             const { data: repoData } = await github.rest.repos.get({ owner, repo });
