@@ -1,8 +1,8 @@
 # TODO.md — Active work
 
 **Version:** 0.1.4
-**Updated:** 2026-11-01
-**Reason:** Discoverability, Visual Architecture & Level 1 SBOM Re-Audit Parity (Pfad B Stand 2026-11-01)
+**Updated:** 2026-11-08
+**Reason:** CI Matrix- & Auto-Assign-Härtung, Pip-Dependabot, Package Build Gate & Vertragstest-Erweiterung (Pfad A Stand 2026-11-08)
 **Purpose:** Track only work that remains open.
 
 ## STATUS
@@ -32,6 +32,9 @@
 
 - [x] **TASK-AC-04: CI Lifecycle Härtung, Dependabot Workflow & Multi-Host Lock Defense (Pfad A, v0.1.4)** (`effort=low`, `scope=hygiene`, priority `high`).
   - **Ergebnis:** `.github/dependabot.yml` provisioniert, zweisprachige `CONTRIBUTING.md` mit 10 Invarianten und 48h SLA erweitert, `.gitignore` gehärtet, `license-files` um `CONTRIBUTING.md` ergänzt, Level 1 SBOM auf 2026-10-04 re-auditiert, Vertragstests auf 78/78 erweitert.
+
+- [x] **TASK-AC-05: CI Matrix- & Auto-Assign-Härtung, Pip-Dependabot, Package Build Gate & Vertragstest-Erweiterung (Pfad A, v0.1.4)** (`effort=low`, `scope=hygiene`, priority `high`).
+  - **Ergebnis:** `.github/workflows/auto-assign.yml` mit Bot-Guard gegen Notification-Fatigue gehärtet, `.github/dependabot.yml` um monatliche Pip-Prüfung für Python Dev-Dependencies erweitert, `.github/workflows/ci.yml` um automatische sdist/wheel Package-Build-Validierung ergänzt, Vertragstests in `tests/test_metadata.py` erweitert.
 
 ---
 <!-- REMEMBER: ENDUSERTEXTE BEKOMMEN ECHTE UMLAUTE Ü Ö Ä ß -->

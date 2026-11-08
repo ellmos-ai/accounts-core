@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+### CI Matrix- & Auto-Assign-Härtung, Pip-Dependabot, Package Build Gate & Vertragstest-Erweiterung (Pfad A Stand 2026-11-08)
+
+- **Auto-Assign Workflow Bot-Guard**:
+  - Hardened `.github/workflows/auto-assign.yml` with bot author detection to skip automatic owner assignment for bot-authored PRs (`dependabot[bot]`, `github-actions[bot]`, `dependabot`, `github-actions`), preventing notification fatigue.
+- **Automated Dependency Maintenance Guard (Pip Ecosystem)**:
+  - Extended `.github/dependabot.yml` with a monthly check for Python development dependencies (`pytest`, `ruff`), configured with `dependencies` and `python` labels and `chore(deps)` commit prefix.
+- **CI Package Build Validation Step**:
+  - Enhanced `.github/workflows/ci.yml` with an automated package build verification step (`python -m build --sdist --wheel`), guaranteeing that all code changes produce valid wheel and source distribution artifacts with complete PEP 639 license inclusion.
+- **TODO & LLM Context Parity**:
+  - Updated `TODO.md` tracking completed `TASK-AC-05` and refreshed `llms.txt` to Stand 2026-11-08.
+- **Contract Test Suite Expansion**:
+  - Added new automated contract tests in `tests/test_metadata.py` verifying auto-assign bot filtering, dependabot pip ecosystem configuration, CI package build validation step, and Section 13 audit logging.
+- **Version Freeze Discipline**:
+  - Maintained version `0.1.4` strictly frozen per `T-20260920-167562623` (0 version bumps).
+
 ### Fixed
 
 - Percent-encode source database paths in the transit publisher so literal `#` and `%` characters select the intended database while preserving read-only access. Added filename regression coverage, including spaces and Unicode.

@@ -158,7 +158,7 @@ def test_readme_badges_parity():
     expected_badges = [
         "badge/version-0.1.4-blue.svg",
         "actions/workflows/ci.yml/badge.svg",
-        "tests-78%20passed%20%7C%206%20skipped-brightgreen.svg",
+        "tests-82%20passed%20%7C%207%20skipped-brightgreen.svg",
         "python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg",
         "platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg",
         "privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg",
@@ -182,7 +182,7 @@ def test_llms_txt_current_timestamp_and_links():
     assert llms_path.is_file(), "llms.txt must exist"
     content = llms_path.read_text(encoding="utf-8")
 
-    assert any(d in content for d in ["2026-11-01", "2026-10-04", "2026-10-02", "2026-09-30", "2026-09-29", "2026-09-22"])
+    assert any(d in content for d in ["2026-11-08", "2026-11-01", "2026-10-04", "2026-10-02", "2026-09-30", "2026-09-29", "2026-09-22"])
     assert "CONTRIBUTING.md" in content
     assert "0.1.4" in content
     assert "NOTICE" in content
@@ -964,3 +964,42 @@ def test_marketing_log_section_12_pfad_b_recency():
     assert "Radar & Preflight" in content
     assert "Target Persona & High-Intent Query Validation" in content
     assert "Level 1 SBOM Re-Audit" in content
+
+def test_auto_assign_bot_filter_hardening():
+    """Verify .github/workflows/auto-assign.yml skips auto-assignment for bot authors."""
+    workflow_path = REPO_ROOT / ".github" / "workflows" / "auto-assign.yml"
+    assert workflow_path.is_file(), "auto-assign.yml must exist"
+    content = workflow_path.read_text(encoding="utf-8")
+    assert "[bot]" in content
+    assert "dependabot" in content
+    assert "github-actions" in content
+
+
+def test_dependabot_pip_ecosystem_hardening():
+    """Verify .github/dependabot.yml configures monthly pip maintenance for Python dev dependencies."""
+    dep_path = REPO_ROOT / ".github" / "dependabot.yml"
+    assert dep_path.is_file(), ".github/dependabot.yml must exist"
+    content = dep_path.read_text(encoding="utf-8")
+    assert 'package-ecosystem: "pip"' in content or "package-ecosystem: 'pip'" in content
+    assert "monthly" in content
+    assert "python" in content
+
+
+def test_ci_package_build_verification_step():
+    """Verify .github/workflows/ci.yml includes package build validation for sdist and wheel."""
+    ci_path = REPO_ROOT / ".github" / "workflows" / "ci.yml"
+    assert ci_path.is_file(), ".github/workflows/ci.yml must exist"
+    content = ci_path.read_text(encoding="utf-8")
+    assert "python -m build --sdist --wheel" in content
+
+
+def test_marketing_log_section_13_pfad_a_recency():
+    """Verify local MARKETING-LOG.txt includes Section 13 Pfad A audit."""
+    mkt_path = REPO_ROOT / "MARKETING-LOG.txt"
+    if not mkt_path.is_file():
+        pytest.skip("MARKETING-LOG.txt is gitignored and not present in this checkout")
+    content = mkt_path.read_text(encoding="utf-8")
+    assert "## 13. Technical Hygiene, CI Matrix & Auto-Assign Hardening, Pip-Dependabot & Contract Tests (2026-11-08)" in content
+    assert "auto-assign.yml" in content
+    assert "dependabot.yml" in content
+    assert "package build validation" in content.lower()
