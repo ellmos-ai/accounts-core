@@ -4,7 +4,7 @@
 
 ## Last-checked: 2026-11-08
 - Version: 0.1.4
-- Tests: 89 automated contract and domain tests (82 passed, 7 skipped: the skips cover files that are intentionally not part of the public checkout; 89 passed in local test suite)
+- Tests: 89 automated contract and domain tests (81 passed, 8 skipped: the skips cover files that are intentionally not part of the public checkout; 89 passed in local test suite)
 - Architecture: 100% Local-First | Zero-Egress | Single Data Canon | User-Mode Non-Elevation (RunAsInvoker)
 - Parent Organization: ellmos-ai
 - Umbrella Ecosystem: open-bricks
