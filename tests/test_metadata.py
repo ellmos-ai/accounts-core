@@ -158,7 +158,7 @@ def test_readme_badges_parity():
     expected_badges = [
         "badge/version-0.1.4-blue.svg",
         "actions/workflows/ci.yml/badge.svg",
-        "tests-82%20passed%20%7C%207%20skipped-brightgreen.svg",
+        "tests-81%20passed%20%7C%208%20skipped-brightgreen.svg",
         "python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg",
         "platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg",
         "privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg",
