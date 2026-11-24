@@ -1,0 +1,20 @@
+include LICENSE
+include NOTICE
+include README.md
+include README_de.md
+include CHANGELOG.md
+include CONTRIBUTING.md
+include SECURITY.md
+include SKILL.md
+include llms.txt
+include llm.txt
+include THIRD_PARTY_LICENSES.md
+include THIRD_PARTY_LICENSES.txt
+include ellmos-module.v2.json
+include pyproject.toml
+recursive-include assets *.png *.svg
+recursive-include src *.py
+recursive-include tests *.py
+exclude MARKETING-LOG.txt
+exclude PUBLIC.txt
+global-exclude *.pyc *.pyo __pycache__ *.db *.sqlite* *dump*

@@ -158,7 +158,7 @@ def test_readme_badges_parity():
     expected_badges = [
         "badge/version-0.1.4-blue.svg",
         "actions/workflows/ci.yml/badge.svg",
-        "tests-81%20passed%20%7C%208%20skipped-brightgreen.svg",
+        "tests-85%20passed%20%7C%208%20skipped-brightgreen.svg",
         "python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg",
         "platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg",
         "privacy-100%25%20Local--First%20%7C%20Zero--Egress-brightgreen.svg",
@@ -182,7 +182,7 @@ def test_llms_txt_current_timestamp_and_links():
     assert llms_path.is_file(), "llms.txt must exist"
     content = llms_path.read_text(encoding="utf-8")
 
-    assert any(d in content for d in ["2026-11-08", "2026-11-01", "2026-10-04", "2026-10-02", "2026-09-30", "2026-09-29", "2026-09-22"])
+    assert any(d in content for d in ["2026-11-24", "2026-11-08", "2026-11-01", "2026-10-04", "2026-10-02", "2026-09-30", "2026-09-29", "2026-09-22"])
     assert "CONTRIBUTING.md" in content
     assert "0.1.4" in content
     assert "NOTICE" in content
@@ -569,7 +569,7 @@ def test_third_party_licenses_audit_recency():
     assert lic_path.is_file(), "THIRD_PARTY_LICENSES.md must exist"
     content = lic_path.read_text(encoding="utf-8")
 
-    assert any(d in content for d in ["2026-11-01", "2026-10-04", "2026-10-02", "2026-09-30", "2026-09-29", "2026-09-22", "2026-09-20"]), "Audit date missing in THIRD_PARTY_LICENSES.md"
+    assert any(d in content for d in ["2026-11-24", "2026-11-01", "2026-10-04", "2026-10-02", "2026-09-30", "2026-09-29", "2026-09-22", "2026-09-20"]), "Audit date missing in THIRD_PARTY_LICENSES.md"
     assert "[NOTICE](NOTICE)" in content
     assert "Level 1 SBOM" in content or "Level 1 Software Bill of Materials" in content
     assert "RunAsInvoker" in content
@@ -866,25 +866,25 @@ def test_marketing_log_section_10_pfad_b_recency():
     assert "Level 1 SBOM Re-Audit" in content
 
 
-def test_sbom_companion_re_audit_recency_2026_11_01():
-    """Verify THIRD_PARTY_LICENSES.txt plain-text companion re-audit date 2026-11-01."""
+def test_sbom_companion_re_audit_recency_2026_11_24():
+    """Verify THIRD_PARTY_LICENSES.txt plain-text companion re-audit date 2026-11-24."""
     sbom_txt = REPO_ROOT / "THIRD_PARTY_LICENSES.txt"
     assert sbom_txt.is_file(), "THIRD_PARTY_LICENSES.txt must exist"
     content = sbom_txt.read_text(encoding="utf-8")
-    assert "Audited: 2026-11-01" in content
+    assert "Audited: 2026-11-24" in content
 
     sbom_md = REPO_ROOT / "THIRD_PARTY_LICENSES.md"
     assert sbom_md.is_file(), "THIRD_PARTY_LICENSES.md must exist"
     content_md = sbom_md.read_text(encoding="utf-8")
-    assert "Audit Date:** 2026-11-01" in content_md
+    assert "Audit Date:** 2026-11-24" in content_md
 
 
-def test_readme_verified_badge_recency_2026_11_01():
-    """Verify README.md and README_de.md include Verified-2026-11-01 badges."""
+def test_readme_verified_badge_recency_2026_11_24():
+    """Verify README.md and README_de.md include Verified-2026-11-24 badges."""
     readme_en = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
     readme_de = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
-    assert "Verified-2026--11--01-blue.svg" in readme_en
-    assert "Gepr%C3%BCft-2026--11--01-blue.svg" in readme_de
+    assert "Verified-2026--11--24-blue.svg" in readme_en
+    assert "Gepr%C3%BCft-2026--11--24-blue.svg" in readme_de
 
 
 def test_version_freeze_discipline():
@@ -1003,3 +1003,70 @@ def test_marketing_log_section_13_pfad_a_recency():
     assert "auto-assign.yml" in content
     assert "dependabot.yml" in content
     assert "package build validation" in content.lower()
+
+
+def test_p022_product_skill_and_llm_pointer_present():
+    """Verify Policy P-022 files (SKILL.md, llm.txt, llms.txt, Product Skill URL) exist."""
+    skill_path = REPO_ROOT / "SKILL.md"
+    llm_ptr = REPO_ROOT / "llm.txt"
+    llms_path = REPO_ROOT / "llms.txt"
+    assert skill_path.is_file(), "SKILL.md must exist"
+    assert llm_ptr.is_file(), "llm.txt must exist"
+    assert llms_path.is_file(), "llms.txt must exist"
+
+    skill_text = skill_path.read_text(encoding="utf-8")
+    assert "name: accounts-core" in skill_text
+    assert 'version: "0.1.4"' in skill_text
+    assert "publish_transit_projection" in skill_text
+    assert "AccountStore" in skill_text
+
+    assert "llms.txt" in llm_ptr.read_text(encoding="utf-8")
+    llms_text = llms_path.read_text(encoding="utf-8")
+    assert "SKILL.md" in llms_text
+    assert "2026-11-24" in llms_text
+
+    pyproject_data = tomllib.loads((REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    urls = pyproject_data.get("project", {}).get("urls", {})
+    assert urls.get("Product Skill") == "https://github.com/ellmos-ai/accounts-core/blob/main/SKILL.md"
+
+
+def test_terminal_workflow_svg_present_and_embedded():
+    """Verify assets/terminal-workflow.svg is valid XML and embedded alongside existing banner."""
+    import xml.etree.ElementTree as ET
+
+    banner_png = REPO_ROOT / "assets" / "banner.png"
+    svg_path = REPO_ROOT / "assets" / "terminal-workflow.svg"
+    assert banner_png.is_file(), "Existing assets/banner.png must be preserved"
+    assert svg_path.is_file(), "assets/terminal-workflow.svg must exist"
+
+    tree = ET.parse(svg_path)
+    root = tree.getroot()
+    assert root.tag.endswith("svg")
+
+    for fname in ("README.md", "README_de.md"):
+        text = (REPO_ROOT / fname).read_text(encoding="utf-8")
+        assert 'src="assets/banner.png"' in text, f"Header banner missing in {fname}"
+        assert 'src="assets/terminal-workflow.svg"' in text, f"Terminal SVG missing in {fname}"
+        assert "Product%20Skill-SKILL.md-blueviolet.svg" in text, f"Product Skill badge missing in {fname}"
+
+
+def test_readme_state_diagram_and_geiger_disclosure_parity():
+    """Verify Mermaid stateDiagram-v2 and public Geiger disclosure parity in both READMEs."""
+    en_text = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    de_text = (REPO_ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    assert "```mermaid\nstateDiagram-v2" in en_text
+    assert "```mermaid\nstateDiagram-v2" in de_text
+    assert "Concept & Approval: Geiger" in en_text
+    assert "Idee & Abnahme: Geiger" in de_text
+    assert "persönlich: LG" not in en_text and "persönlich: LG" not in de_text
+
+
+def test_issue_templates_present():
+    """Verify bilingual GitHub issue templates exist without broken PVR config links."""
+    bug_tpl = REPO_ROOT / ".github" / "ISSUE_TEMPLATE" / "bug_report.md"
+    feat_tpl = REPO_ROOT / ".github" / "ISSUE_TEMPLATE" / "feature_request.md"
+    assert bug_tpl.is_file(), "bug_report.md must exist"
+    assert feat_tpl.is_file(), "feature_request.md must exist"
+    assert "SECURITY.md" in bug_tpl.read_text(encoding="utf-8")
+    assert "INV-ACC-01" in feat_tpl.read_text(encoding="utf-8")

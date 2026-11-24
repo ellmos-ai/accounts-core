@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="540" viewBox="0 0 880 540" role="img" aria-label="accounts-core v0.1.4 local-first terminal workflow preview">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2ea043"/>
+      <stop offset="100%" stop-color="#58a6ff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="880" height="540" rx="14" fill="url(#bgGrad)"/>
+  <rect x="16" y="16" width="848" height="508" rx="10" fill="#0b0f14" stroke="#30363d" stroke-width="1.5"/>
+
+  <!-- Window Titlebar -->
+  <rect x="16" y="16" width="848" height="38" rx="10" fill="#161b22"/>
+  <rect x="16" y="42" width="848" height="12" fill="#161b22"/>
+  <circle cx="40" cy="35" r="6" fill="#ff5f56"/>
+  <circle cx="60" cy="35" r="6" fill="#ffbd2e"/>
+  <circle cx="80" cy="35" r="6" fill="#27c93f"/>
+  <text x="440" y="39" text-anchor="middle" fill="#8b949e" font-family="Consolas, 'Courier New', monospace" font-size="13">accounts-core v0.1.4 — Local-First Zero-Egress Domain Core (RunAsInvoker)</text>
+
+  <!-- Accent Status Bar -->
+  <rect x="32" y="66" width="816" height="3" rx="1.5" fill="url(#accentGrad)"/>
+
+  <!-- Terminal Body -->
+  <g font-family="Consolas, 'Courier New', monospace" font-size="13">
+    <text x="36" y="95" fill="#58a6ff">$ python -c "from accounts_core import AccountStore, publish_transit_projection, __version__"</text>
+    <text x="36" y="117" fill="#8b949e"># 1. Initialize store on existing consumer DB (INV-ACC-01: 0 new tables created)</text>
+    <text x="36" y="139" fill="#e6edf3">&gt;&gt;&gt; store = AccountStore("finance.db")</text>
+    <text x="36" y="161" fill="#e6edf3">&gt;&gt;&gt; store.create_account("Girokonto", bank_name="Sparkasse", iban="DE89370400440532013000", bic="COBADEFFXXX")</text>
+    <text x="36" y="183" fill="#7ee787">1</text>
+
+    <text x="36" y="213" fill="#8b949e"># 2. Idempotent CAMT balance persistence by normalized IBAN (INV-ACC-07)</text>
+    <text x="36" y="235" fill="#e6edf3">&gt;&gt;&gt; store.persist_camt_balances([{"iban": "DE89370400440532013000", "balance": 5420.50, "currency": "EUR", "date": "2026-09-15"}])</text>
+    <text x="36" y="257" fill="#7ee787">['[OK] Konto DE89370400440532013000: Saldo 5420.50 EUR zum 2026-09-15 aktualisiert.']</text>
+
+    <text x="36" y="287" fill="#8b949e"># 3. Strict 5-field allowlist &amp; masked IBAN projection (INV-ACC-02, INV-ACC-03)</text>
+    <text x="36" y="309" fill="#e6edf3">&gt;&gt;&gt; store.transit_projection()</text>
+    <text x="36" y="331" fill="#a5d6ff">[{'name': 'Girokonto', 'account_type': 'girokonto', 'balance': 5420.5,</text>
+    <text x="36" y="351" fill="#a5d6ff">  'balance_date': '2026-09-15', 'iban_masked': '******************3000'}]</text>
+
+    <text x="36" y="381" fill="#8b949e"># 4. Atomic read-only SQLite snapshot publisher (INV-ACC-05, INV-ACC-06)</text>
+    <text x="36" y="403" fill="#e6edf3">&gt;&gt;&gt; publish_transit_projection("finance.db", "transit/accounts.sqlite", "state/chk.json", publisher_instance="bach-primary")</text>
+    <text x="36" y="425" fill="#7ee787">{'status': 'published-read-only-projection', 'contract_id': 'org.ellmos.accounts.balance-projection',</text>
+    <text x="36" y="445" fill="#7ee787"> 'contract_version': '1.0.0', 'source_checkpoint': 1, 'record_count': 1, 'complete_snapshot': True}</text>
+
+    <text x="36" y="478" fill="#58a6ff">$ python -m pytest -ra -v &amp;&amp; python -m ruff check src tests</text>
+    <text x="36" y="500" fill="#3fb950">PASS: 85 passed, 8 skipped (CI) | 93 passed (local) | ruff: All checks passed | 0 runtime deps</text>
+  </g>
+</svg>

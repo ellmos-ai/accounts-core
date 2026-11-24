@@ -7,7 +7,7 @@
 <p align="center">
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/version-0.1.4-blue.svg" alt="Version 0.1.4"></a>
   <a href="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml"><img src="https://github.com/ellmos-ai/accounts-core/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="tests/"><img src="https://img.shields.io/badge/tests-81%20passed%20%7C%208%20skipped-brightgreen.svg" alt="Tests"></a>
+  <a href="tests/"><img src="https://img.shields.io/badge/tests-85%20passed%20%7C%208%20skipped-brightgreen.svg" alt="Tests"></a>
   <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contributing-Welcome-brightgreen.svg" alt="Contributing: Welcome"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg" alt="Python"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg" alt="Platform"></a>
@@ -17,10 +17,11 @@
   <a href="https://github.com/ellmos-ai"><img src="https://img.shields.io/badge/ecosystem-ellmos--ai-informational.svg" alt="Ecosystem ellmos-ai"></a>
   <a href="https://github.com/open-bricks"><img src="https://img.shields.io/badge/umbrella-open--bricks-informational.svg" alt="Umbrella open-bricks"></a>
   <a href="llms.txt"><img src="https://img.shields.io/badge/LLM-llms.txt-blueviolet.svg" alt="LLM Context"></a>
+  <a href="SKILL.md"><img src="https://img.shields.io/badge/Product%20Skill-SKILL.md-blueviolet.svg" alt="Product Skill: SKILL.md"></a>
   <a href="NOTICE"><img src="https://img.shields.io/badge/attribution-NOTICE-blue.svg" alt="Attribution: NOTICE"></a>
   <a href="THIRD_PARTY_LICENSES.txt"><img src="https://img.shields.io/badge/Level%201%20SBOM-Plain--Text%20Audited-brightgreen.svg" alt="Level 1 SBOM Plain-Text Audited"></a>
   <a href="THIRD_PARTY_LICENSES.txt"><img src="https://img.shields.io/badge/Third--Party%20Licenses-Text%20Companion-blue.svg" alt="Third-Party Licenses Text Companion"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Verified-2026--11--01-blue.svg" alt="Verified 2026-11-01"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Verified-2026--11--24-blue.svg" alt="Verified 2026-11-24"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
 </p>
 
@@ -158,6 +159,10 @@ flowchart TD
 ========================================================================================
 ```
 
+### Live Workflow Preview
+
+<img src="assets/terminal-workflow.svg" width="100%" alt="accounts-core terminal workflow preview">
+
 ---
 
 <a id="sec-03"></a><a id="sequence-lifecycle"></a>
@@ -193,6 +198,22 @@ sequenceDiagram
     Core->>Transit: "Record publisher checkpoint"
     Transit-->>Observer: "Query sanitized accounts (0 unmasked PII / 0 bank identifiers)"
     end
+```
+
+### Fail-Closed Snapshot State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> PathValidation: "publish_transit_projection()"
+    PathValidation --> FailClosed: "Aliased paths or missing source DB"
+    PathValidation --> ReadOnlySource: "3 distinct paths verified"
+    ReadOnlySource --> AllowlistMasking: "Open SQLite URI ?mode=ro"
+    AllowlistMasking --> TempStaging: "Filter 5 allowlist fields + mask IBAN"
+    TempStaging --> QuickCheck: "Write .tmp SQLite snapshot"
+    QuickCheck --> FailClosed: "PRAGMA quick_check failed (unlink temp)"
+    QuickCheck --> AtomicCommit: "PRAGMA quick_check == ok"
+    AtomicCommit --> [*]: "os.replace() snapshot & checkpoint"
+    FailClosed --> [*]
 ```
 
 ---
@@ -290,11 +311,11 @@ Python 3.10+, zero runtime dependencies.
 Copy the following prompt into your coding agent (Claude Code, Codex, Gemini CLI, Cursor) to install and verify `accounts-core` locally:
 
 ```text
-Read https://github.com/ellmos-ai/accounts-core (README.md and llms.txt)
-and install accounts-core on my system.
-1. Check prerequisites (Python >= 3.10, zero external runtime dependencies) and explain what will be installed before running commands.
-2. Clone the repository or install it in an isolated virtual environment (`pip install -e .`), without modifying unrelated projects or global system packages.
-3. Run a non-destructive verification check (`python -c "from accounts_core import AccountStore, __version__; print(__version__)"`) and show me a short usage example.
+Read https://github.com/ellmos-ai/accounts-core (README.md, llms.txt, and SKILL.md)
+and install accounts-core on my system (prefer a release tag or commit pin, never unverified curl|sh pipes).
+1. Read llms.txt and SKILL.md first; check prerequisites (Python >= 3.10, zero external runtime dependencies) and explain what will be installed before running commands.
+2. Clone the repository into an isolated virtual environment (.venv) and run `pip install -e .` inside `.venv`, without modifying unrelated projects or global system packages.
+3. Run the verification check (`python -c "from accounts_core import AccountStore, publish_transit_projection, __version__; print(__version__)"`) and `pytest -ra -v`, then report the result.
 ```
 
 ---
@@ -317,7 +338,7 @@ store.persist_camt_balances([{"iban": "DE89370400440532013000", "balance": 1234.
 # Read-only projection for other consumers (OCEAN via sqlite-transit-sync, wave 3)
 projection = store.transit_projection()
 # -> [{"name": "Girokonto", "account_type": "girokonto", "balance": 1234.56,
-#      "balance_date": "2026-09-01", "iban_masked": "****************3000"}]
+#      "balance_date": "2026-09-01", "iban_masked": "******************3000"}]
 ```
 
 ---
@@ -342,8 +363,8 @@ camt_data = [
 ]
 
 status_report = store.persist_camt_balances(camt_data)
-# Returns genuine UTF-8 status messages:
-# [{'iban': 'DE89370400440532013000', 'status': 'aktualisiert', 'balance': 5420.5}]
+# Returns genuine UTF-8 status messages (list[str]):
+# ['[OK] Konto DE89370400440532013000: Saldo 5420.50 EUR zum 2026-09-15 aktualisiert.']
 ```
 
 ---
@@ -419,13 +440,21 @@ accounts-core/
 │   ├── test_metadata.py           # Contract tests for navigation, personas, matrix, SLAs, SBOM
 │   └── test_transit_publisher.py  # Publisher snapshot and checkpoint verification
 ├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md          # Bilingual bug report template
+│   │   └── feature_request.md     # Bilingual feature request template
 │   ├── workflows/
 │   │   ├── auto-assign.yml        # Auto-assignment workflow for pull requests
 │   │   ├── ci.yml                 # Multi-OS test matrix (Ubuntu, Windows, macOS x Python 3.10-3.13)
 │   │   ├── label-sync.yml         # Label synchronization workflow
 │   │   ├── stale.yml              # Automated issue and PR lifecycle management
 │   │   └── welcome.yml            # Welcome greeting for first-time contributors
+│   ├── dependabot.yml             # Weekly GitHub Actions & monthly Pip dependency updates
 │   └── labels.yml                 # Standard governance labels definition
+├── assets/
+│   ├── banner.png                 # Project header banner (raster)
+│   ├── banner.svg                 # Project header banner (vector)
+│   └── terminal-workflow.svg      # Dark-mode CLI & API workflow preview
 ├── CHANGELOG.md                   # Chronological version history and release notes
 ├── CONTRIBUTING.md                # Contribution guidelines, RunAsInvoker, and quality gates
 ├── LICENSE                        # MIT License
@@ -433,10 +462,12 @@ accounts-core/
 ├── README.md                      # English documentation with 18-point quick navigation
 ├── README_de.md                   # German documentation with 18-point quick navigation
 ├── SECURITY.md                    # Security policy with 48h response and 5-day triage SLA
+├── SKILL.md                       # Standalone dual-use product skill (Policy P-022)
 ├── THIRD_PARTY_LICENSES.md        # Level 1 SBOM and pure stdlib dependency inventory
 ├── THIRD_PARTY_LICENSES.txt       # Canonical plain-text Level 1 SBOM companion
 ├── TODO.md                        # Task tracker with STATUS table and release gates
 ├── ellmos-module.v2.json          # Module manifest for ellmos catalog
+├── llm.txt                        # Compatibility pointer to llms.txt and SKILL.md
 ├── llms.txt                       # Machine-readable LLM context document
 └── pyproject.toml                 # PEP 621 package metadata and ecosystem configuration
 ```
@@ -474,3 +505,5 @@ We take security and data privacy seriously:
 ## Statutory Notice & Liability Limitation
 
 This software is provided free of charge under the MIT License as open-source software. Under German statutory law (§ 521 BGB - *Gefälligkeitsrecht* / gratuitous contracts), liability in the case of gratuitous provision of software is limited to intent (*Vorsatz*) and gross negligence (*grobe Fahrlässigkeit*). In particular, no warranties are provided for fitness for a particular purpose or absence of defects.
+
+*Concept & Approval: Geiger · Text assistance: LLM-assisted · Graphics: SVG-generated*

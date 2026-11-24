@@ -1,0 +1,2 @@
+# Compatibility pointer: canonical LLM entry point is llms.txt
+See llms.txt and SKILL.md in the repository root.

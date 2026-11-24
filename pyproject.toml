@@ -62,6 +62,7 @@ Security = "https://github.com/ellmos-ai/accounts-core/blob/main/SECURITY.md"
 "Level 1 SBOM" = "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/THIRD_PARTY_LICENSES.txt"
 Notice = "https://github.com/ellmos-ai/accounts-core/blob/main/NOTICE"
 "LLM Ready" = "https://raw.githubusercontent.com/ellmos-ai/accounts-core/main/llms.txt"
+"Product Skill" = "https://github.com/ellmos-ai/accounts-core/blob/main/SKILL.md"
 "Parent Organization" = "https://github.com/ellmos-ai"
 "Umbrella Ecosystem" = "https://github.com/open-bricks"
 
