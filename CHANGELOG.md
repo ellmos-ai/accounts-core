@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+### Discoverability, Policy P-022, SVG Terminal Preview & Bilingual Parity (Pfad B Stand 2026-11-24)
+
+- **Policy P-022 Agentic & Dual-Use Readiness**:
+  - Added standalone product skill `SKILL.md` (`version: 0.1.4`) detailing `AccountStore` CRUD, idempotent `persist_camt_balances`, strict 5-field allowlist projection, `publish_transit_projection`, fail-closed error modes, and quality gates.
+  - Added `llm.txt` compatibility pointer, updated `llms.txt` (`Last-checked: 2026-11-24`) with `## Quick Install & Verification`, and registered `"Product Skill"` in `pyproject.toml` `[project.urls]`.
+- **Visual Preview, State Diagram & Documentation Accuracy**:
+  - Created dark-mode vector preview `assets/terminal-workflow.svg` (preserving existing `assets/banner.png` and `assets/banner.svg`) and embedded it in Section 2 of `README.md` and `README_de.md`.
+  - Added Mermaid `stateDiagram-v2` (fail-closed transit snapshot lifecycle) in Section 3 of `README.md` and `README_de.md`.
+  - Fixed verified code-comment outputs in Sections 10 and 11 (`18`-asterisk `******************3000` masked IBAN and `list[str]` status output of `persist_camt_balances`).
+  - Added bilingual `.github/ISSUE_TEMPLATE/{bug_report.md,feature_request.md}` for community issue intake, updated Section 15 repository structure, synchronized badges (`Product Skill`, `tests-85 passed | 8 skipped`, `Verified-2026--11--24`), and added the public Geiger disclosure note in Section 18.
+- **Level 1 SBOM & Contract Tests**:
+  - Re-audited `THIRD_PARTY_LICENSES.md` and `THIRD_PARTY_LICENSES.txt` to Stand `2026-11-24` (`dependencies = []`, 100% Python stdlib under PSFL-2.0).
+  - Expanded `tests/test_metadata.py` with contract tests for Policy P-022 (`SKILL.md`, `llm.txt`, `Product Skill` URL), `assets/terminal-workflow.svg`, `stateDiagram-v2` + Geiger disclosure parity, and `.github/ISSUE_TEMPLATE/` presence while maintaining version `0.1.4` strictly frozen per `T-20260920-167562623`.
+
 ### CI Matrix- & Auto-Assign-Härtung, Pip-Dependabot, Package Build Gate & Vertragstest-Erweiterung (Pfad A Stand 2026-11-08)
 
 - **Auto-Assign Workflow Bot-Guard**:

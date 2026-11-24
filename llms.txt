@@ -2,31 +2,37 @@
 
 > Neutral domain core for the account and bank-balance domain: bank account CRUD, CAMT balance import, and privacy-safe read-only transit projection.
 
-## Last-checked: 2026-11-08
+## Last-checked: 2026-11-24
 - Version: 0.1.4
-- Tests: 89 automated contract and domain tests (81 passed, 8 skipped: the skips cover files that are intentionally not part of the public checkout; 89 passed in local test suite)
+- Tests: 93 automated contract and domain tests (85 passed, 8 skipped in public CI where local-only `MARKETING-LOG.txt` is absent; 93 passed locally)
 - Architecture: 100% Local-First | Zero-Egress | Single Data Canon | User-Mode Non-Elevation (RunAsInvoker)
 - Parent Organization: ellmos-ai
 - Umbrella Ecosystem: open-bricks
 
 ## Start here
 
+- `SKILL.md`: Standalone product skill detailing tasks, API contracts, invariants, boundaries, and error modes for LLM agents.
 - `README.md`: English contract, API usage, visual architecture, 18-point quick navigation, invariants, and privacy allowlist.
 - `README_de.md`: German contract, API usage, visual architecture, 18-Punkte-Schnellnavigation, invariants, and privacy allowlist.
 - `src/accounts_core/accounts.py`: AccountStore, transit projection, and CAMT balance persistence.
+- `src/accounts_core/transit_publisher.py`: Atomic read-only transit snapshot publisher (`publish_transit_projection`).
 - `src/accounts_core/__init__.py`: Public API exports and module version.
-- `tests/test_accounts.py`: Behavioural tests against the exact BACH bank_accounts DDL.
-- `tests/test_metadata.py`: Automated metadata, security policy, CI integrity, and documentation parity contract tests.
+- `tests/test_accounts.py`: Behavioural tests against the exact BACH `bank_accounts` DDL.
+- `tests/test_transit_publisher.py`: Snapshot, checkpoint, URI path preservation, and allowlist verification tests.
+- `tests/test_metadata.py`: Automated metadata, security policy, CI integrity, P-022, and documentation parity contract tests.
 
 ## Canonical Links
 
+- `SKILL.md`: Product skill for human + LLM dual-use workflows (Policy P-022).
+- `llm.txt`: Compatibility pointer to `llms.txt` and `SKILL.md`.
 - `NOTICE`: Canonical attribution and copyright notice.
 - `CONTRIBUTING.md`: Bilingual contribution guidelines, architectural invariants, and quality gates.
 - `.github/dependabot.yml`: Automated weekly CI maintenance guard for GitHub Actions and monthly Pip updates.
+- `.github/ISSUE_TEMPLATE/`: Bilingual bug report and feature request templates.
 - `SECURITY.md`: Bilingual security policy with 48h response SLA and 5-day triage commitment.
 - `pyproject.toml`: PEP 621 package metadata and ecosystem URLs.
 - `CHANGELOG.md`: Release notes and change history.
-- `ellmos-module.v2.json`: Ellmos module registration manifest.
+- `ellmos-module.v2.json`: Module registration manifest.
 - `THIRD_PARTY_LICENSES.md`: Software inventory certifying zero external runtime dependencies (Level 1 SBOM) and PEP 639 metadata.
 - `THIRD_PARTY_LICENSES.txt`: Plain-text companion Level 1 SBOM software inventory, RunAsInvoker certification, and Invariant Cross-Reference Matrix.
 - `TODO.md`: Standardized task tracker with STATUS table and release gate readiness.
@@ -48,12 +54,12 @@
 
 Provided free of charge under the MIT License as open-source software. Under German statutory law (§ 521 BGB), liability in the case of gratuitous provision is limited to intent and gross negligence.
 
-## Installation & Quickstart for LLMs
+## Quick Install & Verification
 
-- Prerequisites: Python >= 3.10 (zero external runtime dependencies)
-- Install command: `git clone https://github.com/ellmos-ai/accounts-core.git && cd accounts-core && python -m venv .venv && .venv/bin/pip install -e .` (Windows: `.venv\Scripts\pip install -e .`)
-- Verification command: `python -c "from accounts_core import AccountStore, __version__; print(__version__)"`
-- Minimal example: `from accounts_core import AccountStore; store = AccountStore("path/to/finance.db"); print(store.transit_projection())`
+- **Prerequisites:** Python >= 3.10 (zero external runtime dependencies)
+- **Installation:** `git clone https://github.com/ellmos-ai/accounts-core.git && cd accounts-core && python -m venv .venv && .venv/bin/pip install -e .` (Windows: `.venv\Scripts\pip install -e .`)
+- **Verification:** `python -c "from accounts_core import AccountStore, publish_transit_projection, __version__; print(__version__)"`
+- **Minimal Example:** `from accounts_core import AccountStore; store = AccountStore("path/to/finance.db"); print(store.transit_projection())`
 
 ## Commands
 
